@@ -10,9 +10,9 @@ int main() {
 	cout <<"**************************       Login/Registration      **************************" << endl;
 	cout <<"                                 Username: ";
 	getline(cin, username_input);
-	userhandler.user_request(username_input); //validate input -> call user class and check for user
 	cout <<"                                 Password: ";
 	getline(cin, password_input);
+	userhandler.user_request(username_input); //validate input -> call user class and check for user
 	//check password -> match regex or right password?
 	cout<<endl;
 	username_input.clear();
