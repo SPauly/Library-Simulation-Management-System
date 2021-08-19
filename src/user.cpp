@@ -1,14 +1,15 @@
 #include "user.h"
 
-void UserHandler::user_request(const std::string& username_ref){
-    //read data 
-    try{
-        datahandler.find_user(username_ref);
+bool UserHandler::user_request(const std::string& username_ref, const std::string& password_ref){
+    
+    user = datahandler.find_user(username_ref);
+
+    if(user.username != ""){
+        if(user.password == password_ref){
+            
+        }
+    } else {
+        return false;
     }
-    catch
-    //see if username is there 
-    //is there -> ask for password 3x 
-    //is not -> ask to create new
-    //if new -> ask for password create new
-    //if not -> ask for username again
+     
 }
