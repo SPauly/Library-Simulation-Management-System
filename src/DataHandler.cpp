@@ -18,17 +18,21 @@ user_id& DataHandler::find_user(const std::string& username_ref){
 
             temp_username.clear();
             
-            do {
+            while (current_ch != ','){
                 read_data_file.get(current_ch);
-                temp_username += current_ch;
-            } while (current_ch != ',');
+                if(current_ch != ','){
+                    temp_username += current_ch;
+                }
+            }
             
             if(temp_username == username_ref){
                 
-                do {
+                while (current_ch != '\n') {
                     read_data_file.get(current_ch);
-                    temp_pass += current_ch;
-                } while (current_ch != '\n');
+                    if(current_ch != '\n'){
+                        temp_pass += current_ch;
+                    }
+                } 
 
                 user.username = temp_username;
                 user.password = temp_pass;
@@ -38,5 +42,6 @@ user_id& DataHandler::find_user(const std::string& username_ref){
             }
             
         }
+
     }
 }

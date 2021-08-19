@@ -11,6 +11,8 @@ struct user_id{
 
 class UserHandler{
     DataHandler datahandler;
+    user_id user;
+    int tries_left = 2;
 public:
-    void user_request(const std::string&);
+    bool user_request(const std::string&, const std::string&);
 };

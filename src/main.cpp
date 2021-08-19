@@ -12,9 +12,11 @@ int main() {
 	getline(cin, username_input);
 	cout <<"                                 Password: ";
 	getline(cin, password_input);
-	userhandler.user_request(username_input); //validate input -> call user class and check for user
-	//check password -> match regex or right password?
-	cout<<endl;
+	cout<<endl; 
+	userhandler.user_request(username_input, password_input); //validate input -> call user class and check for user
+	//is not -> ask to create new
+    //if new -> ask for password create new
+    //if not -> ask for username again
 	username_input.clear();
 	password_input.clear();
 
