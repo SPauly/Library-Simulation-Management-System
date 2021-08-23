@@ -5,7 +5,7 @@ DataHandler::DataHandler(){}
 DataHandler::~DataHandler(){}
 
 
-user_id& DataHandler::find_user(const std::string& username_ref){
+user_id DataHandler::find_user(const std::string& username_ref){
     
     read_data_file.open(data_directory);
     

@@ -6,7 +6,7 @@ bool UserHandler::user_request(const std::string& username_ref, const std::strin
 
     if(user.username != ""){
         if(user.password == password_ref){
-            
+            return true;
         }
     } else {
         return false;
