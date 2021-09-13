@@ -3,13 +3,6 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-
-#specific:
-*.exe
-launch.json
-tasks.json
-settings.json
-
 # User-specific files
 *.rsuser
 *.suo

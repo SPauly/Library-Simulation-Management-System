@@ -13,7 +13,7 @@ int main() {
 	cout <<"                                 Password: ";
 	getline(cin, password_input);
 	cout<<endl; 
-	if(userhandler.user_request(username_input, password_input)){
+	if(userhandler.user_request(username_input, password_input) == true){
 		cout<<"Valid User Found and Password correct"<<endl;
 	} //validate input -> call user class and check for user
 	//is not -> ask to create new
