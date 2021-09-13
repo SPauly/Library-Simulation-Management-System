@@ -11,5 +11,5 @@ bool UserHandler::user_request(const std::string& username_ref, const std::strin
     } else {
         return false;
     }
-     
+    return false;
 }
