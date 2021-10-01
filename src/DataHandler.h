@@ -1,15 +1,15 @@
 #pragma once
 #include <fstream>
 #include <vector>
-#include <iostream>
 #include <string>
+#include <sstream>
 
 struct user_id{
     std::string username;
     std::string password;
 };
 
-class DataHandler{
+class DataHandler {
     std::string data_directory = "E:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Data.csv";
     std::ifstream read_data_file;
     std::ofstream write_data_file;
@@ -21,4 +21,8 @@ public:
     DataHandler();
     ~DataHandler();
     user_id find_user(const std::string&); 
+};
+
+class CSVfile {
+    std::string m_line;
 };

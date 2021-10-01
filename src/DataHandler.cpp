@@ -1,8 +1,8 @@
 #include "DataHandler.h"
 
-DataHandler::DataHandler(){}
+DataHandler::DataHandler(){};
 
-DataHandler::~DataHandler(){}
+DataHandler::~DataHandler(){};
 
 
 user_id DataHandler::find_user(const std::string& username_ref){
@@ -33,7 +33,6 @@ user_id DataHandler::find_user(const std::string& username_ref){
                         temp_pass += current_ch;
                     }
                 } 
-
                 user.username = temp_username;
                 user.password = temp_pass;
                 return user; 
@@ -44,4 +43,4 @@ user_id DataHandler::find_user(const std::string& username_ref){
         }
 
     }
-}
+};

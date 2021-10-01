@@ -27,7 +27,7 @@
                 "${workspaceFolder}\\src\\*.cpp",
                 "${workspaceFolder}\\src\\*.h",
                 "-o",
-                "${fileDirname}\\GetIntoCPPAgain.exe"
+                "${workspaceFolder}\\GetIntoCPPAgain.exe"
             ],
             "options": {
                 "cwd": "${fileDirname}"
