@@ -44,23 +44,3 @@ user_id DataHandler::find_user(const std::string& username_ref){
 
     }
 };
-
-
-CSVfile::CSVfile(){};
-CSVfile::~CSVfile(){};
-
-void CSVfile::readNextRow(std::istream& str){
-    std::getline(str, m_line);
-    
-    m_data.clear();
-    m_data.emplace_back(-1);
-    std::string::size_type pos = 0;     //sth like size_t just for string class 
-
-    while((pos = m_line.find(',', pos)) != std::string::npos){ // as long as char at pos is not the en
-        m_data.emplace_back(pos);
-        ++pos;
-    }
-    //check for trailing comma
-    pos = m_line.size();
-    m_data.emplace_back(pos);
-}
