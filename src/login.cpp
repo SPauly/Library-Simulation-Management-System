@@ -2,18 +2,14 @@
 
 bool User::login(){
 
-   	UserHandler userhandler;
-	string username_input;
-	string password_input;
-
-	cout <<"**************************       Login/Registration      **************************" << endl;
-	cout <<"                                 Username: ";
-	getline(cin, username_input);
-	cout <<"                                 Password: ";
-	getline(cin, password_input);
-	cout<<endl; 
-	if(userhandler.user_request(username_input, password_input) == true){
-		cout<<"Valid User Found and Password correct"<<endl;
+	log("**************************       Login/Registration      **************************")<<std::endl;
+	log("                                 Username: ");
+	std::getline(std::cin, *mptr_username);
+	("                                 Password: ");
+	std::getline(std::cin, *mptr_password);
+	std::cout<<std::endl; 
+	if(m_user_request(mptr_username, mptr_password) == true){
+		log("Valid User Found and Password correct")<<std::endl;
 	} //validate input -> call user class and check for user
 	//is not -> ask to create new
     //if new -> ask for password create new

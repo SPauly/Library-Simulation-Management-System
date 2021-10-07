@@ -1,14 +1,19 @@
 #include "CSVParser.h"
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <string_view>
 
+#define log(x) std::cout<<x
 
 class User{
-    std::string m_username;
-    std::string m_password;
-    
+private:
+    std::string* mptr_username;
+    std::string* mptr_password;
+	bool m_user_request(const std::string*, const std::string*);
 public:
-    bool login();
+    bool login(); 
+
 };
 
 class UserHandler{
