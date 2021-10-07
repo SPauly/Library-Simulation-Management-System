@@ -10,11 +10,11 @@ bool User::login(){
 	std::cout<<std::endl; 
 	if(m_user_request(mptr_username, mptr_password) == true){
 		log("Valid User Found and Password correct")<<std::endl;
+		return m_loggin_flag = true;
 	} //validate input -> call user class and check for user
 	//is not -> ask to create new
     //if new -> ask for password create new
     //if not -> ask for username again
-	username_input.clear();
-	password_input.clear();
-    return 0;
+	
+    return m_loggin_flag = false;
 };

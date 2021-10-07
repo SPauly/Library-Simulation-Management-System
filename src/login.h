@@ -8,6 +8,7 @@
 
 class User{
 private:
+    bool m_loggin_flag = false;
     std::string* mptr_username;
     std::string* mptr_password;
 	bool m_user_request(const std::string*, const std::string*);
