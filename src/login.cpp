@@ -8,9 +8,7 @@ User::~User(){
 
 };
 
-bool User::m_user_request(const std::string* userptr, const std::string* passptr){
-	
-};
+bool User::m_user_request(const std::string* userptr, const std::string* passptr){};
 
 bool User::login(){
 
