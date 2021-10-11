@@ -4,11 +4,11 @@
 #include <fstream>
 #include <vector>
 
-#ifdef _DEBUG
+#define _DEBUG_CSV 1
+
+#ifdef _DEBUG_CSV
 #include <iostream>
 #endif
-
-#define _DEBUG
 
 namespace csv
 {
@@ -50,7 +50,7 @@ namespace csv
         CSVParser(const std::string *);
         ~CSVParser();
 
-#ifdef _DEBUG
+#ifdef _DEBUG_CSV
         void print_csv();
 #endif
 

@@ -75,7 +75,7 @@ namespace csv
         _csvgood = false;
     }
 
-#ifdef _DEBUG
+#ifdef _DEBUG_CSV
     void CSVParser::print_csv()
     {
         for (_HEADER_TYPE i = 0; i < _ptr_header->_header_size; i++)
