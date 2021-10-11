@@ -8,7 +8,7 @@ class User { //holds the user and is responsible for login, logout and activity 
 private:
     csv::CSVParser *mptr_csv_parser;                                    //stores one csv parser for all instances
     bool m_login_flag = false;                                     //flag to indicate wheather user is logged in or not
-    bool m_user_request(const std::string *, const std::string *); //deals with authentification of the user
+    bool m_user_request(const std::string* , const std::string* ); //deals with authentification of the user
 public:
     User();
     ~User();
