@@ -8,11 +8,13 @@ namespace csv
         m_StartIterator = 0;
         m_ItemIteratorPos = 0;
         
-        while((m_ItemIteratorPos = _row.find_first_of(',', m_StartIterator) != std::string::npos)){
-            m_data.push_back(_row.substr(m_StartIterator - m_ItemIteratorPos));
+        do
+        {
+            m_ItemIteratorPos = _row.find_first_of(",", m_StartIterator);
+            m_data.push_back(_row.substr(m_StartIterator, m_ItemIteratorPos-m_StartIterator));
             m_StartIterator = m_ItemIteratorPos + 1;
-        }
-        
+        } while (m_ItemIteratorPos != std::string::npos);
+
     };
 
     Row::~Row(){};
