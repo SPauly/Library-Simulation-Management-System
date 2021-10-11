@@ -3,6 +3,9 @@
 #include <string_view>
 #include <fstream>
 #include <vector>
+#include <iostream>
+
+#define _DEBUG
 
 namespace csv
 {
@@ -40,11 +43,13 @@ namespace csv
     {
     public:
         CSVParser() = delete;
-        CSVParser(const std::string *);
+        CSVParser(const std::string*);
         ~CSVParser();
 
         //create debug print function here
-        
+    #ifdef _DEBUG
+        void print_csv();
+    #endif
     
     public:
         bool _csvgood;

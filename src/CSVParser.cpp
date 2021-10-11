@@ -33,7 +33,6 @@ namespace csv
         _header_size = m_data.size();
         _header_ptr = m_data.data();
     };
-
     //end class Header
 
     //class CSVParser
@@ -71,5 +70,23 @@ namespace csv
     {
         _csvgood = false;
     }
+
+    #ifdef _DEBUG
+    void CSVParser::print_csv(){
+        for(_HEADER_TYPE i = 0; i < _ptr_header->_header_size; i++ ){
+            std::cout<<_ptr_header->getvalue(i);
+            std::cout<<",";
+        }
+        std::cout<<std::endl;
+        for(_HEADER_TYPE i = 0; i < m_content.size(); i++){
+            for(_HEADER_TYPE i2 = 0; i2 < _ptr_header->_header_size; i2++ ){
+                std::cout<<m_content.at(i2).getvalue(i);
+                std::cout<<",";
+            }
+            std::cout<<std::endl;
+        }
+    }
+    #endif
+    //end CSVParser
 
 } // namespace csv

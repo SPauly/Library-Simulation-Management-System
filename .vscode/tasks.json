@@ -8,6 +8,7 @@
             "type": "shell",
             "command": "cl.exe",
             "args": [
+                "/std:c++17",
                 "/property:GenerateFullPaths=true",
                 "/t:build",
                 "/consoleloggerparameters:NoSummary"
@@ -23,6 +24,8 @@
             "label": "C/C++: g++.exe Aktive Datei kompilieren",
             "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
             "args": [
+                "--std",
+                "c++17",
                 "-g",
                 "${workspaceFolder}\\src\\*.cpp",
                 "${workspaceFolder}\\src\\*.h",
