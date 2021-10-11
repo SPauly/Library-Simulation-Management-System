@@ -4,6 +4,7 @@ User::User(){
 	mptr_username = new std::string;
 	mptr_password = new std::string;
 };
+
 User::~User(){
 
 };
