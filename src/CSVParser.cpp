@@ -20,7 +20,7 @@ namespace csv
     Row::~Row(){};
 
     void Row::add_value(std::string_view _value){
-        //m_data.push_back(_value).data();
+        m_data.push_back(std::string(_value));
     };
 
     std::string_view Row::getvalue(_HEADER_TYPE &_header) const
