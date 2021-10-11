@@ -3,8 +3,7 @@
 #include <string_view>
 #include <fstream>
 #include <vector>
-
-#define _DEBUG_CSV 1
+ 
 
 #ifdef _DEBUG_CSV
 #include <iostream>

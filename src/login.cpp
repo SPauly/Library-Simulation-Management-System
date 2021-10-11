@@ -1,15 +1,25 @@
 #include "login.h"
 
 User::User(){
+	//temporary allocated values
 	mptr_username = new std::string;
 	mptr_password = new std::string;
+
+	//longer allocation
+	mptr_csv_parser = new csv::CSVParser(&m_database);
+
 };
 
 User::~User(){
-
+	delete mptr_csv_parser;
 };
 
-bool User::m_user_request(const std::string* userptr, const std::string* passptr){};
+bool User::m_user_request(std::string* userptr, std::string* passptr){
+	int _tries = 0;
+	while(_tries < 3){
+		
+	}
+};
 
 bool User::login(){
 
