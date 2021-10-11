@@ -17,7 +17,9 @@ namespace csv
         } while (m_ItemIteratorPos != std::string::npos);
     };
 
-    Row::~Row(){};
+    Row::~Row(){
+        m_data.clear();
+    };
 
     void Row::add_value(std::string_view _value){
         m_data.push_back(std::string(_value));
@@ -36,6 +38,7 @@ namespace csv
         _header_size = m_data.size();
         _header_ptr = m_data.data();
     };
+
     //end class Header
 
     //class CSVParser
@@ -62,6 +65,8 @@ namespace csv
 
             //delete temporary values
             delete tmp_line;
+
+            _csvgood = true;
         }
         catch (const std::ifstream::failure &e)
         {
@@ -72,6 +77,9 @@ namespace csv
     CSVParser::~CSVParser()
     {
         _csvgood = false;
+        m_INPUT_FILE.close();
+        m_content.clear();
+        delete _ptr_header;
     }
 
 #ifdef _DEBUG_CSV
