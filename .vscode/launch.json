@@ -8,7 +8,7 @@
             "name": "(gdb) Starten",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/.vscode/GetIntoCPPAgain.exe",
+            "program": "${workspaceFolder}/GetIntoCPPAgain.exe",
             "args": [],
             "stopAtEntry": true,
             "cwd": "${fileDirname}",
