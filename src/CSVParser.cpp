@@ -45,19 +45,18 @@ namespace csv
         {
             //open csv file
             m_INPUT_FILE.open(*PATH_ptr, std::ios::out);
-            m_INPUT_FILE.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
+            m_INPUT_FILE.exceptions(std::ifstream::badbit);
 
             //init header of file
             std::string *tmp_line = new std::string;
             tmp_line->clear();
             std::getline(m_INPUT_FILE, *tmp_line);
             _ptr_header = new Header(*tmp_line);
+            tmp_line->clear();
 
             //init m_content
-            while (m_INPUT_FILE.good())
+            while (std::getline(m_INPUT_FILE, *tmp_line))
             {
-                tmp_line->clear();
-                std::getline(m_INPUT_FILE, *tmp_line);
                 m_content.push_back(Row(*tmp_line));
             }
 

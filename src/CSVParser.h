@@ -50,9 +50,9 @@ namespace csv
         CSVParser(const std::string *);
         ~CSVParser();
 
-#ifdef _DEBUG_CSV
+    #ifdef _DEBUG_CSV
         void print_csv();
-#endif
+    #endif
 
     public:
         bool _csvgood;
