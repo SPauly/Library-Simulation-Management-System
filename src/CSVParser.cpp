@@ -82,6 +82,10 @@ namespace csv
         delete _ptr_header;
     }
 
+    const unsigned int& CSVParser::size() {
+        return m_content.size();
+    }
+
 #ifdef _DEBUG_CSV
     void CSVParser::print_csv()
     {
