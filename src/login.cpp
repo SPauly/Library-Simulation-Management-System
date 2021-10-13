@@ -46,6 +46,7 @@ bool User::login(){
 	if(!m_user_request())
 		log("Do you instead want to create a new Account? [y/n]")<<std::endl;
 	}
+	
     //if new -> ask for password create new
     //if not -> ask for username again
 	
