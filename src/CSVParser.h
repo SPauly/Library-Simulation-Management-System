@@ -11,7 +11,7 @@
 
 namespace csv
 {
-    using _HEADER_TYPE = signed int;
+    using _HEADER_TYPE = unsigned int;
 
     class Row
     {
@@ -23,6 +23,8 @@ namespace csv
         void add_value(std::string_view);
         std::string_view getvalue(_HEADER_TYPE &) const;
 
+        std::string_view operator[] (_HEADER_TYPE &) const;
+        
     protected:
         std::vector<std::string> m_data;
 
@@ -48,6 +50,11 @@ namespace csv
         CSVParser() = delete;
         CSVParser(const std::string *);
         ~CSVParser();
+
+        const unsigned int size();
+        Row& getRow(unsigned int&);
+
+        Row &operator[] (unsigned int&);  //unfunctional
 
     #ifdef _DEBUG_CSV
         void print_csv();

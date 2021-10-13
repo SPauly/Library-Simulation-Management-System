@@ -26,9 +26,15 @@ namespace csv
     };
 
     std::string_view Row::getvalue(_HEADER_TYPE &_header) const
-    {
-        return m_data.at(_header);
+    {   
+        if(_header < m_data.size())
+            return m_data.at(_header);
+        //throw exception
     };
+
+    std::string_view Row::operator[] (_HEADER_TYPE &_header) const {
+        return this->getvalue(_header);
+    }
     //end class Row
 
     //class Header : public Row
@@ -82,8 +88,18 @@ namespace csv
         delete _ptr_header;
     }
 
-    const unsigned int& CSVParser::size() {
+    const unsigned int CSVParser::size() {
         return m_content.size();
+    }
+
+    Row& CSVParser::getRow(unsigned int& _row){
+        if(_row < m_content.size())
+            return m_content[_row];
+        //throw some exception
+    }
+
+    Row &CSVParser::operator[] (unsigned int& _row) {
+        return getRow(_row);
     }
 
 #ifdef _DEBUG_CSV
