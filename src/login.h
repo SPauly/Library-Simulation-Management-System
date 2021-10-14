@@ -8,12 +8,12 @@ class User { //holds the user and is responsible for login, logout and activity 
 private:
     std::string m_database {"D:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Data.csv"};
     csv::CSVParser *mptr_csv_parser;                                    //stores one csv parser for all instances
-    bool m_login_flag = false;                                     //flag to indicate wheather user is logged in or not
+    bool m_login_flag;                                     //flag to indicate wheather user is logged in or not
     bool m_user_request(); //deals with authentification of the user
 public:
     User();
     ~User();
-    bool login();               //only called at the beginning to authenticate the user or create a new one
+    bool login();               //only called getRow the beginning to authenticate the user or create a new one
 private:                        //private temporary variables
     std::string *mptr_username; //username of the current user gets deleted after loggin
     std::string *mptr_password; //password entered by user also gets deleted after authenticating login

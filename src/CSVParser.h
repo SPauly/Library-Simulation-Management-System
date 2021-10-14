@@ -11,24 +11,30 @@
 
 namespace csv
 {
-    using _HEADER_TYPE = signed int;
+    using _HEADER_TYPE = unsigned int;
 
     class Row
     {
     public:
         Row() = delete;
         Row(std::string_view);
+        Row(std::string_view, Row*);
+
         ~Row();
 
         void add_value(std::string_view);
         std::string_view getvalue(_HEADER_TYPE &) const;
+        _HEADER_TYPE& get_item_position(std::string_view);
+
+
+        std::string_view operator[] (_HEADER_TYPE &) const;
+        std::string_view operator[] (std::string_view) const;
 
     protected:
         std::vector<std::string> m_data;
-
     private:
-        std::string::size_type m_StartIterator;
-        std::string::size_type m_ItemIteratorPos;
+        Row* mptr_header;
+        _HEADER_TYPE m_item_pos = 0;
     };
 
     class Header : public Row
@@ -36,6 +42,7 @@ namespace csv
     public:
         Header() = delete;
         Header(std::string_view);
+        Header(std::string_view, Row*) = delete;
 
     public:
         _HEADER_TYPE _header_size;
@@ -48,6 +55,9 @@ namespace csv
         CSVParser() = delete;
         CSVParser(const std::string *);
         ~CSVParser();
+
+        const unsigned int size();
+        Row& getRow(unsigned int&);
 
     #ifdef _DEBUG_CSV
         void print_csv();
