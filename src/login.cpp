@@ -22,12 +22,10 @@ bool User::m_user_request(){
 		log("                                 Password: ");
 		std::getline(std::cin, *mptr_password);
 		std::cout<<std::endl; 
-		csv::_HEADER_TYPE user = 0;
-		csv::_HEADER_TYPE pass = 1;	
 		for(unsigned int i = 0; i < mptr_csv_parser->size(); i++){
 			
-			if(mptr_csv_parser->getRow(i)[user] == *mptr_username){
-				if(mptr_csv_parser->getRow(i)[pass] == *mptr_password){
+			if(mptr_csv_parser->getRow(i)["USER"] == *mptr_username){
+				if(mptr_csv_parser->getRow(i)["PASSWORD"] == *mptr_password){
 					log("Login successful\n");
 					m_login_flag = true;
 					return m_login_flag;

@@ -6,16 +6,20 @@ namespace csv
 
     Row::Row(std::string_view _row)
     {
-        m_StartIterator = 0;
-        m_ItemIteratorPos = 0;
+        std::string::size_type _StartIterator = 0;
+        std::string::size_type _ItemIteratorPos = 0;
 
         do
         {
-            m_ItemIteratorPos = _row.find_first_of(",", m_StartIterator);
-            m_data.push_back(std::string(_row.substr(m_StartIterator, m_ItemIteratorPos - m_StartIterator)));
-            m_StartIterator = m_ItemIteratorPos + 1;
-        } while (m_ItemIteratorPos != std::string::npos);
+            _ItemIteratorPos = _row.find_first_of(",", _StartIterator);
+            m_data.push_back(std::string(_row.substr(_StartIterator, _ItemIteratorPos - _StartIterator)));
+            _StartIterator = _ItemIteratorPos + 1;
+        } while (_ItemIteratorPos != std::string::npos);
     };
+
+    Row::Row(std::string_view _row, Row* _header): Row(_row) {
+        mptr_header = _header;
+    }
 
     Row::~Row(){
         m_data.clear();
@@ -32,9 +36,31 @@ namespace csv
         //throw exception
     };
 
+    _HEADER_TYPE &Row::get_item_position(std::string_view _header) 
+    {
+        std::vector<std::string>::const_iterator it;
+
+        for (it = m_data.begin(); it != m_data.end(); it++)
+        {
+            if (_header == *it)
+                return m_item_pos;
+            m_item_pos++;
+        }
+
+        //throw exception
+    }
+
     std::string_view Row::operator[] (_HEADER_TYPE &_header) const {
         return this->getvalue(_header);
-    }
+    };
+
+    std::string_view Row::operator[] (std::string_view _header) const {
+        _HEADER_TYPE pos = mptr_header->get_item_position(_header);
+        if(pos < m_data.size())
+            return m_data.at(pos);
+
+        return ""; //throw exception 
+    };
     //end class Row
 
     //class Header : public Row
@@ -66,7 +92,7 @@ namespace csv
             //init m_content
             while (std::getline(m_INPUT_FILE, *tmp_line))
             {
-                m_content.push_back(Row(*tmp_line));
+                m_content.push_back(Row(*tmp_line, _ptr_header));
             }
 
             //delete temporary values
@@ -96,10 +122,6 @@ namespace csv
         if(_row < m_content.size())
             return m_content[_row];
         //throw some exception
-    }
-
-    Row &CSVParser::operator[] (unsigned int& _row) {
-        return getRow(_row);
     }
 
 #ifdef _DEBUG_CSV
