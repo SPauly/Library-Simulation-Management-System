@@ -6,7 +6,7 @@
 
 class User { //holds the user and is responsible for login, logout and activity log -> gets automatically deleted with logout
 private:
-    std::string m_database {"Data/Data.csv"};
+    std::string m_database {"D:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Data.csv"};
     csv::CSVParser *mptr_csv_parser;                                    //stores one csv parser for all instances
     bool m_login_flag;                                     //flag to indicate wheather user is logged in or not
     bool m_user_request(); //deals with authentification of the user
