@@ -5,7 +5,7 @@
 CppProperties.json
 
 #ignore application
-GetIntoCPPAgain.exe
+*.exe
 
 # User-specific files
 *.rsuser
