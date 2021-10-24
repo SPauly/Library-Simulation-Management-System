@@ -39,6 +39,7 @@ namespace csv
     _HEADER_TYPE &Row::get_item_position(std::string_view _header) 
     {
         std::vector<std::string>::const_iterator it;
+        m_item_pos = 0;
 
         for (it = m_data.begin(); it != m_data.end(); it++)
         {

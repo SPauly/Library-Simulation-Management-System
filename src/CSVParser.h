@@ -58,7 +58,7 @@ namespace csv
 
         const unsigned int size();
         Row& getRow(unsigned int&);
-
+        void addRow(const Row&);
     #ifdef _DEBUG_CSV
         void print_csv();
     #endif
