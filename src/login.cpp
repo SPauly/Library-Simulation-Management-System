@@ -17,11 +17,12 @@ User::~User(){
 bool User::m_user_request(){
 	int _tries = 0;
 	while(_tries < 3){
-		log("                                 Username: ");
+		std::cout<<std::endl;
+		log("\nUsername>> ");
 		std::getline(std::cin, *mptr_username);
-		log("                                 Password: ");
+		log("\nPassword>> ");
 		std::getline(std::cin, *mptr_password);
-		std::cout<<std::endl; 
+
 		for(csv::_HEADER_TYPE i = 0; i < mptr_csv_parser->size(); i++){
 			if(mptr_csv_parser->getRow(i)["USER"] == *mptr_username){
 				if(mptr_csv_parser->getRow(i)["PASSWORD"] == *mptr_password){
@@ -29,26 +30,39 @@ bool User::m_user_request(){
 					m_login_flag = true;
 					return m_login_flag;
 				}
-				else {
-					log("Wrong Password. Try again!\n");
-					break;
-				}
 			}
 		}
+
+		log("Wrong username or password. Try again!\n");
 		++_tries;
-		log("User not found\n");
 	}
+
+	return m_login_flag = false;
 };
 
 bool User::login(){
-
+	char _yn = 0;
 	log("**************************       Login/Registration      **************************")<<std::endl;
-	if(!m_user_request()){
+	log("Log into existing Account? [y/n]\n>>");
+	std::cin>>_yn;
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	switch (_yn)
+	{
+	case 'y':
+		if(!m_user_request()){
 		log("Do you instead want to create a new Account? [y/n]")<<std::endl;
+		}
+		break;
+	case 'n':
+		//create new account
+		break;
+	default:
+		//create new account 
+		break;
 	}
 	
     //if new -> ask for password create new
-    //if not -> ask for username again
 
     return m_login_flag = false;
 };
