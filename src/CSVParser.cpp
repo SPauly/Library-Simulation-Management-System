@@ -80,18 +80,18 @@ namespace csv
         try
         {
             //open csv file
-            m_INPUT_FILE.open(*PATH_ptr, std::ios::out);
-            m_INPUT_FILE.exceptions(std::ifstream::badbit);
+            m_DATABASE.open(*PATH_ptr, std::ios::in | std::ios::out);
+            m_DATABASE.exceptions(std::ifstream::badbit);
 
             //init header of file
             std::string *tmp_line = new std::string;
             tmp_line->clear();
-            std::getline(m_INPUT_FILE, *tmp_line);
+            std::getline(m_DATABASE, *tmp_line);
             _ptr_header = new Header(*tmp_line);
             tmp_line->clear();
 
             //init m_content
-            while (std::getline(m_INPUT_FILE, *tmp_line))
+            while (std::getline(m_DATABASE, *tmp_line))
             {
                 m_content.push_back(Row(*tmp_line, _ptr_header));
             }
@@ -110,7 +110,7 @@ namespace csv
     CSVParser::~CSVParser()
     {
         _csvgood = false;
-        m_INPUT_FILE.close();
+        m_DATABASE.close();
         m_content.clear();
         delete _ptr_header;
     }
@@ -123,6 +123,24 @@ namespace csv
         if(_row < m_content.size())
             return m_content[_row];
         //throw some exception
+    }
+
+    bool CSVParser::addRow(const Row& _row) {
+        if(m_DATABASE.is_open()){
+            unsigned int i = 0;
+            for(; i < _ptr_header->_header_size - 1; i++){
+                m_DATABASE<<_row[i].data();
+                m_DATABASE<<',';
+            }
+            m_DATABASE<<_row[i].data();
+            m_DATABASE<<'\n';
+            return true;
+        }
+        else{
+            _csvgood = false;
+            return false;
+            //throw some exception
+        }
     }
 
 #ifdef _DEBUG_CSV
