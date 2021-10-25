@@ -16,9 +16,10 @@ namespace csv
     class Row
     {
     public:
-        Row() = delete;
+        Row();
         Row(std::string_view);
         Row(std::string_view, Row*);
+        Row(std::vector<std::string>&);
 
         ~Row();
 
@@ -58,7 +59,7 @@ namespace csv
 
         const unsigned int size();
         Row& getRow(unsigned int&);
-        void addRow(const Row&);
+        bool addRow(const Row&);
     #ifdef _DEBUG_CSV
         void print_csv();
     #endif
@@ -68,7 +69,7 @@ namespace csv
         Header *_ptr_header;
 
     private:
-        std::ifstream m_INPUT_FILE;
+        std::fstream m_DATABASE;
         std::vector<Row> m_content;
     };
 
