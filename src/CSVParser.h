@@ -16,9 +16,10 @@ namespace csv
     class Row
     {
     public:
-        Row() = delete;
+        Row();
         Row(std::string_view);
         Row(std::string_view, Row*);
+        Row(std::vector<std::string>&);
 
         ~Row();
 

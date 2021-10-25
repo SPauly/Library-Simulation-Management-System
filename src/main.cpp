@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-int main() {
+int main() {	
 	User* user = new User{};
 	user->login();
 	//allow the user to do something with the application

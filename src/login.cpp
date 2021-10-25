@@ -40,14 +40,17 @@ bool User::m_user_request(){
 };
 
 bool User::m_create_user(){
+	csv::Row* _temp_rowptr = new csv::Row();
 	std::cout<<std::endl;
 	log("New Username>> ");
 	std::getline(std::cin, *mptr_username);
 	//regex check
+	_temp_rowptr->add_value(*mptr_username);
 	log("New Password>> ");
 	std::getline(std::cin, *mptr_password);
 	//regex check
-	csv::Row* _rowptr = new Row((*mptr_username + "," + *mptr_password));
+	_temp_rowptr->add_value(*mptr_password);
+	mptr_csv_parser->addRow(*_temp_rowptr);
 };
 
 bool User::login(){
@@ -66,6 +69,7 @@ bool User::login(){
 		break;
 	case 'n':
 		//create new account
+		m_create_user();
 		break;
 	default:
 		//create new account 

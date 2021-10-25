@@ -4,6 +4,8 @@ namespace csv
 {
     //class Row
 
+    Row::Row(){}
+
     Row::Row(std::string_view _row)
     {
         std::string::size_type _StartIterator = 0;
@@ -19,6 +21,11 @@ namespace csv
 
     Row::Row(std::string_view _row, Row* _header): Row(_row) {
         mptr_header = _header;
+    }
+
+    Row::Row(std::vector<std::string> &_row){
+        m_data.swap(_row);
+        _row.clear();
     }
 
     Row::~Row(){
@@ -98,7 +105,8 @@ namespace csv
 
             //delete temporary values
             delete tmp_line;
-
+            m_DATABASE.clear();
+            m_DATABASE.flush();
             _csvgood = true;
         }
         catch (const std::ifstream::failure &e)
@@ -130,13 +138,16 @@ namespace csv
             unsigned int i = 0;
             for(; i < _ptr_header->_header_size - 1; i++){
                 m_DATABASE<<_row[i].data();
-                m_DATABASE<<',';
+                m_DATABASE<<",";
             }
             m_DATABASE<<_row[i].data();
             m_DATABASE<<'\n';
+            m_DATABASE.flush();
+            m_content.push_back(_row);
             return true;
         }
         else{
+            m_content.push_back(_row);
             _csvgood = false;
             return false;
             //throw some exception
