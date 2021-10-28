@@ -91,7 +91,7 @@ namespace csv
         {
             m_CURRENT_FILE = *PATH_ptr;
             //open csv file
-            m_DATABASE.open(*PATH_ptr, std::ios::in | std::ios::out);
+            m_DATABASE.open(*PATH_ptr, std::ios::in | std::ios::out | std::ios::binary);
             m_DATABASE.exceptions(std::ifstream::badbit);
 
             //init header of file
@@ -100,7 +100,8 @@ namespace csv
             std::getline(m_DATABASE, *tmp_line);
             _ptr_header = new Header(*tmp_line);
             tmp_line->clear();
-
+            //check m_DATABASE for consistency
+            m_check_consistency();
             //init m_content
             while (std::getline(m_DATABASE, *tmp_line))
             {
@@ -177,24 +178,34 @@ namespace csv
     }
 
     void CSVParser::m_check_consistency(){
-        unsigned int previous_pos = m_DATABASE.tellg();
+        unsigned int starting_pos = m_DATABASE.tellg();
         std::string temp_string;
-        int times = 0;
+        int commas = 0;
         int to_add = 0;
+        std::string::size_type _iterator = 0;
         try
         {
             while (std::getline(m_DATABASE, temp_string))
             {
-                while(temp_string.find(",",m_DATABASE.tellg()) != std::string::npos){
-                    ++times;
+                _iterator = temp_string.find(",");
+                commas = 0;
+                while(_iterator!= std::string::npos){
+                    ++commas;
+                    _iterator = temp_string.find(",", _iterator+1);
                 }
-                to_add = (_ptr_header->size() - 1) - times; 
+                to_add = (_ptr_header->size() - 1) - commas;
+                while(to_add > 0){
+                    m_DATABASE << ',';
+                    --to_add;
+                } 
             }
         }
         catch(const Error& e)
         {
             
         }
+        m_DATABASE.seekp(starting_pos);
+        m_DATABASE.seekg(starting_pos);
     }
 
 #ifdef _DEBUG_CSV
