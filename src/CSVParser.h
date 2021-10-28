@@ -3,7 +3,7 @@
 #include <string_view>
 #include <fstream>
 #include <vector>
- 
+#include <stdexcept> 
 
 #ifdef _DEBUG_CSV
 #include <iostream>
@@ -12,6 +12,12 @@
 namespace csv
 {
     using _HEADER_TYPE = unsigned int;
+
+    class Error : public std::runtime_error {
+    public:
+        Error(const std::string &msg) : 
+            std::runtime_error(std::string("CSVParser: ").append(msg)){}     
+    };
 
     class Row
     {
@@ -65,10 +71,10 @@ namespace csv
     #endif
 
     public:
-        bool _csvgood;
         Header *_ptr_header;
-
+        bool _csvgood;
     private:
+        std::string m_CURRENT_FILE;
         std::fstream m_DATABASE;
         std::vector<Row> m_content;
     };

@@ -40,7 +40,9 @@ namespace csv
     {   
         if(_header < m_data.size())
             return m_data.at(_header);
-        //throw exception
+        else{
+            throw Error("Row: out of range");
+        }
     };
 
     _HEADER_TYPE &Row::get_item_position(std::string_view _header) 
@@ -55,7 +57,7 @@ namespace csv
             m_item_pos++;
         }
 
-        //throw exception
+        throw Error("Row: Item not found");
     }
 
     std::string_view Row::operator[] (_HEADER_TYPE &_header) const {
@@ -64,10 +66,7 @@ namespace csv
 
     std::string_view Row::operator[] (std::string_view _header) const {
         _HEADER_TYPE pos = mptr_header->get_item_position(_header);
-        if(pos < m_data.size())
-            return m_data.at(pos);
-
-        return ""; //throw exception 
+        return m_data.at(pos);
     };
     //end class Row
 
@@ -82,10 +81,11 @@ namespace csv
     //end class Header
 
     //class CSVParser
-    csv::CSVParser::CSVParser(const std::string *PATH_ptr)
+    CSVParser::CSVParser(const std::string *PATH_ptr)
     {
         try
         {
+            m_CURRENT_FILE = *PATH_ptr;
             //open csv file
             m_DATABASE.open(*PATH_ptr, std::ios::in | std::ios::out);
             m_DATABASE.exceptions(std::ifstream::badbit);
@@ -112,6 +112,7 @@ namespace csv
         catch (const std::ifstream::failure &e)
         {
             _csvgood = false;
+            throw Error(std::string("CTOR: Error accessing Database").append(e.what()));
         }
     }
 
@@ -130,27 +131,41 @@ namespace csv
     Row& CSVParser::getRow(unsigned int& _row){
         if(_row < m_content.size())
             return m_content[_row];
-        //throw some exception
+        
+        throw Error("CSV: out of range");
     }
 
     bool CSVParser::addRow(const Row& _row) {
-        if(m_DATABASE.is_open()){
-            unsigned int i = 0;
-            for(; i < _ptr_header->_header_size - 1; i++){
-                m_DATABASE<<_row[i].data();
-                m_DATABASE<<",";
+        try
+        {
+            if (m_DATABASE.is_open())
+            {
+                unsigned int i = 0;
+                for (; i < _ptr_header->_header_size - 1; i++)
+                {
+                    m_DATABASE << _row[i].data();
+                    m_DATABASE << ",";
+                }
+                m_DATABASE << _row[i].data();
+                m_DATABASE << '\n';
+                m_DATABASE.flush();
+                m_content.push_back(_row);
+                return true;
             }
-            m_DATABASE<<_row[i].data();
-            m_DATABASE<<'\n';
-            m_DATABASE.flush();
-            m_content.push_back(_row);
-            return true;
+            else{
+                m_DATABASE.flush();
+                m_DATABASE.close();
+                try {
+                    m_DATABASE.open(m_CURRENT_FILE, std::ios::in | std::ios::out);
+                    throw Error("CSV: Error while writing database");
+                }
+                catch (std::ios::failure &e){
+                    throw Error("CSV: failed to open database");
+                }
+            }
         }
-        else{
-            m_content.push_back(_row);
-            _csvgood = false;
-            return false;
-            //throw some exception
+        catch(std::out_of_range &oor){
+            throw Error("CSV: out of range");
         }
     }
 
