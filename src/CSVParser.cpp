@@ -32,6 +32,10 @@ namespace csv
         m_data.clear();
     };
 
+    unsigned int Row::size(){
+        return m_data.size();
+    }
+
     void Row::add_value(std::string_view _value){
         m_data.push_back(std::string(_value));
     };
@@ -74,7 +78,7 @@ namespace csv
 
     Header::Header(std::string_view _row) : Row(_row)
     {
-        _header_size = m_data.size();
+        _header_size = this->size();
         _header_ptr = m_data.data();
     };
 
@@ -112,7 +116,7 @@ namespace csv
         catch (const std::ifstream::failure &e)
         {
             _csvgood = false;
-            throw Error(std::string("CTOR: Error accessing Database").append(e.what()));
+            throw Error(std::string("CTOR: Error accessing Database: ").append(e.what()));
         }
     }
 
@@ -135,13 +139,13 @@ namespace csv
         throw Error("CSV: out of range");
     }
 
-    bool CSVParser::addRow(const Row& _row) {
+    bool CSVParser::addRow(Row& _row) {
         try
         {
             if (m_DATABASE.is_open())
             {
                 unsigned int i = 0;
-                for (; i < _ptr_header->_header_size - 1; i++)
+                for (; i < _row.size() - 1; i++)
                 {
                     m_DATABASE << _row[i].data();
                     m_DATABASE << ",";
@@ -166,6 +170,30 @@ namespace csv
         }
         catch(std::out_of_range &oor){
             throw Error("CSV: out of range");
+        }
+        catch(csv::Error &e){
+            throw Error("CSV: out of range");
+        }
+    }
+
+    void CSVParser::m_check_consistency(){
+        unsigned int previous_pos = m_DATABASE.tellg();
+        std::string temp_string;
+        int times = 0;
+        int to_add = 0;
+        try
+        {
+            while (std::getline(m_DATABASE, temp_string))
+            {
+                while(temp_string.find(",",m_DATABASE.tellg()) != std::string::npos){
+                    ++times;
+                }
+                to_add = (_ptr_header->size() - 1) - times; 
+            }
+        }
+        catch(const Error& e)
+        {
+            
         }
     }
 

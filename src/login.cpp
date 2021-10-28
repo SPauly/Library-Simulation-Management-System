@@ -23,7 +23,7 @@ bool User::m_user_request(){
 		std::getline(std::cin, *mptr_password);
 
 		for(csv::_HEADER_TYPE i = 0; i < mptr_csv_parser->size(); i++){
-			if(mptr_csv_parser->getRow(i)["USER"] == *mptr_username){
+			if(mptr_csv_parser->getRow(i)["USERNAME"] == *mptr_username){
 				if(mptr_csv_parser->getRow(i)["PASSWORD"] == *mptr_password){
 					log("Login successful\n");
 					m_login_flag = true;
@@ -55,28 +55,55 @@ bool User::m_create_user(){
 
 bool User::login(){
 	char _yn = 0;
-	log("**************************       Login/Registration      **************************")<<std::endl;
-	log("Log into existing Account? [y/n]\n>>");
-	std::cin>>_yn;
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	switch (_yn)
+	while (true)
 	{
-	case 'y':
-		if(!m_user_request()){
-			log("Do you instead want to create a new Account? [y/n]")<<std::endl;
+		log("Log into an existing Account? [y/n]\n>>");
+		std::cin >> _yn;
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		if (!std::cin.fail())
+		{
+			switch (_yn)
+			{
+			case 'y':
+				if (!m_user_request())
+				{
+					log("Do you instead want to create a new Account? [y/n]\n>>");
+					std::cin>>_yn;
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+					if (!std::cin.fail())
+					{
+						switch (_yn)
+						{
+						case 'y':
+							return m_create_user();
+						case 'n':
+							log("Login failed.");
+							return m_login_flag = false;
+						default:
+						    log("Login failed.");
+							return m_login_flag = false;
+						}
+					}				
+				}
+				else {
+					//do some logging for user activity
+					return m_login_flag = true;
+				}
+				break;
+			case 'n':
+				return m_create_user();
+				break;
+			default:
+				log("Wrong input. Enter 'y' or 'n'.");
+				break;
+			}
 		}
-		break;
-	case 'n':
-		//create new account
-		m_create_user();
-		break;
-	default:
-		//create new account 
-		break;
+		else
+		{
+			log("Wrong input. Enter 'y' or 'n'.");
+			std::cin.clear();
+		}
 	}
-	
-    //if new -> ask for password create new
 
-    return m_login_flag = false;
+	return m_login_flag = false;
 };

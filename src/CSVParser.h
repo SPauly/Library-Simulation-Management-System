@@ -29,6 +29,7 @@ namespace csv
 
         ~Row();
 
+        unsigned int size();
         void add_value(std::string_view);
         std::string_view getvalue(_HEADER_TYPE &) const;
         _HEADER_TYPE& get_item_position(std::string_view);
@@ -65,7 +66,7 @@ namespace csv
 
         const unsigned int size();
         Row& getRow(unsigned int&);
-        bool addRow(const Row&);
+        bool addRow(Row&);
     #ifdef _DEBUG_CSV
         void print_csv();
     #endif
@@ -73,6 +74,9 @@ namespace csv
     public:
         Header *_ptr_header;
         bool _csvgood;
+
+    private:
+        void m_check_consistency();
     private:
         std::string m_CURRENT_FILE;
         std::fstream m_DATABASE;
