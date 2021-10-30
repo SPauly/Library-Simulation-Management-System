@@ -76,7 +76,7 @@ namespace csv
         bool _csvgood;
 
     private:
-        //void m_check_consistency();
+        void m_check_consistency();
     private:
         std::string m_CURRENT_FILE;
         std::fstream m_DATABASE;

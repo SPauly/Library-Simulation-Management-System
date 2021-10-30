@@ -101,7 +101,7 @@ namespace csv
             _ptr_header = new Header(*tmp_line);
             tmp_line->clear();
             //check m_DATABASE for consistency
-            
+            m_check_consistency();
             //init m_content
             while (std::getline(m_DATABASE, *tmp_line))
             {
@@ -175,6 +175,47 @@ namespace csv
         catch(csv::Error &e){
             throw Error("CSV: out of range");
         }
+    }
+
+    void CSVParser::m_check_consistency(){
+        unsigned int starting_pos = m_DATABASE.tellg();
+        std::string temp_string;
+        int commas = 0;
+        int to_add = 0;
+        std::string::size_type _iterator = starting_pos;
+        std::string::size_type _view;
+        int pos;
+        try
+        {
+            while (std::getline(m_DATABASE, temp_string))
+            {
+                pos = m_DATABASE.tellg();
+                for(int i = 0; i < temp_string.size(); i++){
+                    if(temp_string.at(i) == ',')
+                        ++commas;
+                    ++_iterator;
+                }
+                m_DATABASE.seekg(_iterator);
+                pos = m_DATABASE.tellg();
+                to_add = (_ptr_header->size() - 1) - commas;
+                while(to_add > 0){
+                    m_DATABASE << ',';
+                    --to_add;
+                    ++_iterator;
+                } 
+                if(_ptr_header->size() - 1 != commas){
+                    m_DATABASE << '\n';
+                    ++_iterator;
+                }
+                pos = m_DATABASE.tellg();
+            }
+        }
+        catch(const Error& e)
+        {
+            throw Error(e);
+        }
+        m_DATABASE.seekp(starting_pos);
+        m_DATABASE.seekg(starting_pos);
     }
 
 #ifdef _DEBUG_CSV
