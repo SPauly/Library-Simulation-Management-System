@@ -41,14 +41,33 @@ bool User::m_user_request(){
 
 bool User::m_create_user(){
 	csv::Row* _temp_rowptr = new csv::Row();
-	std::cout<<std::endl;
-	log("New Username>> ");
-	std::getline(std::cin, *mptr_username);
-	//regex check
+	std::regex _reg_username{"^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$"};
+	std::regex _reg_password{"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-<>]).{8,}$"};
+	do
+	{
+		log("New Username>> ");
+		std::getline(std::cin, *mptr_username);
+		while(!std::regex_match(*mptr_username, _reg_username)){
+			log("Username must contain 8-20 Characters, start and end with a character,	can contain numbers, '.' and '_'\n");
+			log("New Username>> ");
+			std::getline(std::cin, *mptr_username);
+		}
+		//if(csv.find_in("USERNAME",*mptr_username))
+		break;
+	} while (true);
+
 	_temp_rowptr->add_value(*mptr_username);
+
 	log("New Password>> ");
 	std::getline(std::cin, *mptr_password);
-	//regex check
+	while (!std::regex_match(*mptr_password, _reg_password))
+	{
+		log("Password criteria:\n - min. 8 characters ");
+		log("\n - One upper one lower case character \n - One number\n - one special character eg. #?!@$%^&*-<>\n");
+		log("New Password>> ");
+		std::getline(std::cin, *mptr_password);
+	}
+
 	_temp_rowptr->add_value(*mptr_password);
 	mptr_csv_parser->addRow(*_temp_rowptr);
 };
