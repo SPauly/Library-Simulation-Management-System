@@ -41,6 +41,14 @@ bool User::m_user_request(){
 
 bool User::m_create_user(){
 	csv::Row* _temp_rowptr = new csv::Row();
+<<<<<<< HEAD
+	std::cout<<std::endl;
+	log("New Username>> ");
+	std::getline(std::cin, *mptr_username);
+	//regex check
+	if(mptr_csv_parser->find_first_of(*mptr_username, "USERNAME"))
+		log("Username already exists.");
+=======
 	std::regex _reg_username{"(?!.*,)(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$"};
 	std::regex _reg_password{"(?!.*,)(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*<>]).{8,}"};
 	do
@@ -56,6 +64,7 @@ bool User::m_create_user(){
 		break;
 	} while (true);
 
+>>>>>>> login_feature
 	_temp_rowptr->add_value(*mptr_username);
 
 	log("New Password>> ");
