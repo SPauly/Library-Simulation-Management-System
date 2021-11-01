@@ -3,7 +3,7 @@
 #include <string_view>
 #include <fstream>
 #include <vector>
- 
+#include <stdexcept> 
 
 #ifdef _DEBUG_CSV
 #include <iostream>
@@ -12,6 +12,12 @@
 namespace csv
 {
     using _HEADER_TYPE = unsigned int;
+
+    class Error : public std::runtime_error {
+    public:
+        Error(const std::string &msg) : 
+            std::runtime_error(std::string("CSVParser: ").append(msg)){}     
+    };
 
     class Row
     {
@@ -23,6 +29,7 @@ namespace csv
 
         ~Row();
 
+        unsigned int size();
         void add_value(std::string_view);
         std::string_view getvalue(_HEADER_TYPE &) const;
         _HEADER_TYPE& get_item_position(std::string_view);
@@ -59,17 +66,24 @@ namespace csv
 
         const unsigned int size();
         Row& getRow(unsigned int&);
+<<<<<<< HEAD
         bool addRow(const Row&);
         bool find_first_of(std::string_view,std::string_view); //later return iterator
+=======
+        bool addRow(Row&);
+>>>>>>> login_feature
     #ifdef _DEBUG_CSV
         void print_csv();
     #endif
 
     public:
-        bool _csvgood;
         Header *_ptr_header;
+        bool _csvgood;
 
     private:
+        //void m_check_consistency();
+    private:
+        std::string m_CURRENT_FILE;
         std::fstream m_DATABASE;
         std::vector<Row> m_content;
     };

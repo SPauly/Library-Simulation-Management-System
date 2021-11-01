@@ -1,5 +1,9 @@
-USER,PASSWORD
+USERNAME,PASSWORD,UID,STATUS
+newuser,newpas,,
+testuser,testpas,,
+newtestuser,newpas,,
 test,test123
+<<<<<<< HEAD
 peter hanz,2739
 otto jürgen,test@supi.chia
 test,00949304hall
@@ -11,3 +15,6 @@ test,test
 test,test123
 new,
 new,
+=======
+test.test,Password123!
+>>>>>>> login_feature

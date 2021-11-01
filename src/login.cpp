@@ -23,7 +23,7 @@ bool User::m_user_request(){
 		std::getline(std::cin, *mptr_password);
 
 		for(csv::_HEADER_TYPE i = 0; i < mptr_csv_parser->size(); i++){
-			if(mptr_csv_parser->getRow(i)["USER"] == *mptr_username){
+			if(mptr_csv_parser->getRow(i)["USERNAME"] == *mptr_username){
 				if(mptr_csv_parser->getRow(i)["PASSWORD"] == *mptr_password){
 					log("Login successful\n");
 					m_login_flag = true;
@@ -32,7 +32,7 @@ bool User::m_user_request(){
 			}
 		}
 
-		log("Wrong username or password. Try again!\n");
+		log("Wrong username or password.");
 		++_tries;
 	}
 
@@ -41,44 +41,97 @@ bool User::m_user_request(){
 
 bool User::m_create_user(){
 	csv::Row* _temp_rowptr = new csv::Row();
+<<<<<<< HEAD
 	std::cout<<std::endl;
 	log("New Username>> ");
 	std::getline(std::cin, *mptr_username);
 	//regex check
 	if(mptr_csv_parser->find_first_of(*mptr_username, "USERNAME"))
 		log("Username already exists.");
+=======
+	std::regex _reg_username{"(?!.*,)(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$"};
+	std::regex _reg_password{"(?!.*,)(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*<>]).{8,}"};
+	do
+	{
+		log("New Username>> ");
+		std::getline(std::cin, *mptr_username);
+		while(!std::regex_match(*mptr_username, _reg_username)){
+			log("Username must contain 8-20 Characters, start and end with a character,	can contain numbers, '.' and '_'\n");
+			log("New Username>> ");
+			std::getline(std::cin, *mptr_username);
+		}
+		//if(csv.find_in("USERNAME",*mptr_username))
+		break;
+	} while (true);
+
+>>>>>>> login_feature
 	_temp_rowptr->add_value(*mptr_username);
+
 	log("New Password>> ");
 	std::getline(std::cin, *mptr_password);
-	//regex check
+	while (!std::regex_match(*mptr_password, _reg_password))
+	{
+		log("Password criteria:\n - min. 8 characters ");
+		log("\n - One upper one lower case character \n - One number\n - one special character eg. #?!@$%^&*<>\n");
+		log("New Password>> ");
+		std::getline(std::cin, *mptr_password);
+	}
+
 	_temp_rowptr->add_value(*mptr_password);
 	mptr_csv_parser->addRow(*_temp_rowptr);
 };
 
 bool User::login(){
 	char _yn = 0;
-	log("**************************       Login/Registration      **************************")<<std::endl;
-	log("Log into existing Account? [y/n]\n>>");
-	std::cin>>_yn;
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-	switch (_yn)
+	while (true)
 	{
-	case 'y':
-		if(!m_user_request()){
-			log("Do you instead want to create a new Account? [y/n]")<<std::endl;
+		log("Log into an existing Account? [y/n]\n>>");
+		std::cin >> _yn;
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		if (!std::cin.fail())
+		{
+			switch (_yn)
+			{
+			case 'y':
+				if (!m_user_request())
+				{
+					log("Do you instead want to create a new Account? [y/n]\n>>");
+					std::cin>>_yn;
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+					if (!std::cin.fail())
+					{
+						switch (_yn)
+						{
+						case 'y':
+							return m_create_user();
+						case 'n':
+							log("Login failed.");
+							return m_login_flag = false;
+						default:
+						    log("Login failed.");
+							return m_login_flag = false;
+						}
+					}				
+				}
+				else {
+					//do some logging for user activity
+					return m_login_flag = true;
+				}
+				break;
+			case 'n':
+				return m_create_user();
+				break;
+			default:
+				log("Wrong input. Enter 'y' or 'n'.");
+				break;
+			}
 		}
-		break;
-	case 'n':
-		//create new account
-		m_create_user();
-		break;
-	default:
-		//create new account 
-		break;
+		else
+		{
+			log("Wrong input. Enter 'y' or 'n'.");
+			std::cin.clear();
+		}
 	}
-	
-    //if new -> ask for password create new
 
-    return m_login_flag = false;
+	return m_login_flag = false;
 };
