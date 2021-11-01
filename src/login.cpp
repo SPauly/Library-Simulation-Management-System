@@ -32,7 +32,7 @@ bool User::m_user_request(){
 			}
 		}
 
-		log("Wrong username or password. Try again!\n");
+		log("Wrong username or password.");
 		++_tries;
 	}
 
@@ -45,6 +45,7 @@ bool User::m_create_user(){
 	log("New Username>> ");
 	std::getline(std::cin, *mptr_username);
 	//regex check
+	
 	_temp_rowptr->add_value(*mptr_username);
 	log("New Password>> ");
 	std::getline(std::cin, *mptr_password);
