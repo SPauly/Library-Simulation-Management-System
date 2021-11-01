@@ -63,7 +63,7 @@ bool User::m_create_user(){
 	while (!std::regex_match(*mptr_password, _reg_password))
 	{
 		log("Password criteria:\n - min. 8 characters ");
-		log("\n - One upper one lower case character \n - One number\n - one special character eg. #?!@$%^&*-<>\n");
+		log("\n - One upper one lower case character \n - One number\n - one special character eg. #?!@$%^&*<>\n");
 		log("New Password>> ");
 		std::getline(std::cin, *mptr_password);
 	}
