@@ -154,6 +154,18 @@ namespace csv
         }
     }
 
+    bool CSVParser::find_first_of(std::string_view _str, std::string_view _pos){
+        _HEADER_TYPE _tmp_pos = _ptr_header->get_item_position(_pos);
+
+        for(int i = 0; i < m_content.size(); i++){
+            if(m_content.at(i).getvalue(_tmp_pos) == _str){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 #ifdef _DEBUG_CSV
     void CSVParser::print_csv()
     {

@@ -45,6 +45,8 @@ bool User::m_create_user(){
 	log("New Username>> ");
 	std::getline(std::cin, *mptr_username);
 	//regex check
+	if(mptr_csv_parser->find_first_of(*mptr_username, "USERNAME"))
+		log("Username already exists.");
 	_temp_rowptr->add_value(*mptr_username);
 	log("New Password>> ");
 	std::getline(std::cin, *mptr_password);

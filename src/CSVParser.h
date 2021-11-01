@@ -60,6 +60,7 @@ namespace csv
         const unsigned int size();
         Row& getRow(unsigned int&);
         bool addRow(const Row&);
+        bool find_first_of(std::string_view,std::string_view); //later return iterator
     #ifdef _DEBUG_CSV
         void print_csv();
     #endif
