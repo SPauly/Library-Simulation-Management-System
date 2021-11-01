@@ -41,8 +41,8 @@ bool User::m_user_request(){
 
 bool User::m_create_user(){
 	csv::Row* _temp_rowptr = new csv::Row();
-	std::regex _reg_username{"^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$"};
-	std::regex _reg_password{"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-<>]).{8,}$"};
+	std::regex _reg_username{"(?!.*,)(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$"};
+	std::regex _reg_password{"(?!.*,)(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*<>]).{8,}"};
 	do
 	{
 		log("New Username>> ");

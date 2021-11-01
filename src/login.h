@@ -19,6 +19,6 @@ private:                        //private temporary variables
     std::string *mptr_username; //username of the current user gets deleted after loggin
     std::string *mptr_password; //password entered by user also gets deleted after authenticating login
 
-    std::string m_database {"D:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Data.csv"};
+    std::string m_database {"E:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Data.csv"};
     csv::CSVParser *mptr_csv_parser;                                    //stores one csv parser for all instances
 };
