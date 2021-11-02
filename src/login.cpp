@@ -6,8 +6,9 @@ User::User(){
 	mptr_password = new std::string;
 
 	//longer allocation
-	mptr_csv_parser = new csv::CSVParser(&m_database);
+	mptr_csv_parser = new csv::CSVParser(&m_path_userfile);
 
+	m_ID = "U";
 };
 
 User::~User(){
@@ -25,7 +26,6 @@ bool User::m_user_request(){
 		for(csv::_HEADER_TYPE i = 0; i < mptr_csv_parser->size(); i++){
 			if(mptr_csv_parser->getRow(i)["USERNAME"] == *mptr_username){
 				if(mptr_csv_parser->getRow(i)["PASSWORD"] == *mptr_password){
-					log("Login successful\n");
 					m_login_flag = true;
 					return m_login_flag;
 				}
@@ -42,7 +42,9 @@ bool User::m_user_request(){
 bool User::m_create_user(){
 	csv::Row* _temp_rowptr = new csv::Row();
 	std::regex _reg_username{"(?!.*,)(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$"};
-	std::regex _reg_password{"(?!.*,)(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*<>]).{8,}"};
+	std::regex _reg_password{"(?!.*,)(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*<>_]).{8,}"};
+	
+	//Get Username
 	do
 	{
 		log("New Username>> ");
@@ -61,22 +63,48 @@ bool User::m_create_user(){
 			break;
 		}
 	} while (true);
-
 	_temp_rowptr->add_value(*mptr_username);
 
+	//Get Password
 	log("New Password>> ");
 	std::getline(std::cin, *mptr_password);
 	while (!std::regex_match(*mptr_password, _reg_password))
 	{
 		log("Password criteria:\n - min. 8 characters ");
-		log("\n - One upper one lower case character \n - One number\n - one special character eg. #?!@$%^&*<>\n");
+		log("\n - One upper one lower case character \n - One number\n - one special character eg. #?!@$%^&*<>_\n");
 		log("New Password>> ");
 		std::getline(std::cin, *mptr_password);
 	}
-
 	_temp_rowptr->add_value(*mptr_password);
+
+	//Create UID
+	_temp_rowptr->add_value(m_create_ID(100000,999999));
+
+	//write new User to Userfile and save in Parser
 	mptr_csv_parser->addRow(*_temp_rowptr);
 };
+
+std::string_view User::m_create_ID(int min, int max){
+		std::uniform_int_distribution<> _distribution(min, max);
+		std::random_device _random_dev;
+		std::default_random_engine _generator(_random_dev());
+		int _rand = _distribution(_generator);
+	do
+	{
+		m_ID += std::to_string(_rand);
+		if(mptr_csv_parser->find_first_of(m_ID, "UID")){
+			char _token = m_ID.at(0);
+			m_ID = _token;
+			continue;
+		}
+		else{
+			break;
+		}
+
+	} while (true);
+
+	return m_ID;
+}
 
 bool User::login(){
 	char _yn = 0;
@@ -112,6 +140,7 @@ bool User::login(){
 				}
 				else {
 					//do some logging for user activity
+					log("Login successful\n");
 					return m_login_flag = true;
 				}
 				break;
