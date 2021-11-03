@@ -13,6 +13,8 @@ private:
     std::string_view m_ID;
     std::string m_user_name;
     std::vector<csv::Row> mvec_books;
+    std::vector<csv::Row> mvec_owned;
+    std::vector<csv::Row> mvec_published;
 
     csv::CSVParser *mptr_csv_parser;
     std::fstream m_userinfo_txt;
@@ -20,6 +22,7 @@ public:
     Userinfo(const std::string*);
 
     bool create_user_info(std::string_view);
+    void load_userinfo(std::string_view);
 };
 
 class User { //holds the user and is responsible for login, logout and activity log -> gets automatically deleted with logout

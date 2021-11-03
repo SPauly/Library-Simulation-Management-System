@@ -18,36 +18,76 @@ Userinfo::Userinfo(const std::string *ptr_userfile_path){
 }
 
 bool Userinfo::create_user_info(std::string_view _ID){
-	//get necessary info
+	try
+	{
+		//get necessary info
+		m_ID = _ID;
+		std::string *ptr_first_name = new std::string;
+		std::string *ptr_second_name = new std::string;
+
+		log("Please enter your first name: ");
+		std::cin >> *ptr_first_name;
+		log("Please enter your second name: ");
+		std::cin >> *ptr_second_name;
+
+		m_user_name = *ptr_first_name + "," + *ptr_second_name;
+
+		//write data to file
+		m_userinfo_txt.seekg(0, std::ios_base::end);
+
+		int position_place = m_userinfo_txt.tellg();
+		m_userinfo_txt << "==============" << m_ID << "======\n";
+		m_userinfo_txt << "Name:" << m_user_name << "\n";
+		m_userinfo_txt << "Books:"
+					   << "\n";
+		m_userinfo_txt << "Owned:"
+					   << "\n";
+		if (m_ID.at(0) == 'P')
+		{
+			m_userinfo_txt << "Published:\n";
+		}
+
+		m_next_position = m_userinfo_txt.tellg();
+		m_userinfo_txt.seekg(position_place);
+		m_userinfo_txt << "~";
+		m_userinfo_txt << m_next_position;
+		m_userinfo_txt.flush();
+	}
+	catch (const std::ifstream::failure &e)
+	{
+		log("Error creating userfile");
+		return false;
+	}
+	return true;
+}
+
+void Userinfo::load_userinfo(std::string_view _ID){
 	m_ID = _ID;
 
-	std::string* ptr_first_name = new std::string;
-	std::string* ptr_second_name = new std::string;
+	try
+	{
+		m_userinfo_txt.seekg(std::ios::beg);
+		m_next_position = std::ios::beg;
+		std::string line_tmp;
+		std::string::size_type _StartIterator = 0;
+		std::string::size_type _ItemIteratorPos = 0;
 
-	log("Please enter your first name: ");
-	std::cin>>*ptr_first_name;
-	log("Please enter your second name: ");
-	std::cin>>*ptr_second_name;
+		do
+		{
+			m_userinfo_txt.seekg(m_next_position);
+			std::getline(m_userinfo_txt, line_tmp);
+			_ItemIteratorPos = line_tmp.find_first_of("~", _StartIterator);
+			m_next_position = std::stoi(std::string(line_tmp.substr(_StartIterator, _ItemIteratorPos - _StartIterator)));
 
-	m_user_name = *ptr_first_name + "," + *ptr_second_name;
-
-	//write data to file
-	m_userinfo_txt.seekg(0, std::ios_base::end);
-
-	m_userinfo_txt <<"\n~";
-	int position_place = m_userinfo_txt.tellg();
-	m_userinfo_txt <<"=============="<< m_ID <<"======\n";
-	m_userinfo_txt <<"Name:"<<m_user_name<<"\n";
-	m_userinfo_txt <<"Books:"<<"\n";
-	m_userinfo_txt <<"Owned:"<<"\n";
-	if(m_ID.at(0) == 'P'){
-		m_userinfo_txt <<"Published:\n";
+		} while (line_tmp.find(_ID) == std::string::npos);
+		log("found");
+	}
+	catch (const std::ifstream::failure &e)
+	{
+		log("Error creating userfile");
 	}
 
-	m_next_position = m_userinfo_txt.tellg();
-	m_userinfo_txt.seekg(position_place);
-	m_userinfo_txt << m_next_position;
-	m_userinfo_txt.flush();
+
 }
 
 //User
@@ -137,6 +177,8 @@ bool User::m_create_user(){
 	mptr_csv_parser->addRow(*_temp_rowptr);
 
 	mptr_userinfo->create_user_info(m_ID);
+	mptr_userinfo->load_userinfo(m_ID);
+
 };
 
 std::string_view User::m_create_ID(int min, int max){
