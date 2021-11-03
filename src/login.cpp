@@ -49,8 +49,8 @@ bool Userinfo::create_user_info(std::string_view _ID){
 
 		m_next_position = m_userinfo_txt.tellg();
 		m_userinfo_txt.seekg(position_place);
-		m_userinfo_txt << "~";
 		m_userinfo_txt << m_next_position;
+		m_userinfo_txt << "~";
 		m_userinfo_txt.flush();
 	}
 	catch (const std::ifstream::failure &e)
@@ -62,33 +62,73 @@ bool Userinfo::create_user_info(std::string_view _ID){
 }
 
 void Userinfo::load_userinfo(std::string_view _ID){
+
+	//set userid
 	m_ID = _ID;
 
+	//try reading Userinfo.txt
 	try
 	{
+		//set position at beginning and find the next user position while checking for the uid
 		m_userinfo_txt.seekg(std::ios::beg);
 		m_next_position = std::ios::beg;
 		std::string line_tmp;
+		std::string sub_tmp;
 		std::string::size_type _StartIterator = 0;
 		std::string::size_type _ItemIteratorPos = 0;
 
-		do
+		try
 		{
-			m_userinfo_txt.seekg(m_next_position);
+			do
+			{
+				m_userinfo_txt.seekg(m_next_position);
+				std::getline(m_userinfo_txt, line_tmp);
+				_ItemIteratorPos = line_tmp.find_first_of("~", _StartIterator);
+				sub_tmp = std::string(line_tmp.substr(_StartIterator, _ItemIteratorPos - _StartIterator));
+				m_next_position = std::stoi(sub_tmp);
+				_StartIterator = 0;
+
+			} while (line_tmp.find(_ID) == std::string::npos);
+		}
+		catch (const std::ifstream::failure &e)
+		{
+			log("It seems this User does not yet exist. Please create a new one.");
+			create_user_info(_ID);
+		};
+
+		//read the name
+		std::getline(m_userinfo_txt, line_tmp);
+		_ItemIteratorPos = line_tmp.find_first_of(":");
+		sub_tmp = std::string(line_tmp.substr(_ItemIteratorPos + 1));
+		sub_tmp.at(sub_tmp.find_first_of(",")) = ' ';
+		m_user_name = sub_tmp;
+		std::getline(m_userinfo_txt, line_tmp);
+
+		//read the books
+		std::getline(m_userinfo_txt, line_tmp);
+		while(line_tmp.at(0) == 'B'){
+			mvec_books.push_back(csv::Row(line_tmp, &m_bookheader));
 			std::getline(m_userinfo_txt, line_tmp);
-			_ItemIteratorPos = line_tmp.find_first_of("~", _StartIterator);
-			m_next_position = std::stoi(std::string(line_tmp.substr(_StartIterator, _ItemIteratorPos - _StartIterator)));
+		}
 
-		} while (line_tmp.find(_ID) == std::string::npos);
-		log("found");
+		//read the owned books
+		std::getline(m_userinfo_txt, line_tmp);
+        while(line_tmp.at(0) == 'B'){
+			mvec_owned.push_back(csv::Row(line_tmp, &m_bookheader));
+			std::getline(m_userinfo_txt, line_tmp);
+		}
+
 	}
-	catch (const std::ifstream::failure &e)
+	catch (const std::ifstream::failure &e) //means something went wrong with reading
 	{
-		log("Error creating userfile");
+		log("Error loading userfile");
 	}
-
+	catch (const std::invalid_argument &e){ //means stoi did get an invalid argument
+		log("Error reading next position in Userinfo");
+	}
 
 }
+
 
 //User
 
@@ -176,6 +216,7 @@ bool User::m_create_user(){
 	//write new User to Userfile and save in Parser
 	mptr_csv_parser->addRow(*_temp_rowptr);
 
+	//create Userinfo in Userinfo.txt and load it 
 	mptr_userinfo->create_user_info(m_ID);
 	mptr_userinfo->load_userinfo(m_ID);
 

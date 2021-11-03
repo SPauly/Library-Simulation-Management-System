@@ -12,6 +12,7 @@ private:
     unsigned int m_next_position = 0;
     std::string_view m_ID;
     std::string m_user_name;
+    csv::Row m_bookheader{"BID,DATE,POSITION"};
     std::vector<csv::Row> mvec_books;
     std::vector<csv::Row> mvec_owned;
     std::vector<csv::Row> mvec_published;
@@ -40,8 +41,8 @@ private:
     std::string *mptr_password; //password entered by user also gets deleted after authenticating login
     std::string m_ID; //User ID UXXXXXX
 
-    std::string m_path_userfile {"D:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Userfile.csv"};
-    std::string m_path_userinfo {"D:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Userinfo.txt"};
+    std::string m_path_userfile {"E:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Userfile.csv"};
+    std::string m_path_userinfo {"E:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Userinfo.txt"};
     csv::CSVParser *mptr_csv_parser; 
     Userinfo* mptr_userinfo;                                   
 };
