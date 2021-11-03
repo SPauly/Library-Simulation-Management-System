@@ -1,5 +1,57 @@
 #include "login.h"
 
+//Userinfo
+
+Userinfo::Userinfo(const std::string *ptr_userfile_path){
+	try
+	{
+		//open txtfile
+		m_userinfo_txt.open(*ptr_userfile_path, std::ios::in | std::ios::out | std::ios::binary);
+		m_userinfo_txt.exceptions(std::ifstream::badbit);
+
+
+	}
+	catch (const std::ifstream::failure &e)
+	{
+		throw csv::Error(std::string("CTOR: Error accessing Database: ").append(e.what()));
+	}
+}
+
+bool Userinfo::create_user_info(std::string_view _ID){
+	//get necessary info
+	m_ID = _ID;
+
+	std::string* ptr_first_name = new std::string;
+	std::string* ptr_second_name = new std::string;
+
+	log("Please enter your first name: ");
+	std::cin>>*ptr_first_name;
+	log("Please enter your second name: ");
+	std::cin>>*ptr_second_name;
+
+	m_user_name = *ptr_first_name + "," + *ptr_second_name;
+
+	//write data to file
+	m_userinfo_txt.seekg(0, std::ios_base::end);
+
+	m_userinfo_txt <<"\n~";
+	int position_place = m_userinfo_txt.tellg();
+	m_userinfo_txt <<"=============="<< m_ID <<"======\n";
+	m_userinfo_txt <<"Name:"<<m_user_name<<"\n";
+	m_userinfo_txt <<"Books:"<<"\n";
+	m_userinfo_txt <<"Owned:"<<"\n";
+	if(m_ID.at(0) == 'P'){
+		m_userinfo_txt <<"Published:\n";
+	}
+
+	m_next_position = m_userinfo_txt.tellg();
+	m_userinfo_txt.seekg(position_place);
+	m_userinfo_txt << m_next_position;
+	m_userinfo_txt.flush();
+}
+
+//User
+
 User::User(){
 	//temporary allocated values
 	mptr_username = new std::string;
@@ -7,12 +59,13 @@ User::User(){
 
 	//longer allocation
 	mptr_csv_parser = new csv::CSVParser(&m_path_userfile);
-
+	mptr_userinfo = new Userinfo(&m_path_userinfo);
 	m_ID = "U";
 };
 
 User::~User(){
 	delete mptr_csv_parser;
+	delete mptr_userinfo;
 };
 
 bool User::m_user_request(){
@@ -82,6 +135,8 @@ bool User::m_create_user(){
 
 	//write new User to Userfile and save in Parser
 	mptr_csv_parser->addRow(*_temp_rowptr);
+
+	mptr_userinfo->create_user_info(m_ID);
 };
 
 std::string_view User::m_create_ID(int min, int max){

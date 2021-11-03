@@ -1,6 +1,5 @@
 ~NEXTPOSITION=========UID==========
 Name:firstname,Secondname
-Adress:Street,Nr,PLZ,City,Country
 Books:
 BID,Date,Position 
 BID,Date,Position
@@ -8,7 +7,6 @@ Owned:
 BID,Date,Position
 ~NEXTPOSITION=========PID==========
 Name:Username,firstname,Secondname
-Adress:Street,Nr,PLZ,City,Country
 Books:
 BID,Date,Position 
 BID,Date,Position
@@ -16,3 +14,7 @@ Owned:
 BID,Date,Position
 Published:
 BID,Instances,Sold
+~376===========U431868======
+Name:Simon,Pauly
+Books:
+Owned:

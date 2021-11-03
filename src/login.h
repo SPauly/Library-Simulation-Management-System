@@ -7,6 +7,21 @@
 
 #define log(x) std::cout << x
 
+class Userinfo{
+private:
+    unsigned int m_next_position = 0;
+    std::string_view m_ID;
+    std::string m_user_name;
+    std::vector<csv::Row> mvec_books;
+
+    csv::CSVParser *mptr_csv_parser;
+    std::fstream m_userinfo_txt;
+public:
+    Userinfo(const std::string*);
+
+    bool create_user_info(std::string_view);
+};
+
 class User { //holds the user and is responsible for login, logout and activity log -> gets automatically deleted with logout
 protected:
     bool m_user_request(); //deals with authentification of the user
@@ -22,7 +37,8 @@ private:
     std::string *mptr_password; //password entered by user also gets deleted after authenticating login
     std::string m_ID; //User ID UXXXXXX
 
-    std::string m_path_userfile {"E:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Userfile.csv"};
-    std::string m_path_userinfo {"E:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Userinfo.txt"};
-    csv::CSVParser *mptr_csv_parser;                                    
+    std::string m_path_userfile {"D:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Userfile.csv"};
+    std::string m_path_userinfo {"D:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Userinfo.txt"};
+    csv::CSVParser *mptr_csv_parser; 
+    Userinfo* mptr_userinfo;                                   
 };
