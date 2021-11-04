@@ -167,6 +167,10 @@ User::User(){
 User::~User(){
 	delete mptr_csv_parser;
 	delete mptr_userinfo;
+
+	//temporary deleting them here later got to change that
+	delete mptr_username;
+	delete mptr_password;
 };
 
 bool User::m_user_request(){
