@@ -26,9 +26,9 @@ bool Userinfo::create_user_info(std::string_view _ID){
 		std::string *ptr_second_name = new std::string;
 
 		log("Please enter your first name: ");
-		std::cin >> *ptr_first_name;
+		std::getline(std::cin,*ptr_first_name);
 		log("Please enter your second name: ");
-		std::cin >> *ptr_second_name;
+		std::getline(std::cin, *ptr_second_name);
 
 		m_user_name = *ptr_first_name + "," + *ptr_second_name;
 
@@ -88,7 +88,7 @@ void Userinfo::load_userinfo(std::string_view _ID){
 				m_next_position = std::stoi(sub_tmp);
 				_StartIterator = 0;
 
-			} while (line_tmp.find(_ID) == std::string::npos);
+			} while (line_tmp.find(_ID) == std::string::npos && m_userinfo_txt.is_open());
 		}
 		catch (const std::ifstream::failure &e)
 		{
@@ -112,12 +112,18 @@ void Userinfo::load_userinfo(std::string_view _ID){
 		}
 
 		//read the owned books
-		std::getline(m_userinfo_txt, line_tmp);
-        while(line_tmp.at(0) == 'B'){
-			mvec_owned.push_back(csv::Row(line_tmp, &m_bookheader));
+		try
+		{
 			std::getline(m_userinfo_txt, line_tmp);
+			while (line_tmp.at(0) == 'B')
+			{
+				mvec_owned.push_back(csv::Row(line_tmp, &m_bookheader));
+				std::getline(m_userinfo_txt, line_tmp);
+			}
 		}
-
+		catch (const std::ifstream::failure &e)
+		{}
+		catch (const std::out_of_range &oor){}
 	}
 	catch (const std::ifstream::failure &e) //means something went wrong with reading
 	{

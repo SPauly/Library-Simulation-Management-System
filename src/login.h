@@ -41,8 +41,8 @@ private:
     std::string *mptr_password; //password entered by user also gets deleted after authenticating login
     std::string m_ID; //User ID UXXXXXX
 
-    std::string m_path_userfile {"E:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Userfile.csv"};
-    std::string m_path_userinfo {"E:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Userinfo.txt"};
+    std::string m_path_userfile {"D:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Userfile.csv"};
+    std::string m_path_userinfo {"D:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Data/Userinfo.txt"};
     csv::CSVParser *mptr_csv_parser; 
     Userinfo* mptr_userinfo;                                   
 };
