@@ -9,6 +9,7 @@ int main() {
 	while (true)
 	{
 		print_welcome();
+		std::cin.get();
 		User *user = new User{};
 		user->login();
 		//allow the user to do something with the application
