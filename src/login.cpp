@@ -180,8 +180,7 @@ bool User::m_user_request(){
 		for(csv::_HEADER_TYPE i = 0; i < mptr_csv_parser->size(); i++){
 			if(mptr_csv_parser->getRow(i)["USERNAME"] == *mptr_username){
 				if(mptr_csv_parser->getRow(i)["PASSWORD"] == *mptr_password){
-					mptr_userinfo->load_userinfo(mptr_csv_parser->getRow(i)["UID"]);
-					m_login_flag = true;
+					m_login_flag = mptr_userinfo->load_userinfo(mptr_csv_parser->getRow(i)["UID"]);
 					return m_login_flag;
 				}
 			}
@@ -323,8 +322,20 @@ bool User::login(){
 				}
 				break;
 			case 'n':
-				return m_create_user();
-				break;
+				if (m_create_user() == true)
+				{
+					log("Registration complete.\n");
+					log("Successfully logged in\n");
+					log(">>>>>>>>>>>>>>>>>>>>>>  WELCOME BACK ");
+					log(mptr_userinfo->get_name());
+					log("  <<<<<<<<<<<<<<<<<<<<<<");
+					return m_login_flag = true;
+				}
+				else
+				{
+					log("Failed to register new account.\n");
+					return m_login_flag = false;
+				}
 			default:
 				log("Wrong input. Enter 'y' or 'n'.\n");
 				break;

@@ -27,7 +27,7 @@ void print_welcome(){
 	std::string line;
 
 	try{
-		file.open("Welcome.txt");
+		file.open("E:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Welcome.txt");
 		while(!file.eof()){
 			std::getline(file, line);
 			std::cout<<line<<std::endl;
