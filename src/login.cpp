@@ -165,6 +165,7 @@ bool User::m_user_request(){
 		for(csv::_HEADER_TYPE i = 0; i < mptr_csv_parser->size(); i++){
 			if(mptr_csv_parser->getRow(i)["USERNAME"] == *mptr_username){
 				if(mptr_csv_parser->getRow(i)["PASSWORD"] == *mptr_password){
+					mptr_userinfo->load_userinfo(mptr_csv_parser->getRow(i)["UID"]);
 					m_login_flag = true;
 					return m_login_flag;
 				}

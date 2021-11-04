@@ -17,7 +17,6 @@ private:
     std::vector<csv::Row> mvec_owned;
     std::vector<csv::Row> mvec_published;
 
-    csv::CSVParser *mptr_csv_parser;
     std::fstream m_userinfo_txt;
 public:
     Userinfo(const std::string*);
