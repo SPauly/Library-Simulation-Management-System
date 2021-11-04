@@ -13,6 +13,37 @@
 =                                                                                               =
 =                                                                                               =
 =                                                                                               = 
-=                                 Please read the following to continue                         =
+=                             Please read the following text to continue                        =
 =================================================================================================
 
+===== Ueber das Program =======
+Dieses Program ist der Anfang eines Bibliothek Systems, in dem man zukuenftig (fiktive) Buecher 
+ausleihen, lesen, zurueckgeben und kaufen kann. Dazu wird bei der Registrierung ein Benutzername
+mit Password und einer einmaligen User ID in der Datenbank gespeichert. 
+Sobald man sich einloggt werden ueber die User ID alle zum Nutzer gehoerenden Informationen wie
+Name, ausgeliehene Buecher und gekaufte Buecher aus der Datenbank eingelesen. Das Bibliothek
+System kann anschliessend ueber die dabei eingelesenen Buecher IDs jedes zum Nutzer gehoerende Buch auf-
+rufen (also zumindest in Zukunft).
+
+===== Interessante Fakten ====
+Programmiersprache C++:
+
+total files : 18
+total code lines : 897
+total comment lines : 112
+total blank lines : 142
+
+Wer sich den Code und die Datenbanken anschauen moechte kann gerne unten in der Taskleiste auf das
+blaue halbe Unendlichkeits Zeichen klicken. Oben sind dann verschiedene Tabs geoeffnet - gerne 
+durchklicken aber BITTE NIRGENDWO ETWAS EINFUEGEN!!! Danach bitte wieder zurueck zum Program wechseln
+Danke :) 
+
+===== NUTZUNG ======
+Die Nutzung ist simpel - das Programm schreibt was du eintippen musst. Deine Eingabe bestaetigst du 
+mit Enter, danach kannst du nicht mehr zurueck. 'y' steht fuer yes 'n' fuer no. 
+BITTE GIB KEINE SENSITIVEN DATEN BEI DER REGISTRIERUNG EIN! (z.B. Passwoerter und Usernamen, die du
+normal verwendest.)
+
+Die Daten werden gespeichert aber nicht veroeffentlicht und nicht geschuetzt. 
+Mit 'ENTER' bestaetige ich Obiges gelesen zu haben und einverstanden zu sein. 
+PRESS 'ENTER' TO CONTINUE....

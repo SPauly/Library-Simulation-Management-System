@@ -10,6 +10,8 @@ int main() {
 	while (true)
 	{
 		print_welcome();
+		std::cin.get();
+		system("cls");
 		User *user = new User{};
 		user->login();
 		Library lib{user};
