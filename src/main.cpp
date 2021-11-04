@@ -1,4 +1,5 @@
-#include "login.h"
+#include "Library.h"
+
 #include <iostream>
 
 #define log(x) std::cout << x
@@ -11,6 +12,8 @@ int main() {
 		print_welcome();
 		User *user = new User{};
 		user->login();
+		Library lib{user};
+		lib.run_library();
 		//allow the user to do something with the application
 		//user->log_activity();
 		//user->logout();

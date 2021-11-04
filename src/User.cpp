@@ -1,4 +1,4 @@
-#include "login.h"
+#include "User.h"
 
 //Userinfo
 
@@ -301,7 +301,7 @@ bool User::login(){
 								log("Successfully logged in\n");
 								log(">>>>>>>>>>>>>>>>>>>>>>  WELCOME BACK ");
 								log(mptr_userinfo->get_name());
-								log("  <<<<<<<<<<<<<<<<<<<<<<");
+								log("  <<<<<<<<<<<<<<<<<<<<<<\n");
 								return m_login_flag = true;
 							}
 							else {
@@ -321,7 +321,7 @@ bool User::login(){
 					log("Successfully logged in\n");
 					log(">>>>>>>>>>>>>>>>>>>>>>  WELCOME BACK ");
 					log(mptr_userinfo->get_name());
-					log("  <<<<<<<<<<<<<<<<<<<<<<");
+					log("  <<<<<<<<<<<<<<<<<<<<<<\n");
 					return m_login_flag = true;
 				}
 				break;
@@ -332,7 +332,7 @@ bool User::login(){
 					log("Successfully logged in\n");
 					log(">>>>>>>>>>>>>>>>>>>>>>  WELCOME BACK ");
 					log(mptr_userinfo->get_name());
-					log("  <<<<<<<<<<<<<<<<<<<<<<");
+					log("  <<<<<<<<<<<<<<<<<<<<<<\n");
 					return m_login_flag = true;
 				}
 				else
@@ -352,5 +352,13 @@ bool User::login(){
 		}
 	}
 
+	return m_login_flag = false;
+};
+
+bool User::is_logged(){
+	return m_login_flag;
+};
+
+bool User::logout(){
 	return m_login_flag = false;
 };

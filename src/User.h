@@ -35,7 +35,9 @@ protected:
 public:
     User();
     ~User();
-    bool login();               
+    bool login();
+    bool is_logged();
+    bool logout();               
 private: 
     bool m_login_flag;          //flag to indicate wheather user is logged in or not
     std::string *mptr_username; //username of the current user gets deleted after loggin
