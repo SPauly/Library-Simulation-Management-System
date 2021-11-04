@@ -11,7 +11,7 @@ class Userinfo{
 private:
     unsigned int m_next_position = 0;
     std::string_view m_ID;
-    std::string m_user_name;
+    std::string m_user_name = "";
     csv::Row m_bookheader{"BID,DATE,POSITION"};
     std::vector<csv::Row> mvec_books;
     std::vector<csv::Row> mvec_owned;
@@ -22,7 +22,9 @@ public:
     Userinfo(const std::string*);
 
     bool create_user_info(std::string_view);
-    void load_userinfo(std::string_view);
+    bool load_userinfo(std::string_view);
+
+    std::string_view get_name();
 };
 
 class User { //holds the user and is responsible for login, logout and activity log -> gets automatically deleted with logout

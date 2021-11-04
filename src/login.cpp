@@ -61,7 +61,7 @@ bool Userinfo::create_user_info(std::string_view _ID){
 	return true;
 }
 
-void Userinfo::load_userinfo(std::string_view _ID){
+bool Userinfo::load_userinfo(std::string_view _ID){
 
 	//set userid
 	m_ID = _ID;
@@ -92,8 +92,9 @@ void Userinfo::load_userinfo(std::string_view _ID){
 		}
 		catch (const std::ifstream::failure &e)
 		{
-			log("It seems this User does not yet exist. Please create a new one.");
+			log("\nIt seems this User does not yet exist. Please create a new one.");
 			create_user_info(_ID);
+			load_userinfo(_ID);
 		};
 
 		//read the name
@@ -127,12 +128,26 @@ void Userinfo::load_userinfo(std::string_view _ID){
 	}
 	catch (const std::ifstream::failure &e) //means something went wrong with reading
 	{
-		log("Error loading userfile");
+		log("\nError loading userfile");
+		return false;
 	}
 	catch (const std::invalid_argument &e){ //means stoi did get an invalid argument
-		log("Error reading next position in Userinfo");
+		log("\nError reading next position in Userinfo");
+		return false;
 	}
 
+	return true;
+
+}
+
+std::string_view Userinfo::get_name(){
+	if(m_user_name != ""){
+		return m_user_name;
+	}
+	else{
+		m_user_name = "Username not loaded.";
+		return m_user_name;
+	}
 }
 
 
@@ -172,7 +187,7 @@ bool User::m_user_request(){
 			}
 		}
 
-		log("Wrong username or password.");
+		log("Wrong username or password.\n");
 		++_tries;
 	}
 
@@ -224,8 +239,12 @@ bool User::m_create_user(){
 	mptr_csv_parser->addRow(*_temp_rowptr);
 
 	//create Userinfo in Userinfo.txt and load it 
-	mptr_userinfo->create_user_info(m_ID);
-	mptr_userinfo->load_userinfo(m_ID);
+	if(	mptr_userinfo->create_user_info(m_ID) == true &&
+	mptr_userinfo->load_userinfo(m_ID) == true){
+		return true;
+	}
+	else
+		return false;
 
 };
 
@@ -273,19 +292,33 @@ bool User::login(){
 						switch (_yn)
 						{
 						case 'y':
-							return m_create_user();
+							if (m_create_user() == true)
+							{
+								log("Registration complete.\n");
+								log("Successfully logged in\n");
+								log(">>>>>>>>>>>>>>>>>>>>>>  WELCOME BACK ");
+								log(mptr_userinfo->get_name());
+								log("  <<<<<<<<<<<<<<<<<<<<<<");
+								return m_login_flag = true;
+							}
+							else {
+								log("Failed to register new account.\n");
+								return m_login_flag = false;
+							}
 						case 'n':
-							log("Login failed.");
+							log("Login failed.\n");
 							return m_login_flag = false;
 						default:
-						    log("Login failed.");
+						    log("Login failed.\n");
 							return m_login_flag = false;
 						}
 					}				
 				}
 				else {
-					//do some logging for user activity
-					log("Login successful\n");
+					log("Successfully logged in\n");
+					log(">>>>>>>>>>>>>>>>>>>>>>  WELCOME BACK ");
+					log(mptr_userinfo->get_name());
+					log("  <<<<<<<<<<<<<<<<<<<<<<");
 					return m_login_flag = true;
 				}
 				break;
@@ -293,13 +326,13 @@ bool User::login(){
 				return m_create_user();
 				break;
 			default:
-				log("Wrong input. Enter 'y' or 'n'.");
+				log("Wrong input. Enter 'y' or 'n'.\n");
 				break;
 			}
 		}
 		else
 		{
-			log("Wrong input. Enter 'y' or 'n'.");
+			log("Wrong input. Enter 'y' or 'n'.\n");
 			std::cin.clear();
 		}
 	}

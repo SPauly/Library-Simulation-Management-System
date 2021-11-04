@@ -15,6 +15,8 @@ int main() {
 		//user->log_activity();
 		//user->logout();
 		//user->get_activity();
+		std::cin.get();
+		delete user;
 		system("cls");
 	}
 	return 0;
@@ -28,8 +30,7 @@ void print_welcome(){
 		file.open("Welcome.txt");
 		while(!file.eof()){
 			std::getline(file, line);
-			log(line);
-			std::cout<<std::endl;
+			std::cout<<line<<std::endl;
 		}
 	}
 	catch(const std::ifstream::failure &e){}
