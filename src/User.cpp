@@ -82,7 +82,7 @@ bool Userinfo::load_userinfo(std::string_view _ID){
 			do
 			{
 				m_userinfo_txt.seekg(m_next_position);
-				std::getline(m_userinfo_txt, line_tmp);
+				fm::_getline(m_userinfo_txt, line_tmp);
 				_ItemIteratorPos = line_tmp.find_first_of("~", _StartIterator);
 				sub_tmp = std::string(line_tmp.substr(_StartIterator, _ItemIteratorPos - _StartIterator));
 				m_next_position = std::stoi(sub_tmp);
@@ -98,28 +98,28 @@ bool Userinfo::load_userinfo(std::string_view _ID){
 		};
 
 		//read the name
-		std::getline(m_userinfo_txt, line_tmp);
+		fm::_getline(m_userinfo_txt, line_tmp);
 		_ItemIteratorPos = line_tmp.find_first_of(":");
 		sub_tmp = std::string(line_tmp.substr(_ItemIteratorPos + 1));
 		sub_tmp.at(sub_tmp.find_first_of(",")) = ' ';
 		m_user_name = sub_tmp;
-		std::getline(m_userinfo_txt, line_tmp);
+		fm::_getline(m_userinfo_txt, line_tmp);
 
 		//read the books
-		std::getline(m_userinfo_txt, line_tmp);
+		fm::_getline(m_userinfo_txt, line_tmp);
 		while(line_tmp.at(0) == 'B'){
 			mvec_books.push_back(csv::Row(line_tmp, &m_bookheader));
-			std::getline(m_userinfo_txt, line_tmp);
+			fm::_getline(m_userinfo_txt, line_tmp);
 		}
 
 		//read the owned books
 		try
 		{
-			std::getline(m_userinfo_txt, line_tmp);
+			fm::_getline(m_userinfo_txt, line_tmp);
 			while (line_tmp.at(0) == 'B')
 			{
 				mvec_owned.push_back(csv::Row(line_tmp, &m_bookheader));
-				std::getline(m_userinfo_txt, line_tmp);
+				fm::_getline(m_userinfo_txt, line_tmp);
 			}
 		}
 		catch (const std::ifstream::failure &e)
