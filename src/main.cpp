@@ -32,11 +32,15 @@ void print_welcome(){
 	std::string line;
 
 	try{
-		file.open("E:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Welcome.txt");
+		file.open((fm::init_workingdir() + "Welcome.txt"));
+		if(file.is_open()){
 		while(!file.eof()){
 			std::getline(file, line);
 			std::cout<<line<<std::endl;
 		}
+		}
+		else
+			log("Could not open Welcome Message\n");
 	}
 	catch(const std::ifstream::failure &e){}
 	file.close();

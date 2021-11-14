@@ -55,7 +55,7 @@ bool Userinfo::create_user_info(std::string_view _ID){
 	}
 	catch (const std::ifstream::failure &e)
 	{
-		log("Error creating userfile");
+		log("Error creating userfile\n");
 		return false;
 	}
 	return true;
@@ -92,7 +92,7 @@ bool Userinfo::load_userinfo(std::string_view _ID){
 		}
 		catch (const std::ifstream::failure &e)
 		{
-			log("\nIt seems this User does not yet exist. Please create a new one.");
+			log("\nIt seems this User does not yet exist. Please create a new one.\n");
 			create_user_info(_ID);
 			load_userinfo(_ID);
 		};
@@ -128,11 +128,11 @@ bool Userinfo::load_userinfo(std::string_view _ID){
 	}
 	catch (const std::ifstream::failure &e) //means something went wrong with reading
 	{
-		log("\nError loading userfile");
+		log("\nError loading userfile\n");
 		return false;
 	}
 	catch (const std::invalid_argument &e){ //means stoi did get an invalid argument
-		log("\nError reading next position in Userinfo");
+		log("\nError reading next position in Userinfo\n");
 		return false;
 	}
 
