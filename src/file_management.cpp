@@ -26,3 +26,12 @@ std::string &fm::init_workingdir()
     return work_dir;
 #endif
 }
+ 
+std::fstream& fm::_getline(std::fstream &stream, std::string& line){
+    if ( std::getline( stream, line) ) {
+       if ( line.size() && line[line.size()-1] == '\r' ) {
+           line.pop_back();
+       }
+    }
+    return stream;
+}

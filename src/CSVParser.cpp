@@ -97,13 +97,13 @@ namespace csv
             //init header of file
             std::string *tmp_line = new std::string;
             tmp_line->clear();
-            std::getline(m_DATABASE, *tmp_line);
+            fm::_getline(m_DATABASE, *tmp_line);
             _ptr_header = new Header(*tmp_line);
             tmp_line->clear();
             //check m_DATABASE for consistency
             
             //init m_content
-            while (std::getline(m_DATABASE, *tmp_line))
+            while (fm::_getline(m_DATABASE, *tmp_line))
             {
                 m_content.push_back(Row(*tmp_line, _ptr_header));
             }
@@ -146,13 +146,13 @@ namespace csv
             if (m_DATABASE.is_open())
             {
                 unsigned int i = 0;
-                m_DATABASE << '\n';
                 for (; i < _row.size() - 1; i++)
                 {
                     m_DATABASE << _row[i].data();
                     m_DATABASE << ",";
                 }
                 m_DATABASE << _row[i].data();
+                m_DATABASE << "\r\n";
                 m_DATABASE.flush();
                 m_content.push_back(_row);
                 return true;

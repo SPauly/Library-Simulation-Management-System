@@ -32,10 +32,10 @@ void print_welcome(){
 	std::string line;
 
 	try{
-		file.open((fm::init_workingdir() + "Welcome.txt"));
+		file.open((fm::init_workingdir() + "Welcome.txt"), std::ios::in | std::ios::binary);
 		if(file.is_open()){
 		while(!file.eof()){
-			std::getline(file, line);
+			fm::_getline(file, line);
 			std::cout<<line<<std::endl;
 		}
 		}
