@@ -62,7 +62,7 @@ namespace csv
     {
     public:
         CSVParser() = delete;
-        CSVParser(const std::string *);
+        CSVParser(const std::string *, Header&);
         ~CSVParser();
 
         const unsigned int size();
@@ -76,7 +76,6 @@ namespace csv
     public:
         Header *_ptr_header;
         bool _csvgood;
-
     private:
         //void m_check_consistency();
     private:

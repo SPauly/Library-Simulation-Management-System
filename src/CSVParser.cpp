@@ -85,14 +85,15 @@ namespace csv
     //end class Header
 
     //class CSVParser
-    CSVParser::CSVParser(const std::string *PATH_ptr)
+    CSVParser::CSVParser(const std::string *PATH_ptr, Header& _header_structure)
     {
+        m_DATABASE.exceptions(std::fstream::failbit);
+
         try
         {
             m_CURRENT_FILE = *PATH_ptr;
             //open csv file
             m_DATABASE.open(*PATH_ptr, std::ios::in | std::ios::out | std::ios::binary);
-            m_DATABASE.exceptions(std::fstream::badbit);
 
             //init header of file
             std::string *tmp_line = new std::string;
@@ -103,11 +104,16 @@ namespace csv
             //check m_DATABASE for consistency
             
             //init m_content
-            while (fm::_getline(m_DATABASE, *tmp_line))
+            try
             {
-                m_content.push_back(Row(*tmp_line, _ptr_header));
+                while (fm::_getline(m_DATABASE, *tmp_line))
+                {
+                    m_content.push_back(Row(*tmp_line, _ptr_header));
+                }
             }
-
+            catch (const std::fstream::failure &e)
+            {
+            }
             //delete temporary values
             delete tmp_line;
             m_DATABASE.clear();
@@ -116,8 +122,23 @@ namespace csv
         }
         catch (const std::fstream::failure &e)
         {
-            _csvgood = false;
-            throw Error(std::string("CTOR: Error accessing Database: ").append(e.what()));
+            try{
+                m_DATABASE.open(*PATH_ptr, std::ios::in | std::ios::out | std::ios::binary | std::ios::app);
+                addRow(_header_structure);
+                _ptr_header = &_header_structure;
+
+                m_DATABASE.clear();
+                m_DATABASE.flush();
+                _csvgood = true;
+            }
+            catch (const std::fstream::failure &e){
+                _csvgood = false;
+                throw Error(std::string("CTOR: Failed to create new Database: ").append(e.what()));
+            }
+            catch (const csv::Error &e){
+                _csvgood = false;
+                throw Error(std::string("CTOR: Failed initialize new Database: ").append(e.what()));
+            }
         }
     }
 
