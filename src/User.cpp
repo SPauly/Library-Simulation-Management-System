@@ -3,18 +3,29 @@
 //Userinfo
 
 Userinfo::Userinfo(const std::string *ptr_userfile_path){
+	m_userinfo_txt.exceptions(std::ifstream::failbit);
 	try
 	{
 		//open txtfile
 		m_userinfo_txt.open(*ptr_userfile_path, std::ios::in | std::ios::out | std::ios::binary);
-		m_userinfo_txt.exceptions(std::ifstream::badbit);
-
 
 	}
 	catch (const std::ifstream::failure &e)
 	{
-		throw csv::Error(std::string("CTOR: Error accessing Database: ").append(e.what()));
+		try{
+			m_userinfo_txt.open(*ptr_userfile_path, std::ios::in | std::ios::out | std::ios::binary | std::ios::app);
+			m_userinfo_txt.close();
+			m_userinfo_txt.open(*ptr_userfile_path, std::ios::in | std::ios::out | std::ios::binary);
+		}
+		catch(const std::ifstream::failure &e){
+			throw csv::Error(std::string("Userinfo: Error creating new Database: ").append(e.what()));
+		}
+		log("Userinfo: Initilized new database\n");
 	}
+}
+
+Userinfo::~Userinfo(){
+	m_userinfo_txt.close();
 }
 
 bool Userinfo::create_user_info(std::string_view _ID){
@@ -159,7 +170,14 @@ User::User(){
 	mptr_password = new std::string;
 
 	//longer allocation
-	mptr_csv_parser = new csv::CSVParser(&m_path_userfile);
+	try
+	{
+		mptr_csv_parser = new csv::CSVParser(&m_path_userfile, m_userfile_header);
+	}
+	catch (csv::Error &e)
+	{
+		log(e.what());
+	}
 	mptr_userinfo = new Userinfo(&m_path_userinfo);
 	m_ID = "U";
 };

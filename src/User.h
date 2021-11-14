@@ -12,7 +12,7 @@ private:
     unsigned int m_next_position = 0;
     std::string_view m_ID;
     std::string m_user_name = "";
-    csv::Row m_bookheader{"BID,DATE,POSITION"};
+    csv::Header m_bookheader{"BID,DATE,POSITION"};
     std::vector<csv::Row> mvec_books;
     std::vector<csv::Row> mvec_owned;
     std::vector<csv::Row> mvec_published;
@@ -20,7 +20,8 @@ private:
     std::fstream m_userinfo_txt;
 public:
     Userinfo(const std::string*);
-
+    ~Userinfo();
+    
     bool create_user_info(std::string_view);
     bool load_userinfo(std::string_view);
 
@@ -44,6 +45,7 @@ private:
     std::string *mptr_password; //password entered by user also gets deleted after authenticating login
     std::string m_ID; //User ID UXXXXXX
 
+    csv::Header m_userfile_header{"USERNAME,PASSWORD,UID"};
     std::string m_path_userfile {fm::init_workingdir() + "Data\\Userfile.csv"};
     std::string m_path_userinfo {fm::init_workingdir() + "Data\\Userinfo.txt"};
     csv::CSVParser *mptr_csv_parser; 
