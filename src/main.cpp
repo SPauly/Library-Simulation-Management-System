@@ -32,7 +32,7 @@ void print_welcome(){
 	std::string line;
 
 	try{
-		file.open((fm::working_dir() + "\\Welcome.txt"));
+		file.open((fm::init_workingdir() + "Welcome.txt"));
 		if(file.is_open()){
 		while(!file.eof()){
 			std::getline(file, line);

@@ -45,8 +45,8 @@ private:
     std::string *mptr_password; //password entered by user also gets deleted after authenticating login
     std::string m_ID; //User ID UXXXXXX
 
-    std::string m_path_userfile {fm::working_dir() + "\\Data\\Userfile.csv"};
-    std::string m_path_userinfo {fm::working_dir() + "\\Data\\Userinfo.txt"};
+    std::string m_path_userfile {fm::init_workingdir() + "Data\\Userfile.csv"};
+    std::string m_path_userinfo {fm::init_workingdir() + "Data\\Userinfo.txt"};
     csv::CSVParser *mptr_csv_parser; 
     Userinfo* mptr_userinfo;                                   
 };

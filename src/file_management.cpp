@@ -1,20 +1,28 @@
 #include "file_management.h"
 
-std::string& fm::working_dir()
+std::string &fm::init_workingdir()
 {
-    std::filesystem::path _temp_path = std::filesystem::current_path();
-    if (_temp_path.filename().string() != "GetIntoCPPagain")
-    { //Later might want to do that a little bit less specific
-       _temp_path.remove_filename();
-       _work_dir = _temp_path.string();
-       if((_work_dir.find_last_of("\\") + 1) > _work_dir.size()){
-           return _work_dir;
-       }
-       else{
-           _work_dir.pop_back();
-           return _work_dir;
-       }
-    }
-    _work_dir = _temp_path.string();
-    return _work_dir;
+
+#ifdef _WIN32
+    HMODULE module = GetModuleHandleW(NULL);
+    WCHAR path[MAX_PATH];
+    GetModuleFileNameW(module, path, MAX_PATH);
+
+    std::wstring temp_ws = std::wstring(path);
+    std::string str(temp_ws.size(), 0);
+    std::transform(temp_ws.begin(), temp_ws.end(), str.begin(), [](wchar_t c)
+                   { return (char)c; });
+    
+    _fm_path = str;
+    _fm_path.remove_filename();
+    work_dir = _fm_path.string();
+
+    return work_dir;
+#elif __linux__
+    char result[PATH_MAX];
+    ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+    work_dir = std::wstring(result, (count > 0) ? count : 0);
+    _fm_path = work_dir;
+    return work_dir;
+#endif
 }

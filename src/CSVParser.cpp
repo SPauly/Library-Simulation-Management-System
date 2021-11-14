@@ -92,7 +92,7 @@ namespace csv
             m_CURRENT_FILE = *PATH_ptr;
             //open csv file
             m_DATABASE.open(*PATH_ptr, std::ios::in | std::ios::out | std::ios::binary);
-            m_DATABASE.exceptions(std::ifstream::badbit);
+            m_DATABASE.exceptions(std::fstream::badbit);
 
             //init header of file
             std::string *tmp_line = new std::string;
@@ -114,7 +114,7 @@ namespace csv
             m_DATABASE.flush();
             _csvgood = true;
         }
-        catch (const std::ifstream::failure &e)
+        catch (const std::fstream::failure &e)
         {
             _csvgood = false;
             throw Error(std::string("CTOR: Error accessing Database: ").append(e.what()));
