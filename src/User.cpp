@@ -36,15 +36,15 @@ bool Userinfo::create_user_info(std::string_view _ID){
 		m_userinfo_txt.seekg(0, std::ios_base::end);
 
 		int position_place = m_userinfo_txt.tellg();
-		m_userinfo_txt << "==============" << m_ID << "======\n";
-		m_userinfo_txt << "Name:" << m_user_name << "\n";
+		m_userinfo_txt << "==============" << m_ID << "======\r\n";
+		m_userinfo_txt << "Name:" << m_user_name << "\r\n";
 		m_userinfo_txt << "Books:"
-					   << "\n";
+					   << "\r\n";
 		m_userinfo_txt << "Owned:"
-					   << "\n";
+					   << "\r\n";
 		if (m_ID.at(0) == 'P')
 		{
-			m_userinfo_txt << "Published:\n";
+			m_userinfo_txt << "Published:\r\n";
 		}
 
 		m_next_position = m_userinfo_txt.tellg();
