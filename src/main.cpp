@@ -18,7 +18,6 @@ int main() {
 		lib.run_library();
 		//allow the user to do something with the application
 		//user->log_activity();
-		//user->logout();
 		//user->get_activity();
 		std::cin.get();
 		delete user;

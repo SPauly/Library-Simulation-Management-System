@@ -80,7 +80,12 @@ namespace csv
     {
         _header_size = this->size();
         _header_ptr = m_data.data();
+        m_header = _row;
     };
+
+    std::string_view Header::string(){
+        return m_header;
+    }
 
     //end class Header
 
@@ -99,7 +104,12 @@ namespace csv
             std::string *tmp_line = new std::string;
             tmp_line->clear();
             fm::_getline(m_DATABASE, *tmp_line);
-            _ptr_header = new Header(*tmp_line);
+            if(*tmp_line != _header_structure.string()){
+                m_DATABASE.seekp(0, std::ios::beg);
+                m_DATABASE << _header_structure.string() << "\r\n";
+                m_DATABASE.flush();
+            }
+            _ptr_header = &_header_structure;
             tmp_line->clear();
             //check m_DATABASE for consistency
             
@@ -147,7 +157,6 @@ namespace csv
         _csvgood = false;
         m_DATABASE.close();
         m_content.clear();
-        delete _ptr_header;
     }
 
     const unsigned int CSVParser::size() {

@@ -48,11 +48,14 @@ namespace csv
 
     class Header : public Row
     {
+    private:
+        std::string m_header;
     public:
         Header() = delete;
         Header(std::string_view);
         Header(std::string_view, Row*) = delete;
 
+        std::string_view string();
     public:
         _HEADER_TYPE _header_size;
         std::string *_header_ptr;
