@@ -48,11 +48,14 @@ namespace csv
 
     class Header : public Row
     {
+    private:
+        std::string m_header;
     public:
         Header() = delete;
         Header(std::string_view);
         Header(std::string_view, Row*) = delete;
 
+        std::string_view string();
     public:
         _HEADER_TYPE _header_size;
         std::string *_header_ptr;
@@ -76,12 +79,13 @@ namespace csv
     public:
         Header *_ptr_header;
         bool _csvgood;
-    private:
-        //void m_check_consistency();
+
     private:
         std::string m_CURRENT_FILE;
         std::fstream m_DATABASE;
         std::vector<Row> m_content;
+    private:
+        std::fstream& m_create_database();
     };
 
 } // namespace csv
