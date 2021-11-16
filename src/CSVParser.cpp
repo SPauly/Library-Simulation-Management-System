@@ -92,11 +92,14 @@ namespace csv
     //class CSVParser
     CSVParser::CSVParser(const std::string *PATH_ptr, Header& _header_structure)
     {
+        //initialize important references before exceptions
+        m_CURRENT_FILE = *PATH_ptr;
+        _ptr_header = &_header_structure;
         m_DATABASE.exceptions(std::fstream::failbit);
 
         try
         {
-            m_CURRENT_FILE = *PATH_ptr;
+
             //open csv file
             m_DATABASE.open(*PATH_ptr, std::ios::in | std::ios::out | std::ios::binary);
 
@@ -106,11 +109,11 @@ namespace csv
             fm::_getline(m_DATABASE, *tmp_line);
             if(*tmp_line != _header_structure.string()){
                 m_DATABASE.seekp(0, std::ios::beg);
-                m_DATABASE << _header_structure.string() << "\r\n";
+                m_DATABASE << _header_structure.string() << "\r\n";    //temporary solution!!! Use insert in file function here instead
                 m_DATABASE.flush();
             }
-            _ptr_header = &_header_structure;
             tmp_line->clear();
+
             //check m_DATABASE for consistency
             
             //init m_content
@@ -128,17 +131,13 @@ namespace csv
             delete tmp_line;
             m_DATABASE.clear();
             m_DATABASE.flush();
+            
             _csvgood = true;
         }
         catch (const std::fstream::failure &e)
         {
             try{
-                m_DATABASE.open(*PATH_ptr, std::ios::in | std::ios::out | std::ios::binary | std::ios::app);
-                addRow(_header_structure);
-                _ptr_header = &_header_structure;
-
-                m_DATABASE.clear();
-                m_DATABASE.flush();
+                m_create_database();
                 _csvgood = true;
             }
             catch (const std::fstream::failure &e){
@@ -217,6 +216,16 @@ namespace csv
         }
 
         return false;
+    }
+
+    std::fstream &CSVParser::m_create_database()
+    {
+        m_DATABASE.open(m_CURRENT_FILE, std::ios::in | std::ios::out | std::ios::binary | std::ios::app);
+        addRow(*_ptr_header);
+
+        m_DATABASE.clear();
+        m_DATABASE.flush();
+        return m_DATABASE;
     }
 
 #ifdef _DEBUG_CSV
