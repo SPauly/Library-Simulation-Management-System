@@ -10,8 +10,11 @@
 class Userinfo{
 private:
     unsigned int m_next_position = 0;
+
     std::string_view m_ID;
     std::string m_user_name = "";
+
+    std::string m_path_userinfo {fm::init_workingdir() + "Data\\Userinfo.txt"};
     csv::Header m_bookheader{"BID,DATE,POSITION"};
     std::vector<csv::Row> mvec_books;
     std::vector<csv::Row> mvec_owned;
@@ -19,7 +22,7 @@ private:
 
     std::fstream m_userinfo_txt;
 public:
-    Userinfo(const std::string*);
+    Userinfo();
     ~Userinfo();
     
     bool create_user_info(std::string_view);
@@ -47,7 +50,6 @@ private:
 
     csv::Header m_userfile_header{"USERNAME,PASSWORD,UID"};
     std::string m_path_userfile {fm::init_workingdir() + "Data\\Userfile.csv"};
-    std::string m_path_userinfo {fm::init_workingdir() + "Data\\Userinfo.txt"};
     csv::CSVParser *mptr_csv_parser; 
     Userinfo* mptr_userinfo;                                   
 };

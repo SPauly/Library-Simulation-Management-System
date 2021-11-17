@@ -7,22 +7,20 @@
 void print_welcome();
 
 int main() {
-	while (true)
-	{
-		print_welcome();
-		std::cin.get();
+	std::string login_type = "";
+	print_welcome();
+	std::cin.get();
+
+	while (true) {
 		system("cls");
-		User *user = new User{};
-		user->login();
-		Library lib{user};
-		lib.run_library();
-		//allow the user to do something with the application
-		//user->log_activity();
-		//user->get_activity();
-		std::cin.get();
-		delete user;
-		system("cls");
-	}
+		log("Enter type of login (e.g user, publisher, admin - press ENTER for default)>>  ");
+		if(!std::getline(std::cin, login_type)){/*do something*/}
+		Library lib{login_type};
+		if(!lib.run_library())
+			break;
+
+	} 
+
 	return 0;
 }
 

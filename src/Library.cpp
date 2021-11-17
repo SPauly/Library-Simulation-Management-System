@@ -1,7 +1,7 @@
 #include "Library.h"
 
-Library::Library(User* _ptr_user){
-    mptr_user = _ptr_user;
+Library::Library(std::string_view _config){
+    mptr_user = new User{};
     try{
         mptr_csv_parser = new csv::CSVParser(m_inventory_path, m_inventory_structure);
     }
@@ -14,7 +14,8 @@ Library::~Library(){
     delete mptr_csv_parser;
 }
 
-void Library::run_library() {
+bool Library::run_library() {
+    mptr_user->login();
     char input;
     while(mptr_user->is_logged()){
         log("\n                           Menu\n");
@@ -33,12 +34,16 @@ void Library::run_library() {
 			{
                 case '8':
                     log("Logging out\n");
-                    if(!mptr_user->logout())
+                    if(!mptr_user->logout()){
                         log("Logout successful. Press 'Enter'\n");
+                        return m_is_good = true;
+                    }
                     else{
                         log("Failed to logout\n");
                     }   
                     break;
+                case '9':
+                    return m_is_good = false;
                 default:
                     log("Function not supported.\n");
                     break;
@@ -49,4 +54,5 @@ void Library::run_library() {
             log("Please Enter a valid number.\n");
         }
     }
+    return m_is_good = true;
 }

@@ -2,20 +2,20 @@
 
 //Userinfo
 
-Userinfo::Userinfo(const std::string *ptr_userfile_path){
+Userinfo::Userinfo(){
 	m_userinfo_txt.exceptions(std::ifstream::failbit);
 	try
 	{
 		//open txtfile
-		m_userinfo_txt.open(*ptr_userfile_path, std::ios::in | std::ios::out | std::ios::binary);
+		m_userinfo_txt.open(m_path_userinfo, std::ios::in | std::ios::out | std::ios::binary);
 
 	}
 	catch (const std::ifstream::failure &e)
 	{
 		try{
-			m_userinfo_txt.open(*ptr_userfile_path, std::ios::in | std::ios::out | std::ios::binary | std::ios::app);
+			m_userinfo_txt.open(m_path_userinfo, std::ios::in | std::ios::out | std::ios::binary | std::ios::app);
 			m_userinfo_txt.close();
-			m_userinfo_txt.open(*ptr_userfile_path, std::ios::in | std::ios::out | std::ios::binary);
+			m_userinfo_txt.open(m_path_userinfo, std::ios::in | std::ios::out | std::ios::binary);
 		}
 		catch(const std::ifstream::failure &e){
 			throw csv::Error(std::string("Userinfo: Error creating new Database: ").append(e.what()));
@@ -178,7 +178,7 @@ User::User(){
 	{
 		log(e.what());
 	}
-	mptr_userinfo = new Userinfo(&m_path_userinfo);
+	mptr_userinfo = new Userinfo;
 	m_ID = "U";
 };
 
