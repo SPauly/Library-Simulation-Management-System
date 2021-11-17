@@ -30,7 +30,7 @@
                 "${workspaceFolder}\\src\\*.cpp",
                 "${workspaceFolder}\\src\\*.h",
                 "-o",
-                "${workspaceFolder}\\GetIntoCPPAgain.exe"
+                "${workspaceFolder}\\LSMS.exe"
             ],
             "options": {
                 "cwd": "${fileDirname}"

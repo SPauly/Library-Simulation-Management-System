@@ -8,7 +8,7 @@
             "name": "(gdb) Starten",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/GetIntoCPPAgain.exe",
+            "program": "${workspaceFolder}/LSMS.exe",
             "args": [],
             "stopAtEntry": true,
             "cwd": "${fileDirname}",

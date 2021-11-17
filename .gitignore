@@ -8,8 +8,6 @@ CppProperties.json
 Inventory.csv
 Userfile.csv
 Userinfo.txt
-#ignore application
-*.exe
 
 # User-specific files
 *.rsuser
