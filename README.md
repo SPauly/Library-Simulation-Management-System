@@ -47,5 +47,8 @@ Also, don't hesitate to raise new Issues with feature requests or ideas!
 Press CTRL+C go into data/ and delete the three database files. On the next startup, the program should simply create new files and it should run again. 
 But don't forget to share the issue you ran into with us ;)
 
-### Contribution
-...always welcome. Please feel free to fork this repo and train your own C++ skills with it! Or if you wish to share your ideas here :)
+## Development 
+Development happens in feature branches like ```library_feature``` so that the main branch always is funtional. Before the feature branch is ready to merge bugs must be fix in specific bug branches marked with ```iss``` or ```feat```.
+
+## Contribution
+...always welcome. Please feel free to fork this repo and train your own C++ skills with it! Or if you wish to share your ideas here :) !Note that I will upload Contribution guidelines in the future. So if you want to contribute now please keep in mind the overall structure of the code. Still I'm always up for critic!
