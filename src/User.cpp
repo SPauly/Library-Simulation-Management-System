@@ -2,20 +2,20 @@
 
 //Userinfo
 
-Userinfo::Userinfo(const std::string *ptr_userfile_path){
+Userinfo::Userinfo(){
 	m_userinfo_txt.exceptions(std::ifstream::failbit);
 	try
 	{
 		//open txtfile
-		m_userinfo_txt.open(*ptr_userfile_path, std::ios::in | std::ios::out | std::ios::binary);
+		m_userinfo_txt.open(m_path_userinfo, std::ios::in | std::ios::out | std::ios::binary);
 
 	}
 	catch (const std::ifstream::failure &e)
 	{
 		try{
-			m_userinfo_txt.open(*ptr_userfile_path, std::ios::in | std::ios::out | std::ios::binary | std::ios::app);
+			m_userinfo_txt.open(m_path_userinfo, std::ios::in | std::ios::out | std::ios::binary | std::ios::app);
 			m_userinfo_txt.close();
-			m_userinfo_txt.open(*ptr_userfile_path, std::ios::in | std::ios::out | std::ios::binary);
+			m_userinfo_txt.open(m_path_userinfo, std::ios::in | std::ios::out | std::ios::binary);
 		}
 		catch(const std::ifstream::failure &e){
 			throw csv::Error(std::string("Userinfo: Error creating new Database: ").append(e.what()));
@@ -178,13 +178,14 @@ User::User(){
 	{
 		log(e.what());
 	}
-	mptr_userinfo = new Userinfo(&m_path_userinfo);
+	mptr_userinfo = new Userinfo;
 	m_ID = "U";
 };
 
 User::~User(){
 	delete mptr_csv_parser;
-	delete mptr_userinfo;
+	if(mptr_userinfo)
+		delete mptr_userinfo;
 
 	//temporary deleting them here later got to change that
 	delete mptr_username;
@@ -291,7 +292,7 @@ std::string_view User::m_create_ID(int min, int max){
 	return m_ID;
 }
 
-bool User::login(){
+Userinfo& User::login(){
 	char _yn = 0;
 	while (true)
 	{
@@ -303,80 +304,57 @@ bool User::login(){
 			switch (_yn)
 			{
 			case 'y':
-				if (!m_user_request())
+				if (m_user_request())
 				{
-					log("Do you instead want to create a new Account? [y/n]\n>>");
-					std::cin>>_yn;
-					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-					if (!std::cin.fail())
-					{
-						switch (_yn)
-						{
-						case 'y':
-							if (m_create_user() == true)
-							{
-								log("Registration complete.\n");
-								log("Successfully logged in\n");
-								log(">>>>>>>>>>>>>>>>>>>>>>  WELCOME BACK ");
-								log(mptr_userinfo->get_name());
-								log("  <<<<<<<<<<<<<<<<<<<<<<\n");
-								return m_login_flag = true;
-							}
-							else {
-								log("Failed to register new account.\n");
-								return m_login_flag = false;
-							}
-						case 'n':
-							log("Login failed.\n");
-							return m_login_flag = false;
-						default:
-						    log("Login failed.\n");
-							return m_login_flag = false;
-						}
-					}				
-				}
-				else {
 					log("Successfully logged in\n");
 					log(">>>>>>>>>>>>>>>>>>>>>>  WELCOME BACK ");
 					log(mptr_userinfo->get_name());
 					log("  <<<<<<<<<<<<<<<<<<<<<<\n");
-					return m_login_flag = true;
+					return *mptr_userinfo;
+				}
+				else {
+					log("Failed to log in.\n");
 				}
 				break;
+
 			case 'n':
-				if (m_create_user() == true)
+				if (m_create_user())
 				{
 					log("Registration complete.\n");
 					log("Successfully logged in\n");
 					log(">>>>>>>>>>>>>>>>>>>>>>  WELCOME BACK ");
 					log(mptr_userinfo->get_name());
 					log("  <<<<<<<<<<<<<<<<<<<<<<\n");
-					return m_login_flag = true;
+					return *mptr_userinfo;
 				}
 				else
 				{
 					log("Failed to register new account.\n");
-					return m_login_flag = false;
 				}
+				break;
+
+			case 'e':
+				delete mptr_userinfo;
+				mptr_userinfo = nullptr;
+				return *mptr_userinfo;
+
 			default:
-				log("Wrong input. Enter 'y' or 'n'.\n");
+				log("Wrong input. Enter 'y' or 'n'. 'e' for exit\n");
 				break;
 			}
 		}
 		else
 		{
-			log("Wrong input. Enter 'y' or 'n'.\n");
+			log("Wrong input. Enter 'y' or 'n'. 'e' for exit\n");
 			std::cin.clear();
 		}
 	}
-
-	return m_login_flag = false;
 };
 
 bool User::is_logged(){
 	return m_login_flag;
 };
 
-bool User::logout(){
-	return m_login_flag = false;
+void User::logout(){
+	m_login_flag = false;
 };

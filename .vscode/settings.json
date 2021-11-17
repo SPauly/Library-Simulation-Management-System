@@ -55,7 +55,15 @@
         "codecvt": "cpp",
         "iomanip": "cpp",
         "list": "cpp",
-        "ratio": "cpp"
+        "ratio": "cpp",
+        "atomic": "cpp",
+        "clocale": "cpp",
+        "functional": "cpp",
+        "mutex": "cpp",
+        "xthread": "cpp",
+        "thread": "cpp",
+        "unordered_map": "cpp",
+        "xhash": "cpp"
     },
     "C_Cpp.default.cppStandard": "c++17"
 }
