@@ -1,4 +1,5 @@
-#include "login.h"
+#include "Library.h"
+
 #include <iostream>
 
 #define log(x) std::cout << x
@@ -6,20 +7,20 @@
 void print_welcome();
 
 int main() {
-	while (true)
-	{
-		print_welcome();
-		std::cin.get();
-		User *user = new User{};
-		user->login();
-		//allow the user to do something with the application
-		//user->log_activity();
-		//user->logout();
-		//user->get_activity();
-		std::cin.get();
-		delete user;
+	std::string login_type = "";
+	print_welcome();
+	std::cin.get();
+
+	while (true) {
 		system("cls");
-	}
+		log("Enter type of login (e.g user, publisher, admin - press ENTER for default)>>  ");
+		if(!std::getline(std::cin, login_type)){/*do something*/}
+		Library lib{login_type};
+		if(!lib.run_library())
+			break;
+
+	} 
+
 	return 0;
 }
 
@@ -28,11 +29,15 @@ void print_welcome(){
 	std::string line;
 
 	try{
-		file.open("E:/Simon/Documents/Visual Studio 2017/Projects/GetIntoCPPagain/Welcome.txt");
+		file.open((fm::init_workingdir() + "Welcome.txt"), std::ios::in | std::ios::binary);
+		if(file.is_open()){
 		while(!file.eof()){
-			std::getline(file, line);
+			fm::_getline(file, line);
 			std::cout<<line<<std::endl;
 		}
+		}
+		else
+			log("Could not open Welcome Message\n");
 	}
 	catch(const std::ifstream::failure &e){}
 	file.close();

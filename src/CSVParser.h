@@ -1,4 +1,5 @@
 #pragma once
+#include "file_management.h"
 #include <string>
 #include <string_view>
 #include <fstream>
@@ -33,6 +34,7 @@ namespace csv
         void add_value(std::string_view);
         std::string_view getvalue(_HEADER_TYPE &) const;
         _HEADER_TYPE& get_item_position(std::string_view);
+        Row& set_headerptr(Row*);
 
 
         std::string_view operator[] (_HEADER_TYPE &) const;
@@ -41,17 +43,20 @@ namespace csv
     protected:
         std::vector<std::string> m_data;
     private:
-        Row* mptr_header;
+        Row* mptr_header = nullptr;
         _HEADER_TYPE m_item_pos = 0;
     };
 
     class Header : public Row
     {
+    private:
+        std::string m_header;
     public:
         Header() = delete;
         Header(std::string_view);
         Header(std::string_view, Row*) = delete;
 
+        std::string_view string();
     public:
         _HEADER_TYPE _header_size;
         std::string *_header_ptr;
@@ -61,7 +66,7 @@ namespace csv
     {
     public:
         CSVParser() = delete;
-        CSVParser(const std::string *);
+        CSVParser(const std::string &, Header&);
         ~CSVParser();
 
         const unsigned int size();
@@ -73,15 +78,15 @@ namespace csv
     #endif
 
     public:
-        Header *_ptr_header;
-        bool _csvgood;
+        Header *_ptr_header = nullptr;
+        bool _csvgood = false;
 
-    private:
-        //void m_check_consistency();
     private:
         std::string m_CURRENT_FILE;
         std::fstream m_DATABASE;
         std::vector<Row> m_content;
+    private:
+        std::fstream& m_create_database();
     };
 
 } // namespace csv

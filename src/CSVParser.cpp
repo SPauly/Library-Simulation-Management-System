@@ -64,13 +64,25 @@ namespace csv
         throw Error("Row: Item not found");
     }
 
+    Row& Row::set_headerptr( Row* _headerptr){
+        mptr_header = _headerptr;
+        return *mptr_header;
+    }
+
     std::string_view Row::operator[] (_HEADER_TYPE &_header) const {
         return this->getvalue(_header);
     };
 
     std::string_view Row::operator[] (std::string_view _header) const {
-        _HEADER_TYPE pos = mptr_header->get_item_position(_header);
-        return m_data.at(pos);
+        if (mptr_header)
+        {
+            _HEADER_TYPE pos = mptr_header->get_item_position(_header);
+            return m_data.at(pos);
+        }
+        else
+        {
+            throw Error("Row: not linked to valid header");
+        }
     };
     //end class Row
 
@@ -80,44 +92,74 @@ namespace csv
     {
         _header_size = this->size();
         _header_ptr = m_data.data();
+        m_header = _row;
     };
+
+    std::string_view Header::string(){
+        return m_header;
+    }
 
     //end class Header
 
     //class CSVParser
-    CSVParser::CSVParser(const std::string *PATH_ptr)
+    CSVParser::CSVParser(const std::string &PATH_ref, Header& _header_structure)
     {
+        //initialize important references before exceptions
+        m_CURRENT_FILE = PATH_ref;
+        _ptr_header = &_header_structure;
+        m_DATABASE.exceptions(std::fstream::failbit);
+
         try
         {
-            m_CURRENT_FILE = *PATH_ptr;
+
             //open csv file
-            m_DATABASE.open(*PATH_ptr, std::ios::in | std::ios::out | std::ios::binary);
-            m_DATABASE.exceptions(std::ifstream::badbit);
+            m_DATABASE.open(PATH_ref, std::ios::in | std::ios::out | std::ios::binary);
 
             //init header of file
             std::string *tmp_line = new std::string;
             tmp_line->clear();
-            std::getline(m_DATABASE, *tmp_line);
-            _ptr_header = new Header(*tmp_line);
+            fm::_getline(m_DATABASE, *tmp_line);
+            if(*tmp_line != _header_structure.string()){
+                m_DATABASE.seekp(0, std::ios::beg);
+                m_DATABASE << _header_structure.string() << "\r\n";    //temporary solution!!! Use insert in file function here instead
+                m_DATABASE.flush();
+            }
             tmp_line->clear();
+
             //check m_DATABASE for consistency
             
             //init m_content
-            while (std::getline(m_DATABASE, *tmp_line))
+            try
             {
-                m_content.push_back(Row(*tmp_line, _ptr_header));
+                while (fm::_getline(m_DATABASE, *tmp_line))
+                {
+                    m_content.push_back(Row(*tmp_line, _ptr_header));
+                }
             }
-
+            catch (const std::fstream::failure &e)
+            {
+            }
             //delete temporary values
             delete tmp_line;
             m_DATABASE.clear();
             m_DATABASE.flush();
+            
             _csvgood = true;
         }
-        catch (const std::ifstream::failure &e)
+        catch (const std::fstream::failure &e)
         {
-            _csvgood = false;
-            throw Error(std::string("CTOR: Error accessing Database: ").append(e.what()));
+            try{
+                m_create_database();
+                _csvgood = true;
+            }
+            catch (const std::fstream::failure &e){
+                _csvgood = false;
+                throw Error(std::string("CTOR: Failed to create new Database: ").append(e.what()));
+            }
+            catch (const csv::Error &e){
+                _csvgood = false;
+                throw Error(std::string("CTOR: Failed initialize new Database: ").append(e.what()));
+            }
         }
     }
 
@@ -126,7 +168,6 @@ namespace csv
         _csvgood = false;
         m_DATABASE.close();
         m_content.clear();
-        delete _ptr_header;
     }
 
     const unsigned int CSVParser::size() {
@@ -141,18 +182,22 @@ namespace csv
     }
 
     bool CSVParser::addRow(Row& _row) {
+        if(_ptr_header)
+            _row.set_headerptr(_ptr_header);
+        else
+            throw Error("CSV: Cannot add row without linking parser to valid header element first");
         try
         {
             if (m_DATABASE.is_open())
             {
                 unsigned int i = 0;
-                m_DATABASE << '\n';
                 for (; i < _row.size() - 1; i++)
                 {
                     m_DATABASE << _row[i].data();
                     m_DATABASE << ",";
                 }
                 m_DATABASE << _row[i].data();
+                m_DATABASE << "\r\n";
                 m_DATABASE.flush();
                 m_content.push_back(_row);
                 return true;
@@ -187,6 +232,16 @@ namespace csv
         }
 
         return false;
+    }
+
+    std::fstream &CSVParser::m_create_database()
+    {
+        m_DATABASE.open(m_CURRENT_FILE, std::ios::in | std::ios::out | std::ios::binary | std::ios::app);
+        addRow(*_ptr_header);
+
+        m_DATABASE.clear();
+        m_DATABASE.flush();
+        return m_DATABASE;
     }
 
 #ifdef _DEBUG_CSV

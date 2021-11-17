@@ -4,8 +4,10 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 CppProperties.json
 
-#ignore application
-*.exe
+#ignore database files
+Inventory.csv
+Userfile.csv
+Userinfo.txt
 
 # User-specific files
 *.rsuser
