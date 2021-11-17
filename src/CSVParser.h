@@ -34,6 +34,7 @@ namespace csv
         void add_value(std::string_view);
         std::string_view getvalue(_HEADER_TYPE &) const;
         _HEADER_TYPE& get_item_position(std::string_view);
+        Row& set_headerptr(Row*);
 
 
         std::string_view operator[] (_HEADER_TYPE &) const;
@@ -42,7 +43,7 @@ namespace csv
     protected:
         std::vector<std::string> m_data;
     private:
-        Row* mptr_header;
+        Row* mptr_header = nullptr;
         _HEADER_TYPE m_item_pos = 0;
     };
 
@@ -65,7 +66,7 @@ namespace csv
     {
     public:
         CSVParser() = delete;
-        CSVParser(const std::string *, Header&);
+        CSVParser(const std::string &, Header&);
         ~CSVParser();
 
         const unsigned int size();
@@ -77,8 +78,8 @@ namespace csv
     #endif
 
     public:
-        Header *_ptr_header;
-        bool _csvgood;
+        Header *_ptr_header = nullptr;
+        bool _csvgood = false;
 
     private:
         std::string m_CURRENT_FILE;

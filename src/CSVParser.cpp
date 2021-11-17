@@ -64,13 +64,25 @@ namespace csv
         throw Error("Row: Item not found");
     }
 
+    Row& Row::set_headerptr( Row* _headerptr){
+        mptr_header = _headerptr;
+        return *mptr_header;
+    }
+
     std::string_view Row::operator[] (_HEADER_TYPE &_header) const {
         return this->getvalue(_header);
     };
 
     std::string_view Row::operator[] (std::string_view _header) const {
-        _HEADER_TYPE pos = mptr_header->get_item_position(_header);
-        return m_data.at(pos);
+        if (mptr_header)
+        {
+            _HEADER_TYPE pos = mptr_header->get_item_position(_header);
+            return m_data.at(pos);
+        }
+        else
+        {
+            throw Error("Row: not linked to valid header");
+        }
     };
     //end class Row
 
@@ -90,10 +102,10 @@ namespace csv
     //end class Header
 
     //class CSVParser
-    CSVParser::CSVParser(const std::string *PATH_ptr, Header& _header_structure)
+    CSVParser::CSVParser(const std::string &PATH_ref, Header& _header_structure)
     {
         //initialize important references before exceptions
-        m_CURRENT_FILE = *PATH_ptr;
+        m_CURRENT_FILE = PATH_ref;
         _ptr_header = &_header_structure;
         m_DATABASE.exceptions(std::fstream::failbit);
 
@@ -101,7 +113,7 @@ namespace csv
         {
 
             //open csv file
-            m_DATABASE.open(*PATH_ptr, std::ios::in | std::ios::out | std::ios::binary);
+            m_DATABASE.open(PATH_ref, std::ios::in | std::ios::out | std::ios::binary);
 
             //init header of file
             std::string *tmp_line = new std::string;
@@ -170,6 +182,10 @@ namespace csv
     }
 
     bool CSVParser::addRow(Row& _row) {
+        if(_ptr_header)
+            _row.set_headerptr(_ptr_header);
+        else
+            throw Error("CSV: Cannot add row without linking parser to valid header element first");
         try
         {
             if (m_DATABASE.is_open())

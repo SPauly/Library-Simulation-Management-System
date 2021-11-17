@@ -3,7 +3,7 @@
 Library::Library(User* _ptr_user){
     mptr_user = _ptr_user;
     try{
-        mptr_csv_parser = new csv::CSVParser(&m_inventory_path, m_inventory_structure);
+        mptr_csv_parser = new csv::CSVParser(m_inventory_path, m_inventory_structure);
     }
     catch(csv::Error &e){
             log(e.what());

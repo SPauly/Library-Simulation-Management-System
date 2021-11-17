@@ -172,7 +172,7 @@ User::User(){
 	//longer allocation
 	try
 	{
-		mptr_csv_parser = new csv::CSVParser(&m_path_userfile, m_userfile_header);
+		mptr_csv_parser = new csv::CSVParser(m_path_userfile, m_userfile_header);
 	}
 	catch (csv::Error &e)
 	{
