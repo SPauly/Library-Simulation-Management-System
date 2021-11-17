@@ -5,10 +5,12 @@ Library::Library(std::string_view _config){
     if(_config == "publisher"){
         m_config = 1;
         //mptr_user = new Publisher{}
+        mptr_user = new User{};
     }   
     else if (_config == "admin"){
         m_config = 2;
         //mptr_user = new Admin{}
+        mptr_user = new User{};
     }
     else{
         mptr_user = new User{};
