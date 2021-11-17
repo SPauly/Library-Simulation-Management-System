@@ -32,6 +32,17 @@ public:
 };
 
 class User { //holds the user and is responsible for login, logout and activity log -> gets automatically deleted with logout
+private: 
+    bool m_login_flag;          //flag to indicate wheather user is logged in or not
+    std::string *mptr_username = nullptr; //username of the current user gets deleted after loggin
+    std::string *mptr_password = nullptr; //password entered by user also gets deleted after authenticating login
+    std::string m_ID; //User ID UXXXXXX
+
+    csv::Header m_userfile_header{"USERNAME,PASSWORD,UID"};
+    std::string m_path_userfile {fm::init_workingdir() + "Data\\Userfile.csv"};
+    csv::CSVParser *mptr_csv_parser = nullptr; 
+    Userinfo* mptr_userinfo = nullptr;            
+
 protected:
     bool m_user_request(); //deals with authentification of the user
     bool m_create_user(); //deals with creating a new user 
@@ -39,17 +50,7 @@ protected:
 public:
     User();
     ~User();
-    bool login();
+    Userinfo& login();
     bool is_logged();
-    bool logout();               
-private: 
-    bool m_login_flag;          //flag to indicate wheather user is logged in or not
-    std::string *mptr_username; //username of the current user gets deleted after loggin
-    std::string *mptr_password; //password entered by user also gets deleted after authenticating login
-    std::string m_ID; //User ID UXXXXXX
-
-    csv::Header m_userfile_header{"USERNAME,PASSWORD,UID"};
-    std::string m_path_userfile {fm::init_workingdir() + "Data\\Userfile.csv"};
-    csv::CSVParser *mptr_csv_parser; 
-    Userinfo* mptr_userinfo;                                   
+    void logout();               
 };

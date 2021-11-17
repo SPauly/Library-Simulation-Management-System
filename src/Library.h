@@ -2,8 +2,11 @@
 #include "CSVParser.h"
 #include "User.h"
 
+using CONFIG_TYPE = unsigned int;
+
 class Library {
 private:
+    CONFIG_TYPE m_config = 0; //0 = User, 1 = Publisher, 2 = Admin
     bool m_is_good = true;
     User* mptr_user = nullptr;
     Userinfo* mptr_userinfo = nullptr;
