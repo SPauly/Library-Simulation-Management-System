@@ -36,9 +36,9 @@ bool Userinfo::create_user_info(std::string_view _ID){
 		std::string *ptr_first_name = new std::string;
 		std::string *ptr_second_name = new std::string;
 
-		log("Please enter your first name: ");
+		log("Please enter your FIRST name: ");
 		std::getline(std::cin,*ptr_first_name);
-		log("Please enter your second name: ");
+		log("Please enter your LAST name: ");
 		std::getline(std::cin, *ptr_second_name);
 
 		m_user_name = *ptr_first_name + "," + *ptr_second_name;
@@ -296,7 +296,7 @@ Userinfo& User::login(){
 	char _yn = 0;
 	while (true)
 	{
-		log("Log into an existing Account? [y/n]\n>>");
+		log("Log into an existing Account? [y/n/e]\n>>");
 		std::cin >> _yn;
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		if (!std::cin.fail())

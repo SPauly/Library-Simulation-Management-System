@@ -8,7 +8,7 @@
 =      \/        \/        |_______  |_______      _____         __         |      |  |_______  =
 =                                                                                               =
 =                                                                                               =
-=                                      To Simon's Library System                                =
+=                         To Simon's Library-Simulation-Management-System                       =
 =                                                                                               =
 =                                                                                               =
 =                                                                                               =
@@ -16,34 +16,19 @@
 =                             Please read the following text to continue                        =
 =================================================================================================
 
-===== Ueber das Program =======
-Dieses Program ist der Anfang eines Bibliothek Systems, in dem man zukuenftig (fiktive) Buecher 
-ausleihen, lesen, zurueckgeben und kaufen kann. Dazu wird bei der Registrierung ein Benutzername
-mit Password und einer einmaligen User ID in der Datenbank gespeichert. 
-Sobald man sich einloggt werden ueber die User ID alle zum Nutzer gehoerenden Informationen wie
-Name, ausgeliehene Buecher und gekaufte Buecher aus der Datenbank eingelesen. Das Bibliothek
-System kann anschliessend ueber die dabei eingelesenen Buecher IDs jedes zum Nutzer gehoerende Buch auf-
-rufen (also zumindest in Zukunft).
+LSMS is a fast, lightweight Library-Simulation-Management-System for educational purposes
 
-===== Interessante Fakten ====
-Programmiersprache C++:
+This C++ Project's purpose is to get back into the language by creating a fairly complex Library 
+System, that stores user information across different files. The focus should lie on the code's 
+architecture and efficiency. Therefore the beauty of the end product might be lagging ;)
 
-total files : 18
-total code lines : 897
-total comment lines : 112
-total blank lines : 142
+===== Usage ======
+The usage is simple - The program tells you what kind of input is required. All you do is type in
+your answer and then hit 'ENTER'.   ! Note that you will not be able to go back and change it !
+'y' means yes, 'n' means no an 'e' means exit - pretty self-explanatory, right?
 
-Wer sich den Code und die Datenbanken anschauen moechte kann gerne unten in der Taskleiste auf das
-blaue halbe Unendlichkeits Zeichen klicken. Oben sind dann verschiedene Tabs geoeffnet - gerne 
-durchklicken aber BITTE NIRGENDWO ETWAS EINFUEGEN!!! Danach bitte wieder zurueck zum Program wechseln
-Danke :) 
-
-===== NUTZUNG ======
-Die Nutzung ist simpel - das Programm schreibt was du eintippen musst. Deine Eingabe bestaetigst du 
-mit Enter, danach kannst du nicht mehr zurueck. 'y' steht fuer yes 'n' fuer no. 
-BITTE GIB KEINE SENSITIVEN DATEN BEI DER REGISTRIERUNG EIN! (z.B. Passwoerter und Usernamen, die du
-normal verwendest.)
-
-Die Daten werden gespeichert aber nicht veroeffentlicht und nicht geschuetzt. 
-Mit 'ENTER' bestaetige ich Obiges gelesen zu haben und einverstanden zu sein. 
+PLEASE DO NOT ENTER ANY SENSITIVE DATA DURING REGISTRATION! (e.g. Passwords or usernames, that you
+normally use)
+Your info will be stored without getting published nor protected. 
+By pressing 'ENTER' I submit to having read the above and agreeing with it.  
 PRESS 'ENTER' TO CONTINUE....
