@@ -29,6 +29,9 @@
                 "-g",
                 "${workspaceFolder}\\src\\*.cpp",
                 "${workspaceFolder}\\src\\*.h",
+                "-static",
+                "-static-libgcc",
+                "-static-libstdc++",
                 "-o",
                 "${workspaceFolder}\\LSMS.exe"
             ],
