@@ -34,7 +34,7 @@ Owned:B394294
 * Finally the ```Library``` Class has access to data/Inventory.csv with this file structure ```BID,NAME,AUTHOR,COPIES,RENTED,LINK```. The ```BID```s mentioned in the Usersinfo match one of the books in the inventory which in return holds the path ```LINK``` to the books file in data/books
 
 ## Installation and Usage
-* Download the Code from Github (I advise you let the data/ folder where it is - no handling included for that yet)
+* Download the Code from Github - see Releases for latest Version (I advise you let the data/ folder where it is - no handling included for that yet)
 * Run the .exe or compile the code yourself using VSCode and g++ or MVSC (other compilers and IDEs have not been tested yet)
 * Follow the program's instructions
 This should work out of the box. If not please don't hesitate to hit me up. ! Note that this program makes use of C++17 features so if your machine doesn't support it you might run into problems on compilation!
