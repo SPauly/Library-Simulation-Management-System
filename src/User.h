@@ -81,7 +81,8 @@ namespace user
         std::fstream m_userinfo_txt;
 
     public:
-        User();
+        User() = delete;
+        User(_Openmode&);
         ~User();
 
         _Openmode& get_mode();
