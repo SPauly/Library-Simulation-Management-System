@@ -158,13 +158,186 @@ namespace user
             m_userinfo_txt << m_dimensions.end;
             m_userinfo_txt << "~";
             m_userinfo_txt.flush();
+
+            //finish initialization of dimensions
+            m_dimensions.space = m_dimensions.end - m_dimensions.beg;
+            switch (m_mode)
+            {
+            case publisher:
+                m_dimensions.freespace = publishersize;
+                break;
+            default:
+                m_dimensions.freespace = usersize;
+                break;
+            }
         }
         catch (const std::ifstream::failure &e)
         {
             log("Error creating userfile\n");
-            return false;
+            mf_set_state(failbit);
+            mf_set_mode(failure);
+            return m_mode;
         }
-        return true;
+
+        return m_mode;
+    }
+
+    _Openmode &User::mf_load_userinfo(){
+        if (!m_mode)
+        {
+            return m_mode;
+        }
+
+        //try reading Userinfo.txt
+        try
+        {
+            //stack variables
+            int _next_position = 0;
+
+            //set position at beginning and find the next user position while checking for the uid
+            m_userinfo_txt.seekg(std::ios::beg);
+            _next_position = std::ios::beg;
+            std::string line_tmp;
+            std::string sub_tmp;
+            std::string::size_type _StartIterator = 0;
+            std::string::size_type _ItemIteratorPos = 0;
+
+            try
+            {
+                do
+                {
+                    m_userinfo_txt.seekg(_next_position);
+                    fm::_getline(m_userinfo_txt, line_tmp);
+                    _ItemIteratorPos = line_tmp.find_first_of("~", _StartIterator);
+                    sub_tmp = std::string(line_tmp.substr(_StartIterator, _ItemIteratorPos - _StartIterator));
+                    _next_position = std::stoi(sub_tmp);
+                    _StartIterator = 0;
+
+                } while (line_tmp.find(m_ID._string_id) == std::string::npos && m_userinfo_txt.is_open());
+            }
+            catch (const std::ifstream::failure &e)
+            {
+                log("\nIt seems this User does not yet exist. Please create a new one.\n");
+                mf_create_user_info();
+                return m_mode;
+            };
+
+            //read the name
+            fm::_getline(m_userinfo_txt, line_tmp);
+            _ItemIteratorPos = line_tmp.find_first_of(":");
+            sub_tmp = std::string(line_tmp.substr(_ItemIteratorPos + 1));
+            sub_tmp.at(sub_tmp.find_first_of(",")) = ' ';
+            m_user_name.init_name(sub_tmp);
+            fm::_getline(m_userinfo_txt, line_tmp);
+
+            //read the books
+            fm::_getline(m_userinfo_txt, line_tmp);
+            while (line_tmp.at(0) == 'B')
+            {
+                mvec_books.push_back(csv::Row(line_tmp, &m_bookheader));
+                fm::_getline(m_userinfo_txt, line_tmp);
+            }
+
+            //read the owned books
+            try
+            {
+                fm::_getline(m_userinfo_txt, line_tmp);
+                while (line_tmp.at(0) == 'B')
+                {
+                    mvec_owned.push_back(csv::Row(line_tmp, &m_bookheader));
+                    fm::_getline(m_userinfo_txt, line_tmp);
+                }
+            }
+            catch (const std::ifstream::failure &e)
+            {
+                m_userinfo_txt.clear();
+            }
+            catch (const std::out_of_range &oor)
+            {
+                m_userinfo_txt.clear();
+            }
+
+            //read published books if necessary
+            if (m_mode == publisher)
+            {
+                try
+                {
+                    fm::_getline(m_userinfo_txt, line_tmp);
+                    while (line_tmp.at(0) == 'B')
+                    {
+                        mvec_owned.push_back(csv::Row(line_tmp, &m_bookheader));
+                        fm::_getline(m_userinfo_txt, line_tmp);
+                    }
+                }
+                catch (const std::ifstream::failure &e)
+                {
+                    m_userinfo_txt.clear();
+                }
+                catch (const std::out_of_range &oor)
+                {
+                    m_userinfo_txt.clear();
+                }
+            }
+        }
+        catch (const std::ifstream::failure &e) //means something went wrong with reading
+        {
+            log("\nError loading userfile\n");
+            mf_set_state(failbit);
+            mf_set_mode(failure);
+            return m_mode;
+        }
+        catch (const std::invalid_argument &e)
+        { //means stoi did get an invalid argument
+            log("\nError reading next position in Userinfo\n");
+            mf_set_state(failbit);
+            mf_set_mode(failure);
+            return m_mode;
+        }
+
+        return m_mode;
+    }
+
+    _Userstate& User::mf_set_state(const _Userstate& _state){
+        switch (_state)
+        {
+        case goodbit:
+            this->m_state = goodbit;
+            break;
+        case incobit:
+            this->m_state = incobit;
+            break;
+        case badbit:
+            this->m_state = badbit;
+            break;
+        default:
+            this->m_state = failbit;
+            break;
+        }
+
+        return m_state;
+    }
+
+    _Openmode& User::mf_set_mode(const _Openmode& _mode){
+        switch (_mode)
+        {        
+        case user:
+            this->m_mode = user;
+            break;
+        case publisher:
+            this->m_mode = publisher;
+            break;
+        case admin:
+            this->m_mode = admin;
+            break;
+        case notlogged:
+            this->m_mode = notlogged;
+            break;
+        default:
+            this->m_mode = failure;
+            break;
+        }
+
+        return m_mode;
     }
 
     //public Members
@@ -179,7 +352,7 @@ namespace user
 
             //login page
             char _yn = 0;
-            while (true)
+            while (m_state)
             {
                 log("Log into an existing Account? [y/n/e]\n>>");
                 std::cin >> _yn;

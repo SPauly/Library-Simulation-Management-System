@@ -36,11 +36,11 @@ namespace user
 	static constexpr _Userstate badbit = (_Userstate)0x4;  //Input error
 
     enum _Size {
-        _Usersize = 300
+        _Usersize = 420
     };
 
-    static constexpr _Size usersize = (_Size)400;
-    static constexpr _Size publishersize = (_Size)500;
+    static constexpr _Size usersize = (_Size)420;
+    static constexpr _Size publishersize = (_Size)630;
 
     struct _ID {
         _Openmode mode = failure;
