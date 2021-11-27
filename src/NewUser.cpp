@@ -4,7 +4,7 @@
 namespace user
 {
     //private Members
-    _Openmode &User::mf_authenticate_user(csv::CSVParser& _parser)
+    _Openmode &User::mf_authenticate_user(csv::CSVParser &_parser)
     {
         std::string _username = "";
         std::string _password = "";
@@ -64,7 +64,8 @@ namespace user
                 break;
             }
         }
-        else {
+        else
+        {
             log("Create User Account:\n");
             mode = user;
         }
@@ -106,7 +107,7 @@ namespace user
         _temp_row.add_value(_password);
 
         //Create UID
-        _temp_row.add_value(m_ID._create_ID(mode, 100000, 999999));
+        _temp_row.add_value(mf_create_ID(_parser, mode, 100000, 999999));
 
         //write new User to Userfile and save in Parser
         _parser.addRow(_temp_row);
@@ -137,7 +138,7 @@ namespace user
 
             //initialize _dimensions beg
             m_dimensions.beg = m_userinfo_txt.tellg();
-            
+
             //write to file
             m_userinfo_txt << "==============" << m_ID._string_id << "======\r\n";
             m_userinfo_txt << "Name:" << m_user_name.fullname_csv << "\r\n";
@@ -152,7 +153,7 @@ namespace user
 
             //initialize _dimensions end
             m_dimensions.end = m_userinfo_txt.tellg();
-            
+
             //finish writing
             m_userinfo_txt.seekg(m_dimensions.beg);
             m_userinfo_txt << m_dimensions.end;
@@ -182,7 +183,8 @@ namespace user
         return m_mode;
     }
 
-    _Openmode &User::mf_load_userinfo(){
+    _Openmode &User::mf_load_userinfo()
+    {
         if (!m_mode)
         {
             return m_mode;
@@ -297,7 +299,8 @@ namespace user
         return m_mode;
     }
 
-    _Userstate& User::mf_set_state(const _Userstate& _state){
+    _Userstate &User::mf_set_state(const _Userstate &_state)
+    {
         switch (_state)
         {
         case goodbit:
@@ -317,9 +320,10 @@ namespace user
         return m_state;
     }
 
-    _Openmode& User::mf_set_mode(const _Openmode& _mode){
+    _Openmode &User::mf_set_mode(const _Openmode &_mode)
+    {
         switch (_mode)
-        {        
+        {
         case user:
             this->m_mode = user;
             break;
@@ -340,15 +344,88 @@ namespace user
         return m_mode;
     }
 
+    std::string_view User::mf_create_ID(csv::CSVParser &_parser, _Openmode &_mode, size_t _min, size_t _max)
+    {
+        std::uniform_int_distribution<> _distribution(_min, _max);
+        std::random_device _random_dev;
+        std::default_random_engine _generator(_random_dev());
+        int _rand = _distribution(_generator);
+        std::string temp = "";
+
+        switch (_mode)
+        {
+        case failure:
+            throw Error("User: Create ID: usermode set to 'failure'");
+            break;
+        case notlogged:
+            throw Error("User: Create ID: usermode set to 'notlogged'");
+            break;
+        default:
+            temp += _mode;
+            break;
+        }
+
+        do
+        {
+            temp += std::to_string(_rand);
+            if (_parser.find_first_of(temp, "UID"))
+            {
+                char _token = temp.at(0);
+                temp = _token;
+                continue;
+            }
+            else
+            {
+                break;
+            }
+
+        } while (true);
+
+        m_ID.init_id(temp);
+
+        return m_ID._string_id;
+    }
+
     //public Members
+    User::User()
+    {
+        m_userinfo_txt.exceptions(std::ifstream::failbit);
+        try
+        {
+            //open txtfile
+            m_userinfo_txt.open(m_path_userinfo, std::ios::in | std::ios::out | std::ios::binary);
+        }
+        catch (const std::ifstream::failure &e)
+        {
+            try
+            {
+                m_userinfo_txt.open(m_path_userinfo, std::ios::in | std::ios::out | std::ios::binary | std::ios::app);
+                m_userinfo_txt.close();
+                m_userinfo_txt.open(m_path_userinfo, std::ios::in | std::ios::out | std::ios::binary);
+            }
+            catch (const std::ifstream::failure &e)
+            {
+                throw Error(std::string("User: Error creating new Database: ").append(e.what()));
+            }
+            log("User: Initilized new database\n");
+        }
+    }
+
+    User::~User()
+    {
+        mf_set_mode(notlogged);
+        m_userinfo_txt.flush();
+        m_userinfo_txt.close();
+    }
+
     _Openmode &User::login()
     {
         try
-        { 
+        {
             //initialize needed files
             csv::Header _userfile_header{"USERNAME,PASSWORD,UID"};
-            std::string _path_userfile {fm::init_workingdir() + "Data\\Userfile.csv"};
-            csv::CSVParser _userfile_csv{_path_userfile,_userfile_header};
+            std::string _path_userfile{fm::init_workingdir() + "Data\\Userfile.csv"};
+            csv::CSVParser _userfile_csv{_path_userfile, _userfile_header};
 
             //login page
             char _yn = 0;
@@ -365,7 +442,8 @@ namespace user
                         if (mf_set_mode(mf_authenticate_user(_userfile_csv)))
                         {
                             log("Successfully logged in\n");
-                            return this->m_mode;
+                            log("Read Userinfo...");
+                            return mf_load_userinfo();
                         }
                         else
                         {
@@ -378,7 +456,7 @@ namespace user
                         {
                             log("Registration complete\n");
                             log("Successfully logged in\n");
-                            return this->m_mode;
+                            return m_mode;
                         }
                         else
                         {
@@ -406,4 +484,30 @@ namespace user
         }
     }
 
-};
+    _Openmode &User::logout()
+    {
+        mf_set_mode(notlogged);
+        return m_mode;
+    }
+
+    const _Openmode &User::get_mode()
+    {
+        return m_mode;
+    }
+
+    const _Userstate &User::get_state()
+    {
+        return m_state;
+    }
+
+    std::string_view User::get_name()
+    {
+        return m_user_name.fullname;
+    }
+
+    const _ID &User::get_id()
+    {
+        return m_ID;
+    }
+
+} //end user
