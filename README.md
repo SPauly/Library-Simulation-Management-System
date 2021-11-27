@@ -28,8 +28,11 @@ I wanted to have to come up with my own way of organizing data and handling it i
 ```
 NextPosition~===========U257460======
 Name:Heinrich,Musterman
-Books:B230283,B303820
-Owned:B394294
+Books:
+BID,DATE,POSITION
+BID,DATE,POSITION
+Owned:
+BID,DATE,POSITION
 ```
 * Finally the ```Library``` Class has access to data/Inventory.csv with this file structure ```BID,NAME,AUTHOR,COPIES,RENTED,LINK```. The ```BID```s mentioned in the Usersinfo match one of the books in the inventory which in return holds the path ```LINK``` to the books file in data/books
 
