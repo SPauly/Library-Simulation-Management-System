@@ -19,4 +19,8 @@ namespace fm
     //CLRF safe getline
     std::fstream &_getline(std::fstream&, std::string&);
 
+    //insert in file functions
+    bool fast_insert(std::fstream&, std::string_view, const size_t&, const size_t&, const size_t&, const char);
+        //opened file, insert, pos, beg, end, spaceholder
+
 };
