@@ -8,7 +8,11 @@ bool Library::run_library() {
     char input;
 
     if(m_user.get_mode() == user::notlogged){
-        m_user.login();
+        if(m_user.login()){
+            log("================== WELCOME BACK ");
+            log(m_user.get_name());
+            log(" ===================\n");
+        }
     }
 
     while(m_is_good && m_user.get_mode()){

@@ -46,7 +46,7 @@ namespace user
 
     struct _ID
     {
-        _Openmode mode = failure;
+        _Openmode mode = notlogged;
         std::string _string_id = "";
         _ID &init_id(std::string_view _id)
         {
@@ -82,15 +82,16 @@ namespace user
     {
         std::string firstname = "";
         std::string lastname = "";
-        std::string_view fullname = this->firstname + " " + this->lastname;
-        std::string_view fullname_csv = this->firstname + "," + this->lastname;
+        std::string fullname = "";
+        std::string fullname_csv = "";
         std::string_view init_name(std::string_view name)
         {
             int _iter = name.find_first_of(" ");
             firstname = std::string(name.substr(0, _iter));
             lastname = std::string(name.substr(_iter + 1));
             fullname = name;
-            fullname_csv = this->firstname + "," + this->lastname;
+            fullname_csv = firstname + "," + lastname;
+            return fullname;
         }
     };
 

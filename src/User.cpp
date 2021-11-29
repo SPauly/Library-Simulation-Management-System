@@ -43,7 +43,7 @@ namespace user
         std::regex _reg_password{"(?!.*,)(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*<>_]).{8,}"};
         std::string _username = "";
         std::string _password = "";
-        int _type;
+        char _type;
         _Openmode mode;
 
         //Ask for Type of login
@@ -54,7 +54,7 @@ namespace user
         {
             switch (_type)
             {
-            case 2:
+            case '2':
                 log("Create Publisher Account:\n");
                 mode = publisher;
                 break;
@@ -130,8 +130,7 @@ namespace user
             std::getline(std::cin, _last_name);
 
             //initialize name m_user_name
-            m_user_name.firstname = _first_name;
-            m_user_name.lastname = _last_name;
+            m_user_name.init_name(_first_name + " " + _last_name);
 
             //write data to file
             m_userinfo_txt.seekg(0, std::ios_base::end);
@@ -179,7 +178,7 @@ namespace user
             mf_set_mode(failure);
             return m_mode;
         }
-
+        mf_set_mode(m_ID.mode);
         return m_mode;
     }
 
@@ -442,7 +441,7 @@ namespace user
                         if (mf_set_mode(mf_authenticate_user(_userfile_csv)))
                         {
                             log("Successfully logged in\n");
-                            log("Read Userinfo...");
+                            log("Read Userinfo...\n");
                             return mf_load_userinfo();
                         }
                         else
