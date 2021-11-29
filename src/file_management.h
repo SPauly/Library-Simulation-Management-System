@@ -11,6 +11,8 @@
 
 namespace fm
 {
+    using pos = unsigned int;
+
     //Workspace info
     static std::filesystem::path _fm_path;
     static std::string work_dir;
@@ -18,5 +20,5 @@ namespace fm
 
     //CLRF safe getline
     std::fstream &_getline(std::fstream&, std::string&);
-
+    
 };

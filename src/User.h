@@ -31,10 +31,10 @@ namespace user
         _Statmask = 0x17
     };
 
-    static constexpr _Userstate goodbit = (_Userstate)0x0; //everything's fine
-    static constexpr _Userstate incobit = (_Userstate)0x1; //incosistency bit
-    static constexpr _Userstate failbit = (_Userstate)0x2; //failure
-    static constexpr _Userstate badbit = (_Userstate)0x4;  //Input error
+    static constexpr _Userstate goodbit = (_Userstate)0x1; //everything's fine
+    static constexpr _Userstate incobit = (_Userstate)0x2; //incosistency bit
+    static constexpr _Userstate failbit = (_Userstate)0x0; //failure
+    static constexpr _Userstate badbit = (_Userstate)0x3;  //Input error
 
     enum _Size
     {
@@ -101,7 +101,7 @@ namespace user
     { //holds the user and is responsible for login, logout and activity log -> gets automatically deleted with logout
     private:
         _Userstate m_state = goodbit;
-        _Openmode m_mode = failure; //flag to indicate wheather user is logged in or not
+        _Openmode m_mode = notlogged; //flag to indicate wheather user is logged in or not
 
         _dimensions m_dimensions;
 

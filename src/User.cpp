@@ -1,360 +1,513 @@
 #include "User.h"
 
-//Userinfo
+//namespace user
+namespace user
+{
+    //private Members
+    _Openmode &User::mf_authenticate_user(csv::CSVParser &_parser)
+    {
+        std::string _username = "";
+        std::string _password = "";
 
-Userinfo::Userinfo(){
-	m_userinfo_txt.exceptions(std::ifstream::failbit);
-	try
-	{
-		//open txtfile
-		m_userinfo_txt.open(m_path_userinfo, std::ios::in | std::ios::out | std::ios::binary);
+        size_t _tries = 0;
+        while (_tries < 3)
+        {
+            log("Username>> ");
+            std::getline(std::cin, _username);
+            log("Password>> ");
+            std::getline(std::cin, _password);
 
-	}
-	catch (const std::ifstream::failure &e)
-	{
-		try{
-			m_userinfo_txt.open(m_path_userinfo, std::ios::in | std::ios::out | std::ios::binary | std::ios::app);
-			m_userinfo_txt.close();
-			m_userinfo_txt.open(m_path_userinfo, std::ios::in | std::ios::out | std::ios::binary);
-		}
-		catch(const std::ifstream::failure &e){
-			throw csv::Error(std::string("Userinfo: Error creating new Database: ").append(e.what()));
-		}
-		log("Userinfo: Initilized new database\n");
-	}
-}
+            for (csv::_HEADER_TYPE i = 0; i < _parser.size(); i++)
+            {
+                if (_parser.getRow(i)["USERNAME"] == _username)
+                {
+                    if (_parser.getRow(i)["PASSWORD"] == _password)
+                    {
+                        m_ID.init_id(_parser.getRow(i)["UID"]);
+                        return m_ID.mode;
+                    }
+                }
+            }
 
-Userinfo::~Userinfo(){
-	m_userinfo_txt.close();
-}
+            log("Wrong username or password.\n");
+            ++_tries;
+        }
 
-bool Userinfo::create_user_info(std::string_view _ID){
-	try
-	{
-		//get necessary info
-		m_ID = _ID;
-		std::string *ptr_first_name = new std::string;
-		std::string *ptr_second_name = new std::string;
+        return m_ID.mode = failure;
+    }
 
-		log("Please enter your FIRST name: ");
-		std::getline(std::cin,*ptr_first_name);
-		log("Please enter your LAST name: ");
-		std::getline(std::cin, *ptr_second_name);
+    _Openmode &User::mf_create_user(csv::CSVParser &_parser)
+    {
+        csv::Row _temp_row;
+        std::regex _reg_username{"(?!.*,)(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$"};
+        std::regex _reg_password{"(?!.*,)(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*<>_]).{8,}"};
+        std::string _username = "";
+        std::string _password = "";
+        int _type;
+        _Openmode mode;
 
-		m_user_name = *ptr_first_name + "," + *ptr_second_name;
+        //Ask for Type of login
+        log("Do you want to create a USER[1] or a PUBLISHER[2] account? (ENTER for default)\n>>");
+        std::cin >> _type;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        if (!std::cin.fail())
+        {
+            switch (_type)
+            {
+            case 2:
+                log("Create Publisher Account:\n");
+                mode = publisher;
+                break;
+            default:
+                log("Create User Account:\n");
+                mode = user;
+                break;
+            }
+        }
+        else
+        {
+            log("Create User Account:\n");
+            mode = user;
+        }
 
-		//write data to file
-		m_userinfo_txt.seekg(0, std::ios_base::end);
+        //Get Username
+        do
+        {
+            log("New Username>> ");
+            std::getline(std::cin, _username);
+            while (!std::regex_match(_username, _reg_username))
+            {
+                log("Username must contain 8-20 Characters, start and end with a character,	can contain numbers, '.' and '_'\n");
+                log("New Username>> ");
+                std::getline(std::cin, _username);
+            }
 
-		int position_place = m_userinfo_txt.tellg();
-		m_userinfo_txt << "==============" << m_ID << "======\r\n";
-		m_userinfo_txt << "Name:" << m_user_name << "\r\n";
-		m_userinfo_txt << "Books:"
-					   << "\r\n";
-		m_userinfo_txt << "Owned:"
-					   << "\r\n";
-		if (m_ID.at(0) == 'P')
-		{
-			m_userinfo_txt << "Published:\r\n";
-		}
+            if (_parser.find_first_of(_username, "USERNAME"))
+            {
+                log("Username already exists\n");
+                continue;
+            }
+            else
+            {
+                break;
+            }
+        } while (true);
+        _temp_row.add_value(_username);
 
-		m_next_position = m_userinfo_txt.tellg();
-		m_userinfo_txt.seekg(position_place);
-		m_userinfo_txt << m_next_position;
-		m_userinfo_txt << "~";
-		m_userinfo_txt.flush();
-	}
-	catch (const std::ifstream::failure &e)
-	{
-		log("Error creating userfile\n");
-		return false;
-	}
-	return true;
-}
+        //Get Password
+        log("New Password>> ");
+        std::getline(std::cin, _password);
+        while (!std::regex_match(_password, _reg_password))
+        {
+            log("Password criteria:\n - min. 8 characters ");
+            log("\n - One upper one lower case character \n - One number\n - one special character eg. #?!@$%^&*<>_\n");
+            log("New Password>> ");
+            std::getline(std::cin, _password);
+        }
+        _temp_row.add_value(_password);
 
-bool Userinfo::load_userinfo(std::string_view _ID){
+        //Create UID
+        _temp_row.add_value(mf_create_ID(_parser, mode, 100000, 999999));
 
-	//set userid
-	m_ID = _ID;
+        //write new User to Userfile and save in Parser
+        _parser.addRow(_temp_row);
 
-	//try reading Userinfo.txt
-	try
-	{
-		//set position at beginning and find the next user position while checking for the uid
-		m_userinfo_txt.seekg(std::ios::beg);
-		m_next_position = std::ios::beg;
-		std::string line_tmp;
-		std::string sub_tmp;
-		std::string::size_type _StartIterator = 0;
-		std::string::size_type _ItemIteratorPos = 0;
+        //create Userinfo
+        return mf_create_user_info();
+    }
 
-		try
-		{
-			do
-			{
-				m_userinfo_txt.seekg(m_next_position);
-				fm::_getline(m_userinfo_txt, line_tmp);
-				_ItemIteratorPos = line_tmp.find_first_of("~", _StartIterator);
-				sub_tmp = std::string(line_tmp.substr(_StartIterator, _ItemIteratorPos - _StartIterator));
-				m_next_position = std::stoi(sub_tmp);
-				_StartIterator = 0;
+    _Openmode &User::mf_create_user_info()
+    {
+        try
+        {
+            //get necessary info
+            std::string _first_name = "";
+            std::string _last_name = "";
 
-			} while (line_tmp.find(_ID) == std::string::npos && m_userinfo_txt.is_open());
-		}
-		catch (const std::ifstream::failure &e)
-		{
-			log("\nIt seems this User does not yet exist. Please create a new one.\n");
-			create_user_info(_ID);
-			load_userinfo(_ID);
-		};
+            log("Please enter your FIRST name: ");
+            std::getline(std::cin, _first_name);
+            log("Please enter your LAST name: ");
+            std::getline(std::cin, _last_name);
 
-		//read the name
-		fm::_getline(m_userinfo_txt, line_tmp);
-		_ItemIteratorPos = line_tmp.find_first_of(":");
-		sub_tmp = std::string(line_tmp.substr(_ItemIteratorPos + 1));
-		sub_tmp.at(sub_tmp.find_first_of(",")) = ' ';
-		m_user_name = sub_tmp;
-		fm::_getline(m_userinfo_txt, line_tmp);
+            //initialize name m_user_name
+            m_user_name.firstname = _first_name;
+            m_user_name.lastname = _last_name;
 
-		//read the books
-		fm::_getline(m_userinfo_txt, line_tmp);
-		while(line_tmp.at(0) == 'B'){
-			mvec_books.push_back(csv::Row(line_tmp, &m_bookheader));
-			fm::_getline(m_userinfo_txt, line_tmp);
-		}
+            //write data to file
+            m_userinfo_txt.seekg(0, std::ios_base::end);
 
-		//read the owned books
-		try
-		{
-			fm::_getline(m_userinfo_txt, line_tmp);
-			while (line_tmp.at(0) == 'B')
-			{
-				mvec_owned.push_back(csv::Row(line_tmp, &m_bookheader));
-				fm::_getline(m_userinfo_txt, line_tmp);
-			}
-		}
-		catch (const std::ifstream::failure &e)
-		{}
-		catch (const std::out_of_range &oor){}
-	}
-	catch (const std::ifstream::failure &e) //means something went wrong with reading
-	{
-		log("\nError loading userfile\n");
-		return false;
-	}
-	catch (const std::invalid_argument &e){ //means stoi did get an invalid argument
-		log("\nError reading next position in Userinfo\n");
-		return false;
-	}
+            //initialize _dimensions beg
+            m_dimensions.beg = m_userinfo_txt.tellg();
 
-	return true;
+            //write to file
+            m_userinfo_txt << "==============" << m_ID._string_id << "======\r\n";
+            m_userinfo_txt << "Name:" << m_user_name.fullname_csv << "\r\n";
+            m_userinfo_txt << "Books:"
+                           << "\r\n";
+            m_userinfo_txt << "Owned:"
+                           << "\r\n";
+            if (m_ID.mode == publisher)
+            {
+                m_userinfo_txt << "Published:\r\n";
+            }
 
-}
+            //initialize _dimensions end
+            m_dimensions.end = m_userinfo_txt.tellg();
 
-std::string_view Userinfo::get_name(){
-	if(m_user_name != ""){
-		return m_user_name;
-	}
-	else{
-		m_user_name = "Username not loaded.";
-		return m_user_name;
-	}
-}
+            //finish writing
+            m_userinfo_txt.seekg(m_dimensions.beg);
+            m_userinfo_txt << m_dimensions.end;
+            m_userinfo_txt << "~";
+            m_userinfo_txt.flush();
 
+            //finish initialization of dimensions
+            m_dimensions.space = m_dimensions.end - m_dimensions.beg;
+            switch (m_mode)
+            {
+            case publisher:
+                m_dimensions.freespace = publishersize;
+                break;
+            default:
+                m_dimensions.freespace = usersize;
+                break;
+            }
+        }
+        catch (const std::ifstream::failure &e)
+        {
+            log("Error creating userfile\n");
+            mf_set_state(failbit);
+            mf_set_mode(failure);
+            return m_mode;
+        }
 
-//User
+        return m_mode;
+    }
 
-User::User(){
-	//temporary allocated values
-	mptr_username = new std::string;
-	mptr_password = new std::string;
+    _Openmode &User::mf_load_userinfo()
+    {
+        if (!m_mode)
+        {
+            return m_mode;
+        }
 
-	//longer allocation
-	try
-	{
-		mptr_csv_parser = new csv::CSVParser(m_path_userfile, m_userfile_header);
-	}
-	catch (csv::Error &e)
-	{
-		log(e.what());
-	}
-	mptr_userinfo = new Userinfo;
-	m_ID = "U";
-};
+        //try reading Userinfo.txt
+        try
+        {
+            //stack variables
+            int _next_position = 0;
 
-User::~User(){
-	delete mptr_csv_parser;
-	if(mptr_userinfo)
-		delete mptr_userinfo;
+            //set position at beginning and find the next user position while checking for the uid
+            m_userinfo_txt.seekg(std::ios::beg);
+            _next_position = std::ios::beg;
+            std::string line_tmp;
+            std::string sub_tmp;
+            std::string::size_type _StartIterator = 0;
+            std::string::size_type _ItemIteratorPos = 0;
 
-	//temporary deleting them here later got to change that
-	delete mptr_username;
-	delete mptr_password;
-};
+            try
+            {
+                do
+                {
+                    m_userinfo_txt.seekg(_next_position);
+                    fm::_getline(m_userinfo_txt, line_tmp);
+                    _ItemIteratorPos = line_tmp.find_first_of("~", _StartIterator);
+                    sub_tmp = std::string(line_tmp.substr(_StartIterator, _ItemIteratorPos - _StartIterator));
+                    _next_position = std::stoi(sub_tmp);
+                    _StartIterator = 0;
 
-bool User::m_user_request(){
-	int _tries = 0;
-	while(_tries < 3){
-		log("Username>> ");
-		std::getline(std::cin, *mptr_username);
-		log("Password>> ");
-		std::getline(std::cin, *mptr_password);
+                } while (line_tmp.find(m_ID._string_id) == std::string::npos && m_userinfo_txt.is_open());
+            }
+            catch (const std::ifstream::failure &e)
+            {
+                log("\nIt seems this User does not yet exist. Please create a new one.\n");
+                mf_create_user_info();
+                return m_mode;
+            };
 
-		for(csv::_HEADER_TYPE i = 0; i < mptr_csv_parser->size(); i++){
-			if(mptr_csv_parser->getRow(i)["USERNAME"] == *mptr_username){
-				if(mptr_csv_parser->getRow(i)["PASSWORD"] == *mptr_password){
-					m_login_flag = mptr_userinfo->load_userinfo(mptr_csv_parser->getRow(i)["UID"]);
-					return m_login_flag;
-				}
-			}
-		}
+            //read the name
+            fm::_getline(m_userinfo_txt, line_tmp);
+            _ItemIteratorPos = line_tmp.find_first_of(":");
+            sub_tmp = std::string(line_tmp.substr(_ItemIteratorPos + 1));
+            sub_tmp.at(sub_tmp.find_first_of(",")) = ' ';
+            m_user_name.init_name(sub_tmp);
+            fm::_getline(m_userinfo_txt, line_tmp);
 
-		log("Wrong username or password.\n");
-		++_tries;
-	}
+            //read the books
+            fm::_getline(m_userinfo_txt, line_tmp);
+            while (line_tmp.at(0) == 'B')
+            {
+                mvec_books.push_back(csv::Row(line_tmp, &m_bookheader));
+                fm::_getline(m_userinfo_txt, line_tmp);
+            }
 
-	return m_login_flag = false;
-};
+            //read the owned books
+            try
+            {
+                fm::_getline(m_userinfo_txt, line_tmp);
+                while (line_tmp.at(0) == 'B')
+                {
+                    mvec_owned.push_back(csv::Row(line_tmp, &m_bookheader));
+                    fm::_getline(m_userinfo_txt, line_tmp);
+                }
+            }
+            catch (const std::ifstream::failure &e)
+            {
+                m_userinfo_txt.clear();
+            }
+            catch (const std::out_of_range &oor)
+            {
+                m_userinfo_txt.clear();
+            }
 
-bool User::m_create_user(){
-	csv::Row* _temp_rowptr = new csv::Row();
-	std::regex _reg_username{"(?!.*,)(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$"};
-	std::regex _reg_password{"(?!.*,)(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*<>_]).{8,}"};
-	
-	//Get Username
-	do
-	{
-		log("New Username>> ");
-		std::getline(std::cin, *mptr_username);
-		while(!std::regex_match(*mptr_username, _reg_username)){
-			log("Username must contain 8-20 Characters, start and end with a character,	can contain numbers, '.' and '_'\n");
-			log("New Username>> ");
-			std::getline(std::cin, *mptr_username);
-		}
-		
-		if(mptr_csv_parser->find_first_of(*mptr_username, "USERNAME")){
-			log("Username already exists\n");
-			continue;
-		}
-		else{
-			break;
-		}
-	} while (true);
-	_temp_rowptr->add_value(*mptr_username);
+            //read published books if necessary
+            if (m_mode == publisher)
+            {
+                try
+                {
+                    fm::_getline(m_userinfo_txt, line_tmp);
+                    while (line_tmp.at(0) == 'B')
+                    {
+                        mvec_owned.push_back(csv::Row(line_tmp, &m_bookheader));
+                        fm::_getline(m_userinfo_txt, line_tmp);
+                    }
+                }
+                catch (const std::ifstream::failure &e)
+                {
+                    m_userinfo_txt.clear();
+                }
+                catch (const std::out_of_range &oor)
+                {
+                    m_userinfo_txt.clear();
+                }
+            }
+        }
+        catch (const std::ifstream::failure &e) //means something went wrong with reading
+        {
+            log("\nError loading userfile\n");
+            mf_set_state(failbit);
+            mf_set_mode(failure);
+            return m_mode;
+        }
+        catch (const std::invalid_argument &e)
+        { //means stoi did get an invalid argument
+            log("\nError reading next position in Userinfo\n");
+            mf_set_state(failbit);
+            mf_set_mode(failure);
+            return m_mode;
+        }
 
-	//Get Password
-	log("New Password>> ");
-	std::getline(std::cin, *mptr_password);
-	while (!std::regex_match(*mptr_password, _reg_password))
-	{
-		log("Password criteria:\n - min. 8 characters ");
-		log("\n - One upper one lower case character \n - One number\n - one special character eg. #?!@$%^&*<>_\n");
-		log("New Password>> ");
-		std::getline(std::cin, *mptr_password);
-	}
-	_temp_rowptr->add_value(*mptr_password);
+        return m_mode;
+    }
 
-	//Create UID
-	_temp_rowptr->add_value(m_create_ID(100000,999999));
+    _Userstate &User::mf_set_state(const _Userstate &_state)
+    {
+        switch (_state)
+        {
+        case goodbit:
+            this->m_state = goodbit;
+            break;
+        case incobit:
+            this->m_state = incobit;
+            break;
+        case badbit:
+            this->m_state = badbit;
+            break;
+        default:
+            this->m_state = failbit;
+            break;
+        }
 
-	//write new User to Userfile and save in Parser
-	mptr_csv_parser->addRow(*_temp_rowptr);
+        return m_state;
+    }
 
-	//create Userinfo in Userinfo.txt and load it 
-	if(	mptr_userinfo->create_user_info(m_ID) == true &&
-	mptr_userinfo->load_userinfo(m_ID) == true){
-		return true;
-	}
-	else
-		return false;
+    _Openmode &User::mf_set_mode(const _Openmode &_mode)
+    {
+        switch (_mode)
+        {
+        case user:
+            this->m_mode = user;
+            break;
+        case publisher:
+            this->m_mode = publisher;
+            break;
+        case admin:
+            this->m_mode = admin;
+            break;
+        case notlogged:
+            this->m_mode = notlogged;
+            break;
+        default:
+            this->m_mode = failure;
+            break;
+        }
 
-};
+        return m_mode;
+    }
 
-std::string_view User::m_create_ID(int min, int max){
-		std::uniform_int_distribution<> _distribution(min, max);
-		std::random_device _random_dev;
-		std::default_random_engine _generator(_random_dev());
-		int _rand = _distribution(_generator);
-	do
-	{
-		m_ID += std::to_string(_rand);
-		if(mptr_csv_parser->find_first_of(m_ID, "UID")){
-			char _token = m_ID.at(0);
-			m_ID = _token;
-			continue;
-		}
-		else{
-			break;
-		}
+    std::string_view User::mf_create_ID(csv::CSVParser &_parser, _Openmode &_mode, size_t _min, size_t _max)
+    {
+        std::uniform_int_distribution<> _distribution(_min, _max);
+        std::random_device _random_dev;
+        std::default_random_engine _generator(_random_dev());
+        int _rand = _distribution(_generator);
+        std::string temp = "";
 
-	} while (true);
+        switch (_mode)
+        {
+        case failure:
+            throw Error("User: Create ID: usermode set to 'failure'");
+            break;
+        case notlogged:
+            throw Error("User: Create ID: usermode set to 'notlogged'");
+            break;
+        default:
+            temp += _mode;
+            break;
+        }
 
-	return m_ID;
-}
+        do
+        {
+            temp += std::to_string(_rand);
+            if (_parser.find_first_of(temp, "UID"))
+            {
+                char _token = temp.at(0);
+                temp = _token;
+                continue;
+            }
+            else
+            {
+                break;
+            }
 
-Userinfo& User::login(){
-	char _yn = 0;
-	while (true)
-	{
-		log("Log into an existing Account? [y/n/e]\n>>");
-		std::cin >> _yn;
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		if (!std::cin.fail())
-		{
-			switch (_yn)
-			{
-			case 'y':
-				if (m_user_request())
-				{
-					log("Successfully logged in\n");
-					log(">>>>>>>>>>>>>>>>>>>>>>  WELCOME BACK ");
-					log(mptr_userinfo->get_name());
-					log("  <<<<<<<<<<<<<<<<<<<<<<\n");
-					return *mptr_userinfo;
-				}
-				else {
-					log("Failed to log in.\n");
-				}
-				break;
+        } while (true);
 
-			case 'n':
-				if (m_create_user())
-				{
-					log("Registration complete.\n");
-					log("Successfully logged in\n");
-					log(">>>>>>>>>>>>>>>>>>>>>>  WELCOME BACK ");
-					log(mptr_userinfo->get_name());
-					log("  <<<<<<<<<<<<<<<<<<<<<<\n");
-					return *mptr_userinfo;
-				}
-				else
-				{
-					log("Failed to register new account.\n");
-				}
-				break;
+        m_ID.init_id(temp);
 
-			case 'e':
-				delete mptr_userinfo;
-				mptr_userinfo = nullptr;
-				return *mptr_userinfo;
+        return m_ID._string_id;
+    }
 
-			default:
-				log("Wrong input. Enter 'y' or 'n'. 'e' for exit\n");
-				break;
-			}
-		}
-		else
-		{
-			log("Wrong input. Enter 'y' or 'n'. 'e' for exit\n");
-			std::cin.clear();
-		}
-	}
-};
+    //public Members
+    User::User()
+    {
+        m_userinfo_txt.exceptions(std::ifstream::failbit);
+        try
+        {
+            //open txtfile
+            m_userinfo_txt.open(m_path_userinfo, std::ios::in | std::ios::out | std::ios::binary);
+        }
+        catch (const std::ifstream::failure &e)
+        {
+            try
+            {
+                m_userinfo_txt.open(m_path_userinfo, std::ios::in | std::ios::out | std::ios::binary | std::ios::app);
+                m_userinfo_txt.close();
+                m_userinfo_txt.open(m_path_userinfo, std::ios::in | std::ios::out | std::ios::binary);
+            }
+            catch (const std::ifstream::failure &e)
+            {
+                throw Error(std::string("User: Error creating new Database: ").append(e.what()));
+            }
+            log("User: Initilized new database\n");
+        }
+    }
 
-bool User::is_logged(){
-	return m_login_flag;
-};
+    User::~User()
+    {
+        mf_set_mode(notlogged);
+        m_userinfo_txt.flush();
+        m_userinfo_txt.close();
+    }
 
-void User::logout(){
-	m_login_flag = false;
-};
+    _Openmode &User::login()
+    {
+        try
+        {
+            //initialize needed files
+            csv::Header _userfile_header{"USERNAME,PASSWORD,UID"};
+            std::string _path_userfile{fm::init_workingdir() + "Data\\Userfile.csv"};
+            csv::CSVParser _userfile_csv{_path_userfile, _userfile_header};
+
+            //login page
+            char _yn = 0;
+            while (m_state)
+            {
+                log("Log into an existing Account? [y/n/e]\n>>");
+                std::cin >> _yn;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                if (!std::cin.fail())
+                {
+                    switch (_yn)
+                    {
+                    case 'y':
+                        if (mf_set_mode(mf_authenticate_user(_userfile_csv)))
+                        {
+                            log("Successfully logged in\n");
+                            log("Read Userinfo...");
+                            return mf_load_userinfo();
+                        }
+                        else
+                        {
+                            log("Failed to log in. Try again\n");
+                        }
+                        break;
+
+                    case 'n':
+                        if (mf_set_mode(mf_create_user(_userfile_csv)))
+                        {
+                            log("Registration complete\n");
+                            log("Successfully logged in\n");
+                            return m_mode;
+                        }
+                        else
+                        {
+                            log("Failed to register new account. Try again\n");
+                        }
+                        break;
+
+                    case 'e':
+                        return mf_set_mode(failure);
+
+                    default:
+                        log("Wrong input. Enter 'y' or 'n'. 'e' for exit\n");
+                        break;
+                    }
+                }
+                else
+                {
+                    log("Wrong input. Enter 'y' or 'n'. 'e' for exit\n");
+                    std::cin.clear();
+                }
+            }
+        }
+        catch (const csv::Error &e)
+        {
+        }
+    }
+
+    _Openmode &User::logout()
+    {
+        mf_set_mode(notlogged);
+        return m_mode;
+    }
+
+    const _Openmode &User::get_mode()
+    {
+        return m_mode;
+    }
+
+    const _Userstate &User::get_state()
+    {
+        return m_state;
+    }
+
+    std::string_view User::get_name()
+    {
+        return m_user_name.fullname;
+    }
+
+    const _ID &User::get_id()
+    {
+        return m_ID;
+    }
+
+} //end user

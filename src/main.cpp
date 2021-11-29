@@ -7,19 +7,24 @@
 void print_welcome();
 
 int main() {
+	try{
+	Library lib{};
 	std::string login_type = "";
 	print_welcome();
 	std::cin.get();
-
-	while (true) {
+	system("cls");
+	
+	while (lib.run_library()) {
 		system("cls");
-		log("Enter type of login (e.g user, publisher, admin - press ENTER for default)>>  ");
-		if(!std::getline(std::cin, login_type)){/*do something*/}
-		Library lib{login_type};
-		if(!lib.run_library())
-			break;
-
 	} 
+
+	}
+	catch (const csv::Error& e){
+
+	}
+	catch (const user::Error& e){
+
+	}
 
 	return 0;
 }
