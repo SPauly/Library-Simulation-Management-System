@@ -31,10 +31,10 @@ namespace user
         _Statmask = 0x17
     };
 
-    static constexpr _Userstate goodbit = (_Userstate)0x0; //everything's fine
-    static constexpr _Userstate incobit = (_Userstate)0x1; //incosistency bit
-    static constexpr _Userstate failbit = (_Userstate)0x2; //failure
-    static constexpr _Userstate badbit = (_Userstate)0x4;  //Input error
+    static constexpr _Userstate goodbit = (_Userstate)0x1; //everything's fine
+    static constexpr _Userstate incobit = (_Userstate)0x2; //incosistency bit
+    static constexpr _Userstate failbit = (_Userstate)0x0; //failure
+    static constexpr _Userstate badbit = (_Userstate)0x3;  //Input error
 
     enum _Size
     {
@@ -46,7 +46,7 @@ namespace user
 
     struct _ID
     {
-        _Openmode mode = failure;
+        _Openmode mode = notlogged;
         std::string _string_id = "";
         _ID &init_id(std::string_view _id)
         {
@@ -82,15 +82,16 @@ namespace user
     {
         std::string firstname = "";
         std::string lastname = "";
-        std::string_view fullname = this->firstname + " " + this->lastname;
-        std::string_view fullname_csv = this->firstname + "," + this->lastname;
+        std::string fullname = "";
+        std::string fullname_csv = "";
         std::string_view init_name(std::string_view name)
         {
             int _iter = name.find_first_of(" ");
             firstname = std::string(name.substr(0, _iter));
             lastname = std::string(name.substr(_iter + 1));
             fullname = name;
-            fullname_csv = this->firstname + "," + this->lastname;
+            fullname_csv = firstname + "," + lastname;
+            return fullname;
         }
     };
 
@@ -101,7 +102,7 @@ namespace user
     { //holds the user and is responsible for login, logout and activity log -> gets automatically deleted with logout
     private:
         _Userstate m_state = goodbit;
-        _Openmode m_mode = failure; //flag to indicate wheather user is logged in or not
+        _Openmode m_mode = notlogged; //flag to indicate wheather user is logged in or not
 
         _dimensions m_dimensions;
 

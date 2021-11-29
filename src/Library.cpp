@@ -1,42 +1,21 @@
 #include "Library.h"
 
-Library::Library(std::string_view _config){
-    //establish login type and create user
-    if(_config == "publisher"){
-        m_config = 1;
-        //mptr_user = new Publisher{}
-        mptr_user = new User{};
-    }   
-    else if (_config == "admin"){
-        m_config = 2;
-        //mptr_user = new Admin{}
-        mptr_user = new User{};
-    }
-    else{
-        mptr_user = new User{};
-    }
+Library::Library(){}
 
-    //initialize Library files
-    try{
-        mptr_csv_parser = new csv::CSVParser(m_inventory_path, m_inventory_structure);
-    }
-    catch(csv::Error &e){
-        log(e.what());
-    }
-
-    //log in User and get Userinfo ptr for Library
-    mptr_userinfo = &mptr_user->login();
-
-}
-
-Library::~Library(){
-    delete mptr_user;
-    delete mptr_csv_parser;
-}
+Library::~Library(){}
 
 bool Library::run_library() {
     char input;
-    while(mptr_userinfo){
+
+    if(m_user.get_mode() == user::notlogged){
+        if(m_user.login()){
+            log("================== WELCOME BACK ");
+            log(m_user.get_name());
+            log(" ===================\n");
+        }
+    }
+
+    while(m_is_good && m_user.get_mode()){
         log("\n                           Menu\n");
         log(" [1] Rent a book (unavailable)     [2] Read a book (unavailable)\n");
         log(" [4] Show my books (unavailable)   [5] List books (unavailable)\n");
@@ -53,10 +32,11 @@ bool Library::run_library() {
 			{
                 case '8':
                     log("Logging out\n");
-                    mptr_user->logout();
+                    m_user.logout();
                     log("Logout successful. Press 'Enter'\n");
                     return m_is_good = true;
                 case '9':
+                    m_user.logout();
                     return m_is_good = false;
                 default:
                     log("Function not supported.\n");

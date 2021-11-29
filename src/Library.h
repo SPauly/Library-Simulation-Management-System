@@ -2,20 +2,19 @@
 #include "CSVParser.h"
 #include "User.h"
 
-using CONFIG_TYPE = unsigned int;
+struct BID : public user::_ID {
+};
 
 class Library {
 private:
-    CONFIG_TYPE m_config = 0; //0 = User, 1 = Publisher, 2 = Admin
     bool m_is_good = true;
-    User* mptr_user = nullptr;
-    Userinfo* mptr_userinfo = nullptr;
-    csv::CSVParser* mptr_csv_parser = nullptr;
+    user::User m_user{};
+    
     csv::Header m_inventory_structure{"BID,NAME,AUTHOR,COPIES,RENTED,LINK"};
     std::string m_inventory_path{(fm::init_workingdir() + "Data\\Inventory.csv")};
+    csv::CSVParser m_csv_parser{m_inventory_path, m_inventory_structure};
 public:
-    Library() = delete;
-    Library(std::string_view);
+    Library();
     ~Library();
 
     bool run_library();
