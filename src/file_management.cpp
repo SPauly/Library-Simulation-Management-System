@@ -35,3 +35,7 @@ std::fstream& fm::_getline(std::fstream &stream, std::string& line){
     }
     return stream;
 }
+
+bool fm::fast_insert(std::fstream& _file, std::string_view _content, const size_t& _pos, user::_dimensions& _dimensions, const char& _token)
+{
+}
