@@ -21,6 +21,6 @@ namespace fm
     std::fstream &_getline(std::fstream&, std::string&);
     //insert in file functions
     bool fast_insert(std::fstream&, std::string_view, const size_t&, user::_dimensions&, const char&); //_file, _content, _pos, _dimensions, _token
-
+    bool slow_insert(std::fstream&, std::string_view, const size_t&, user::_dimensions&, const char&);
 
 };

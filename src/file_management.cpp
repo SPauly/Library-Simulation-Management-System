@@ -38,4 +38,39 @@ std::fstream& fm::_getline(std::fstream &stream, std::string& line){
 
 bool fm::fast_insert(std::fstream& _file, std::string_view _content, const size_t& _pos, user::_dimensions& _dimensions, const char& _token)
 {
+    try
+    {
+        //see if space is enough
+        if (_dimensions.freespace < _content.size() + 2)
+        {
+            //call slow_insert
+            return false;
+        }
+
+        //insert in file
+        _file.seekp(_pos);
+        _file >> _content;
+        _file >> "\r\n";
+
+        _file.flush();
+        _file.clear();
+    }
+    catch (const std::out_of_range oor)
+    {
+    }
+    catch(const std::ios::failure &e){
+
+    }
+}
+
+bool fm::slow_insert(std::fstream& _file, std::string_view _content, const size_t& _pos, user::_dimensions& _dimensions, const char& _token)
+{
+    //Initialize buffer
+            char *buf = new char[_dimensions.space];
+            _file.seekg(_dimensions.beg);
+            for (size_t i = _file.tellg(); i != _dimensions.end; i++)
+            {
+                _file.get(buf[i - _dimensions.beg]);
+            }
+                    delete[] buf;
 }
