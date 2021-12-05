@@ -43,7 +43,7 @@ namespace user
 
     static constexpr _Size usersize = (_Size)420;
     static constexpr _Size publishersize = (_Size)630;
-
+    
     struct _ID
     {
         _Openmode mode = notlogged;

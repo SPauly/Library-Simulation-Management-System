@@ -36,41 +36,60 @@ std::fstream& fm::_getline(std::fstream &stream, std::string& line){
     return stream;
 }
 
-bool fm::fast_insert(std::fstream& _file, std::string_view _content, const size_t& _pos, user::_dimensions& _dimensions, const char& _token)
+size_t& fm::fast_insert(std::fstream &_file, std::string_view _content, const size_t &_pos, const size_t& _beg, const size_t& _end, const char &_token, size_t& _freespace)
 {
+    size_t space = _end - _beg;
+    size_t contentsize = _content.size();
     try
     {
+        //Initialize buffer
+        
+        char *buf = new char[space];
+        _file.seekg(_beg);
+        for (size_t i = 0; i < space; i++)
+        {
+            _file.get(buf[i]);
+        }
+    
         //see if space is enough
-        if (_dimensions.freespace < _content.size() + 2)
+        if (_freespace < contentsize + 2)
         {
             //call slow_insert
-            return false;
+            return _freespace;
         }
 
-        //insert in file
+        //check if space is actualy free
+        for(int i = 0; i < contentsize; i++){
+            if(buf[i + _pos - _beg] != _token){
+                //do something here to modify buf and write the characters at the back
+            }
+        }
+
+        //insert modified buffer in file
         _file.seekp(_pos);
-        _file >> _content;
-        _file >> "\r\n";
+        _file << buf;
+        _file << "\r\n";
+
+        //update _freespace 
+        _freespace -= (contentsize + 2);
 
         _file.flush();
         _file.clear();
+        delete[] buf;
     }
     catch (const std::out_of_range oor)
     {
+         _freespace = npos;
+         return _freespace;
     }
     catch(const std::ios::failure &e){
-
+         _freespace = npos;
+        return _freespace;
     }
+    return _freespace;
 }
 
-bool fm::slow_insert(std::fstream& _file, std::string_view _content, const size_t& _pos, user::_dimensions& _dimensions, const char& _token)
+bool fm::slow_insert(std::fstream &_file, std::string_view _content, const size_t &_pos, const size_t& _beg, const size_t& _end, const char &_token, size_t& _freespace)
 {
-    //Initialize buffer
-            char *buf = new char[_dimensions.space];
-            _file.seekg(_dimensions.beg);
-            for (size_t i = _file.tellg(); i != _dimensions.end; i++)
-            {
-                _file.get(buf[i - _dimensions.beg]);
-            }
-                    delete[] buf;
+
 }

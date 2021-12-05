@@ -143,11 +143,26 @@ namespace user
             m_userinfo_txt << "Name:" << m_user_name.fullname_csv << "\r\n";
             m_userinfo_txt << "Books:"
                            << "\r\n";
+            for (int i = 0; i < m_dimensions.freespace / 2; i++)
+            {
+                m_userinfo_txt << "-";
+            }
+            m_userinfo_txt << "\r\n";
             m_userinfo_txt << "Owned:"
                            << "\r\n";
+            for (int i = 0; i < m_dimensions.freespace / 2; i++)
+            {
+                m_userinfo_txt << "-";
+            }
+            m_userinfo_txt << "\r\n";
             if (m_ID.mode == publisher)
             {
                 m_userinfo_txt << "Published:\r\n";
+                for (int i = 0; i < m_dimensions.freespace / 2; i++)
+                {
+                    m_userinfo_txt << "-";
+                }
+                m_userinfo_txt << "\r\n";
             }
 
             //initialize _dimensions end

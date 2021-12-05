@@ -28,7 +28,6 @@
                 "c++17",
                 "-g",
                 "${workspaceFolder}\\src\\*.cpp",
-                "${workspaceFolder}\\src\\*.h",
                 "-static",
                 "-static-libgcc",
                 "-static-libstdc++",

@@ -1,5 +1,4 @@
 #pragma once
-#include "User.h"
 #include <filesystem>
 #include <fstream>
 
@@ -19,8 +18,10 @@ namespace fm
 
     //CLRF safe getline
     std::fstream &_getline(std::fstream&, std::string&);
+
     //insert in file functions
-    bool fast_insert(std::fstream&, std::string_view, const size_t&, user::_dimensions&, const char&); //_file, _content, _pos, _dimensions, _token
-    bool slow_insert(std::fstream&, std::string_view, const size_t&, user::_dimensions&, const char&);
+    static constexpr size_t npos = -1;
+    size_t& fast_insert(std::fstream&, std::string_view, const size_t&, const size_t&, const size_t&, const char&, size_t&); //_file, _content, _pos, _beg, _end, _token, _freespace
+    bool slow_insert(std::fstream&, std::string_view, const size_t&, const size_t&, const size_t&, const char&, size_t&);
 
 };
