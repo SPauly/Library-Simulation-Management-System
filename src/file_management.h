@@ -21,7 +21,8 @@ namespace fm
 
     //insert in file functions
     static constexpr size_t npos = -1;
+    template<typename T> T& buf_insert(T&, std::string_view, const size_t&, const char&); //ptr to buffer, content, pos to insert, token
     size_t& fast_insert(std::fstream&, std::string_view, const size_t&, const size_t&, const size_t&, const char&, size_t&); //_file, _content, _pos, _beg, _end, _token, _freespace
-    bool slow_insert(std::fstream&, std::string_view, const size_t&, const size_t&, const size_t&, const char&, size_t&);
+    size_t& slow_insert(std::fstream&, std::string_view, const size_t&, const size_t&, const size_t&, const char&, size_t&);
 
 };

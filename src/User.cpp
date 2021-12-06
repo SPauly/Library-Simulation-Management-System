@@ -470,6 +470,8 @@ namespace user
                         {
                             log("Registration complete\n");
                             log("Successfully logged in\n");
+                            log("Add first book to userfile:");
+                            log(fm::fast_insert(m_userinfo_txt, m_user_name.fullname, 55, m_dimensions.beg, m_dimensions.end, '-', m_dimensions.freespace));
                             return m_mode;
                         }
                         else
