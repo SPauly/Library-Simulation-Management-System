@@ -139,7 +139,7 @@ namespace user
             m_dimensions.beg = m_userinfo_txt.tellg();
 
             //write to file
-            m_userinfo_txt << "==============" << m_ID._string_id << "======\r\n";
+            m_userinfo_txt << "==============" << m_ID.id_string << "======\r\n";
             m_userinfo_txt << "Name:" << m_user_name.fullname_csv << "\r\n";
             m_userinfo_txt << "Books:"
                            << "\r\n";
@@ -229,20 +229,18 @@ namespace user
                     _next_position = std::stoi(sub_tmp);
                     _StartIterator = 0;
 
-                } while (line_tmp.find(m_ID._string_id) == std::string::npos && m_userinfo_txt.is_open());
+                } while (line_tmp.find(m_ID.id_string) == std::string::npos && m_userinfo_txt.is_open());
             }
             catch (const std::ifstream::failure &e)
             {
                 log("\nIt seems this User does not yet exist. Please create a new one.\n");
-                mf_create_user_info();
-                return m_mode;
+                return mf_create_user_info();
             };
 
             //read the name
             fm::_getline(m_userinfo_txt, line_tmp);
             _ItemIteratorPos = line_tmp.find_first_of(":");
             sub_tmp = std::string(line_tmp.substr(_ItemIteratorPos + 1));
-            sub_tmp.at(sub_tmp.find_first_of(",")) = ' ';
             m_user_name.init_name(sub_tmp);
             fm::_getline(m_userinfo_txt, line_tmp);
 
@@ -397,7 +395,7 @@ namespace user
 
         m_ID.init_id(temp);
 
-        return m_ID._string_id;
+        return m_ID.id_string;
     }
 
     //public Members
