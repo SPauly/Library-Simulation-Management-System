@@ -37,7 +37,7 @@ std::fstream& fm::_getline(std::fstream &stream, std::string& line){
 }
 
 template <typename T>
-T &fm::buf_insert(T& _buf, std::string_view _content, const size_t &_pos, const char &_token)
+T &fm::buf_insert(T& _buf, std::string_view _content, const size_t &_pos, const char &_token) [[deprecated("This function currently overrides all characters and has no oor checks")]]
 {
     //check if buf is big enough
 
@@ -78,7 +78,7 @@ size_t& fm::fast_insert(std::fstream &_file, std::string_view _content, const si
         buf[space] = '\0';
     
         //see if space is enough
-        if (_freespace < contentsize)
+        if (_freespace < contentsize || space < contentsize)
         {
             return slow_insert(_file, _content, _pos, _beg, _end, _token, _freespace);
         }

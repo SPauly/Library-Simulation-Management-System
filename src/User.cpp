@@ -130,7 +130,7 @@ namespace user
             std::getline(std::cin, _last_name);
 
             //initialize name m_user_name
-            m_user_name.init_name(_first_name + " " + _last_name);
+            m_user_name.init_name(_first_name + "," + _last_name);
 
             //write data to file
             m_userinfo_txt.seekg(0, std::ios_base::end);
