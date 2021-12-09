@@ -43,11 +43,11 @@ namespace user
 
     static constexpr _Size usersize = (_Size)420;
     static constexpr _Size publishersize = (_Size)630;
-
+    
     struct _ID
     {
         _Openmode mode = notlogged;
-        std::string _string_id = "";
+        std::string id_string = "";
         _ID &init_id(std::string_view _id)
         {
             switch (_id[0])
@@ -65,7 +65,7 @@ namespace user
                 mode = failure;
                 return *this;
             }
-            _string_id = _id;
+            id_string = _id;
             return *this;
         }
     };
@@ -74,8 +74,9 @@ namespace user
     {
         size_t beg = 0;
         size_t end = 0;
-        size_t space = this->end - this->beg;
+        size_t space = 0;
         size_t freespace = usersize;
+        const char token = '-';
     };
 
     struct name
@@ -86,17 +87,14 @@ namespace user
         std::string fullname_csv = "";
         std::string_view init_name(std::string_view name)
         {
-            int _iter = name.find_first_of(" ");
+            int _iter = name.find_first_of(",");
             firstname = std::string(name.substr(0, _iter));
             lastname = std::string(name.substr(_iter + 1));
-            fullname = name;
-            fullname_csv = firstname + "," + lastname;
+            fullname = firstname + " " + lastname;
+            fullname_csv = name;
             return fullname;
         }
     };
-
-    //bool m_user_request(); //deals with authentification of the user
-    //bool m_create_user();  //deals with creating a new user
 
     class User
     { //holds the user and is responsible for login, logout and activity log -> gets automatically deleted with logout

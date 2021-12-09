@@ -130,7 +130,7 @@ namespace user
             std::getline(std::cin, _last_name);
 
             //initialize name m_user_name
-            m_user_name.init_name(_first_name + " " + _last_name);
+            m_user_name.init_name(_first_name + "," + _last_name);
 
             //write data to file
             m_userinfo_txt.seekg(0, std::ios_base::end);
@@ -139,15 +139,30 @@ namespace user
             m_dimensions.beg = m_userinfo_txt.tellg();
 
             //write to file
-            m_userinfo_txt << "==============" << m_ID._string_id << "======\r\n";
+            m_userinfo_txt << "==============" << m_ID.id_string << "======\r\n";
             m_userinfo_txt << "Name:" << m_user_name.fullname_csv << "\r\n";
             m_userinfo_txt << "Books:"
                            << "\r\n";
+            for (int i = 0; i < usersize / 2; i++)
+            {
+                m_userinfo_txt << "-";
+            }
+            m_userinfo_txt << "\r\n";
             m_userinfo_txt << "Owned:"
                            << "\r\n";
+            for (int i = 0; i < usersize / 2; i++)
+            {
+                m_userinfo_txt << "-";
+            }
+            m_userinfo_txt << "\r\n";
             if (m_ID.mode == publisher)
             {
                 m_userinfo_txt << "Published:\r\n";
+                for (int i = 0; i < publishersize / 3; i++)
+                {
+                    m_userinfo_txt << "-";
+                }
+                m_userinfo_txt << "\r\n";
             }
 
             //initialize _dimensions end
@@ -178,7 +193,7 @@ namespace user
             mf_set_mode(failure);
             return m_mode;
         }
-        mf_set_mode(m_ID.mode);
+
         return m_mode;
     }
 
@@ -214,20 +229,18 @@ namespace user
                     _next_position = std::stoi(sub_tmp);
                     _StartIterator = 0;
 
-                } while (line_tmp.find(m_ID._string_id) == std::string::npos && m_userinfo_txt.is_open());
+                } while (line_tmp.find(m_ID.id_string) == std::string::npos && m_userinfo_txt.is_open());
             }
             catch (const std::ifstream::failure &e)
             {
                 log("\nIt seems this User does not yet exist. Please create a new one.\n");
-                mf_create_user_info();
-                return m_mode;
+                return mf_create_user_info();
             };
 
             //read the name
             fm::_getline(m_userinfo_txt, line_tmp);
             _ItemIteratorPos = line_tmp.find_first_of(":");
             sub_tmp = std::string(line_tmp.substr(_ItemIteratorPos + 1));
-            sub_tmp.at(sub_tmp.find_first_of(",")) = ' ';
             m_user_name.init_name(sub_tmp);
             fm::_getline(m_userinfo_txt, line_tmp);
 
@@ -382,7 +395,7 @@ namespace user
 
         m_ID.init_id(temp);
 
-        return m_ID._string_id;
+        return m_ID.id_string;
     }
 
     //public Members

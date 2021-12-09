@@ -1,7 +1,5 @@
 #pragma once
-#include "CSVParser.h"
 #include "User.h"
-
 struct BID : public user::_ID {
 };
 

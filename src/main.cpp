@@ -11,7 +11,6 @@ int main()
 	try
 	{
 		Library lib{};
-		std::string login_type = "";
 		print_welcome();
 		std::cin.get();
 		system("cls");
