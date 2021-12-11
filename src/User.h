@@ -1,5 +1,6 @@
 #pragma once
 #include "CSVParser.h"
+#include "Book.h"
 #include <iostream>
 #include <limits>
 #include <regex>
@@ -111,7 +112,7 @@ namespace user
         std::vector<csv::Row> mvec_owned;
         std::vector<csv::Row> mvec_published;
 
-        std::string m_path_userinfo{fm::init_workingdir() + "Data\\Userinfo.txt"};
+        std::string m_path_userinfo{fm::init_workingdir() + "Data/Userinfo.txt"};
         csv::Header m_bookheader{"BID,DATE,POSITION"};
         std::fstream m_userinfo_txt;
 
@@ -127,6 +128,7 @@ namespace user
         User();
         ~User();
 
+        _Userstate &add_book(Book&);
         _Openmode &login();
         _Openmode &logout();
 

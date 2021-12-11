@@ -6,7 +6,7 @@ Library::~Library(){}
 
 bool Library::run_library() {
     char input;
-
+    std::string bookname = "";
     if(m_user.get_mode() == user::notlogged){
         if(m_user.login()){
             log("================== WELCOME BACK ");
@@ -17,7 +17,7 @@ bool Library::run_library() {
 
     while(m_is_good && m_user.get_mode()){
         log("\n                           Menu\n");
-        log(" [1] Rent a book (unavailable)     [2] Read a book (unavailable)\n");
+        log(" [1] Rent a book (beta)            [2] Read a book (unavailable)\n");
         log(" [4] Show my books (unavailable)   [5] List books (unavailable)\n");
         log(" [6] Buy a book (unavailable)      [7] Return a book (unavailable)\n");
         log(" [8] Log out                       [9] Exit\n");
@@ -30,6 +30,15 @@ bool Library::run_library() {
 		{
 			switch (input)
 			{
+                case '1':
+                    log("Enter Bookname: ");
+                    std::getline(std::cin, bookname);
+                    if(!rent_book(bookname)){
+                        log("Book unavailable\n");
+                        break;
+                    }
+                    log("Rented " + bookname);
+                    break;
                 case '8':
                     log("Logging out\n");
                     m_user.logout();
@@ -49,4 +58,20 @@ bool Library::run_library() {
         }
     }
     return m_is_good = false;
+}
+
+bool Library::rent_book(std::string_view _bookname){    
+    try{
+        mptr_book = new Book(m_inventory_csv.find_first_of(_bookname, "NAME"));
+    }
+    catch(csv::Error &e){
+        return false;
+    }
+
+    if(mptr_book->is_available()){
+        mptr_book->increase_rented();
+        return m_user.add_book(*mptr_book);
+    }
+
+    return false;
 }

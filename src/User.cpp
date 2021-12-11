@@ -17,7 +17,7 @@ namespace user
             log("Password>> ");
             std::getline(std::cin, _password);
 
-            for (csv::_HEADER_TYPE i = 0; i < _parser.size(); i++)
+            for (unsigned int i = 0; i < _parser.size(); i++)
             {
                 if (_parser.getRow(i)["USERNAME"] == _username)
                 {
@@ -430,13 +430,17 @@ namespace user
         m_userinfo_txt.close();
     }
 
+    _Userstate &User::add_book(Book& _book){
+        return m_state;
+    }
+
     _Openmode &User::login()
     {
         try
         {
             //initialize needed files
             csv::Header _userfile_header{"USERNAME,PASSWORD,UID"};
-            std::string _path_userfile{fm::init_workingdir() + "Data\\Userfile.csv"};
+            std::string _path_userfile{fm::init_workingdir() + "Data/Userfile.csv"};
             csv::CSVParser _userfile_csv{_path_userfile, _userfile_header};
 
             //login page

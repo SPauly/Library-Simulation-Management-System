@@ -12,8 +12,6 @@
 
 namespace csv
 {
-    using _HEADER_TYPE = unsigned int;
-
     class Error : public std::runtime_error {
     public:
         Error(const std::string &msg) : 
@@ -30,21 +28,22 @@ namespace csv
 
         ~Row();
 
-        unsigned int size();
+        size_t size();
         void add_value(std::string_view);
-        std::string_view getvalue(_HEADER_TYPE &) const;
-        _HEADER_TYPE& get_item_position(std::string_view);
-        Row& set_headerptr(Row*);
+        std::string_view getvalue(unsigned int) const;
+        std::string_view getvalue(std::string_view) const;
+        unsigned int& get_item_position(std::string_view);
+        Row& set_headerptr(Row*); 
 
 
-        std::string_view operator[] (_HEADER_TYPE &) const;
+        std::string_view operator[] (unsigned int &) const;
         std::string_view operator[] (std::string_view) const;
 
     protected:
         std::vector<std::string> m_data;
     private:
         Row* mptr_header = nullptr;
-        _HEADER_TYPE m_item_pos = 0;
+        unsigned int m_item_pos = 0;
     };
 
     class Header : public Row
@@ -58,7 +57,7 @@ namespace csv
 
         std::string_view string();
     public:
-        _HEADER_TYPE _header_size;
+        size_t _header_size;
         std::string *_header_ptr;
     };
 
@@ -69,10 +68,10 @@ namespace csv
         CSVParser(const std::string &, Header&);
         ~CSVParser();
 
-        const unsigned int size();
+        const size_t size();
         Row& getRow(unsigned int&);
         bool addRow(Row&);
-        bool find_first_of(std::string_view,std::string_view); //later return iterator
+        Row* find_first_of(std::string_view,std::string_view); //later return iterator
     #ifdef _DEBUG_CSV
         void print_csv();
     #endif
