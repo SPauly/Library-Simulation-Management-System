@@ -30,12 +30,12 @@ namespace csv
 
         size_t size();
         void add_value(std::string_view);
+        Row& set_headerptr(Row*); 
+        bool change_value_in(std::string_view, std::string_view); //new value, Header to change -> returns false if new value is bigger than old
+
         std::string_view getvalue(unsigned int) const;
         std::string_view getvalue(std::string_view) const;
         unsigned int& get_item_position(std::string_view);
-        Row& set_headerptr(Row*); 
-
-
         std::string_view operator[] (unsigned int &) const;
         std::string_view operator[] (std::string_view) const;
 
@@ -71,6 +71,7 @@ namespace csv
         const size_t size();
         Row& getRow(unsigned int&);
         bool addRow(Row&);
+        bool updateRow(Row&);
         Row* find_first_of(std::string_view,std::string_view); //later return iterator
     #ifdef _DEBUG_CSV
         void print_csv();

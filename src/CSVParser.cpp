@@ -40,6 +40,22 @@ namespace csv
         m_data.push_back(std::string(_value));
     };
 
+    bool Row::change_value_in(std::string_view _header, std::string_view _newvalue){
+        if (mptr_header)
+        {
+            size_t pos = mptr_header->get_item_position(_header);
+            if(_newvalue.size() < m_data.at(pos).size() < _newvalue.size()){
+                return false;
+            }
+            m_data.at(pos) = _newvalue;
+        }
+        else
+        {
+            throw Error("Row: not linked to valid header");
+        }
+        return true;
+    }
+
     std::string_view Row::getvalue(unsigned int _header) const
     {   
         if(_header < m_data.size())

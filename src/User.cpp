@@ -431,6 +431,23 @@ namespace user
     }
 
     _Userstate &User::add_book(Book& _book){
+        std::string temp = "";
+        temp += _book.get_BID();
+        temp += ",MMDDYYYY,0000";
+        
+        try{
+            char finder = 0;
+            m_userinfo_txt.seekg(m_dimensions.beg);
+            do{
+                m_userinfo_txt.get(finder);
+            } while(finder != '-');
+            fm::fast_insert(m_userinfo_txt, temp, m_userinfo_txt.tellg(), m_dimensions.beg, m_dimensions.end, '-', m_dimensions.freespace);
+            //add book to user in class
+        }
+        catch(std::ios::failure &e){
+            return mf_set_state(failbit);
+        }
+
         return m_state;
     }
 

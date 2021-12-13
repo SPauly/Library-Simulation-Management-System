@@ -9,7 +9,8 @@ public:
     Book() = delete;
     Book(csv::Row*);
     ~Book();
+    int &increase_rented();
 
     bool is_available();
-    int &increase_rented();
+    std::string_view get_BID();
 };

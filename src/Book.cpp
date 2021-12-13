@@ -10,6 +10,9 @@ Book::~Book(){
     delete mrow_info;
 }
 
+int &Book::increase_rented(){
+}
+
 bool Book::is_available(){
     try{
         int copies = std::stoi(mrow_info->getvalue("COPIES").data());
@@ -22,4 +25,6 @@ bool Book::is_available(){
     return false;
 }
 
-int &Book::increase_rented(){}
+std::string_view Book::get_BID(){
+    return mrow_info->getvalue(0);
+}
