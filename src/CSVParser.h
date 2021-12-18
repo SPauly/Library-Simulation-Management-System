@@ -73,15 +73,16 @@ namespace csv
         Row& getRow(unsigned int&);
         bool addRow(Row&);
         bool find_first_of(std::string_view,std::string_view); //later return iterator
+        bool is_good();
     #ifdef _DEBUG_CSV
         void print_csv();
     #endif
 
     public:
         Header *_ptr_header = nullptr;
-        bool _csvgood = false;
 
     private:
+        bool _csvgood = false;
         std::string m_CURRENT_FILE;
         std::fstream m_DATABASE;
         std::vector<Row> m_content;

@@ -244,6 +244,10 @@ namespace csv
         return m_DATABASE;
     }
 
+    bool CSVParser::is_good(){
+        return _csvgood;
+    }
+    
 #ifdef _DEBUG_CSV
     void CSVParser::print_csv()
     {
