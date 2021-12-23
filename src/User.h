@@ -1,6 +1,7 @@
 #pragma once
 #include "CSVParser.h"
 #include "Book.h"
+#include "Time.h"
 #include <iostream>
 #include <limits>
 #include <regex>

@@ -437,9 +437,16 @@ namespace user
     }
 
     _Userstate &User::add_book(Book& _book){
-        std::string temp = "";
-        temp += _book.get_BID();
-        temp += ",MMDDYYYY,0000";
+        std::string bookentry = "";
+        bookentry += _book.get_BID();
+        bookentry += ',';
+        //add date
+        char datebuf[libtime::MAXDATELENGTH] = {NULL};
+        libtime::getdate_mmddyyyy(datebuf);
+        bookentry.append(datebuf);
+        bookentry += ',';
+        //reading pos = begin
+        bookentry += "0000";
         
         try{
             char finder = 0;
@@ -447,14 +454,12 @@ namespace user
             do{
                 m_userinfo_txt.get(finder);
             } while(finder != '-' && finder != 'O');
-            fm::fast_insert(m_userinfo_txt, temp, m_userinfo_txt.tellg(), m_dimensions.beg, m_dimensions.end, '-');
+            fm::fast_insert(m_userinfo_txt, bookentry, m_userinfo_txt.tellg(), m_dimensions.beg, m_dimensions.end, '-');
             //add book to user in class
         }
         catch(std::ios::failure &e){
             return mf_set_state(failbit);
         }
-
-        
 
         return m_state;
     }
