@@ -447,7 +447,7 @@ namespace user
             do{
                 m_userinfo_txt.get(finder);
             } while(finder != '-' && finder != 'O');
-            fm::fast_insert(m_userinfo_txt, temp, m_userinfo_txt.tellg(), m_dimensions.beg, m_dimensions.end, '-', m_dimensions.freespace);
+            fm::fast_insert(m_userinfo_txt, temp, m_userinfo_txt.tellg(), m_dimensions.beg, m_dimensions.end, '-');
             //add book to user in class
         }
         catch(std::ios::failure &e){
