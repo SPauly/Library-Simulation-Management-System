@@ -47,7 +47,7 @@ T &fm::buf_insert(T& _buf, std::string_view _content, const size_t &_pos, const 
         if (_buf[i + _pos] != _token)
         {
             //do something here to modify buf and write the characters at the back
-            //if there is too many characters to fit set last pos to npos
+            file_pos = npos;
             return _buf;
         }
     }

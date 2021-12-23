@@ -62,7 +62,9 @@ bool Library::run_library() {
 
 bool Library::rent_book(std::string_view _bookname){    
     try{
-        mptr_book = new Book(m_inventory_csv.find_first_of(_bookname, "NAME"));
+        if(!mptr_book)
+            mptr_book = new Book(m_inventory_csv.find_first_of(_bookname, "NAME"));
+        mptr_book->init(m_inventory_csv.find_first_of(_bookname, "NAME"));
     }
     catch(csv::Error &e){
         return false;

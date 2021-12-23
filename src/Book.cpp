@@ -1,8 +1,13 @@
 #include "Book.h"
 
 Book::Book(csv::Row* _ptr_row){
-    if(!_ptr_row)
-        throw csv::Error("");
+	init(_ptr_row);
+}
+
+void Book::init(csv::Row *_ptr_row)
+{
+    if (!_ptr_row)
+        throw csv::Error("Book: Row points to nullptr");
     mrow_info = _ptr_row;
 }
 
@@ -11,6 +16,7 @@ Book::~Book(){
 }
 
 int &Book::increase_rented(){
+    
 }
 
 bool Book::is_available(){

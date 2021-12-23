@@ -9,6 +9,9 @@ public:
     Book() = delete;
     Book(csv::Row*);
     ~Book();
+    
+    void init(csv::Row*);
+
     int &increase_rented();
 
     bool is_available();
