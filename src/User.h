@@ -42,8 +42,8 @@ namespace user
         _Usersize = 420
     };
 
-    static constexpr _Size usersize = (_Size)420;
-    static constexpr _Size publishersize = (_Size)630;
+    static constexpr _Size usersize = (_Size)460;
+    static constexpr _Size publishersize = (_Size)690;
     
     struct _ID
     {

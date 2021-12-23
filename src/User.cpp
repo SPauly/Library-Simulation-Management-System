@@ -208,11 +208,12 @@ namespace user
         try
         {
             //stack variables
-            int _next_position = 0;
+            int start_position = 0;
+            int next_position = 0;
 
             //set position at beginning and find the next user position while checking for the uid
             m_userinfo_txt.seekg(std::ios::beg);
-            _next_position = std::ios::beg;
+            next_position = std::ios::beg;
             std::string line_tmp;
             std::string sub_tmp;
             std::string::size_type _StartIterator = 0;
@@ -222,11 +223,12 @@ namespace user
             {
                 do
                 {
-                    m_userinfo_txt.seekg(_next_position);
+                    m_userinfo_txt.seekg(next_position);
                     fm::_getline(m_userinfo_txt, line_tmp);
                     _ItemIteratorPos = line_tmp.find_first_of("~", _StartIterator);
                     sub_tmp = std::string(line_tmp.substr(_StartIterator, _ItemIteratorPos - _StartIterator));
-                    _next_position = std::stoi(sub_tmp);
+                    start_position = next_position;
+                    next_position = std::stoi(sub_tmp);
                     _StartIterator = 0;
 
                 } while (line_tmp.find(m_ID.id_string) == std::string::npos && m_userinfo_txt.is_open());
@@ -236,13 +238,17 @@ namespace user
                 log("\nIt seems this User does not yet exist. Please create a new one.\n");
                 return mf_create_user_info();
             };
+            //initialize dimensions of user
+            m_dimensions.beg = start_position;
+            m_dimensions.end = next_position;
+            m_dimensions.space = next_position - start_position;
 
             //read the name
             fm::_getline(m_userinfo_txt, line_tmp);
             _ItemIteratorPos = line_tmp.find_first_of(":");
             sub_tmp = std::string(line_tmp.substr(_ItemIteratorPos + 1));
             m_user_name.init_name(sub_tmp);
-            fm::_getline(m_userinfo_txt, line_tmp);
+            fm::_getline(m_userinfo_txt, line_tmp); //this line can be skiped since it only says Books:
 
             //read the books
             fm::_getline(m_userinfo_txt, line_tmp);
@@ -255,7 +261,7 @@ namespace user
             //read the owned books
             try
             {
-                fm::_getline(m_userinfo_txt, line_tmp);
+                fm::_getline(m_userinfo_txt, line_tmp); //skip the line with Owned:
                 while (line_tmp.at(0) == 'B')
                 {
                     mvec_owned.push_back(csv::Row(line_tmp, &m_bookheader));
@@ -276,7 +282,7 @@ namespace user
             {
                 try
                 {
-                    fm::_getline(m_userinfo_txt, line_tmp);
+                    fm::_getline(m_userinfo_txt, line_tmp); //skip the line with Published:
                     while (line_tmp.at(0) == 'B')
                     {
                         mvec_owned.push_back(csv::Row(line_tmp, &m_bookheader));
@@ -440,7 +446,7 @@ namespace user
             m_userinfo_txt.seekg(m_dimensions.beg);
             do{
                 m_userinfo_txt.get(finder);
-            } while(finder != '-');
+            } while(finder != '-' && finder != 'O');
             fm::fast_insert(m_userinfo_txt, temp, m_userinfo_txt.tellg(), m_dimensions.beg, m_dimensions.end, '-', m_dimensions.freespace);
             //add book to user in class
         }
