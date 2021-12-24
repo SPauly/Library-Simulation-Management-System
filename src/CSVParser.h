@@ -12,6 +12,8 @@
 
 namespace csv
 {
+    const size_t npos = -1;
+
     class Error : public std::runtime_error {
     public:
         Error(const std::string &msg) : 
@@ -24,6 +26,7 @@ namespace csv
         Row();
         Row(std::string_view);
         Row(std::string_view, Row*);
+        Row(std::string_view, Row*, const size_t&);
         Row(std::vector<std::string>&);
 
         ~Row();
@@ -44,6 +47,7 @@ namespace csv
     private:
         Row* mptr_header = nullptr;
         unsigned int m_item_pos = 0;
+        size_t m_index = npos;
     };
 
     class Header : public Row
@@ -59,6 +63,7 @@ namespace csv
     public:
         size_t _header_size;
         std::string *_header_ptr;
+        const size_t _index = 0; 
     };
 
     class CSVParser
@@ -76,8 +81,6 @@ namespace csv
     #ifdef _DEBUG_CSV
         void print_csv();
     #endif
-
-    public:
         Header *_ptr_header = nullptr;
         bool _csvgood = false;
 
@@ -85,8 +88,9 @@ namespace csv
         std::string m_CURRENT_FILE;
         std::fstream m_DATABASE;
         std::vector<Row> m_content;
-    private:
-        std::fstream& m_create_database();
+        size_t m_index_pos = 0;
+
+        std::fstream& mf_create_database();
     };
 
 } // namespace csv

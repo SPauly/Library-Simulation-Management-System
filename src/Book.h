@@ -4,10 +4,12 @@
 
 class Book{
 private:
-    csv::Row* mrow_info = nullptr;
+    csv::Row* mptr_info = nullptr;
+    csv::CSVParser* mptr_parser = nullptr;
 public:
     Book() = delete;
     Book(csv::Row*);
+    Book(csv::Row*, csv::CSVParser*);
     ~Book();
     
     void init(csv::Row*);

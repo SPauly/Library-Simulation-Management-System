@@ -23,6 +23,11 @@ namespace csv
         mptr_header = _header;
     }
 
+    Row::Row(std::string_view _row, Row* _header, const size_t& _index = npos): Row(_row) {
+        mptr_header = _header;
+        m_index = _index;
+    }
+
     Row::Row(std::vector<std::string> &_row){
         m_data.swap(_row);
         _row.clear();
@@ -162,7 +167,8 @@ namespace csv
             {
                 while (fm::_getline(m_DATABASE, *tmp_line))
                 {
-                    m_content.push_back(Row(*tmp_line, _ptr_header));
+                    ++m_index_pos;
+                    m_content.push_back(Row(*tmp_line, _ptr_header, m_index_pos));
                 }
             }
             catch (const std::fstream::failure &e)
@@ -178,7 +184,7 @@ namespace csv
         catch (const std::fstream::failure &e)
         {
             try{
-                m_create_database();
+                mf_create_database();
                 _csvgood = true;
             }
             catch (const std::fstream::failure &e){
@@ -251,6 +257,10 @@ namespace csv
         }
     }
 
+    bool CSVParser::updateRow(Row& _row){
+
+    }
+
     Row* CSVParser::find_first_of(std::string_view _str, std::string_view _header){
         unsigned int _tmp_pos = _ptr_header->get_item_position(_header);
 
@@ -263,7 +273,7 @@ namespace csv
         return nullptr;
     }
 
-    std::fstream &CSVParser::m_create_database()
+    std::fstream &CSVParser::mf_create_database()
     {
         m_DATABASE.open(m_CURRENT_FILE, std::ios::in | std::ios::out | std::ios::binary | std::ios::app);
         addRow(*_ptr_header);
