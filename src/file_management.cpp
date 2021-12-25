@@ -37,17 +37,18 @@ std::fstream& fm::_getline(std::fstream &stream, std::string& line){
 }
 
 template <typename T>
-T &fm::buf_insert(T& _buf, std::string_view _content, const size_t &_pos, const char &_token) [[deprecated("This function currently overrides all characters and has no oor checks")]]
+T &fm::buf_insert(T& _buf, std::string_view _content, const size_t &_pos, const char &_token) [[deprecated("This function currently has no oor checks")]]
 {
     //check if buf is big enough
 
     //check if space is actualy free
     for (int i = 0; i < _content.size(); i++)
     {
-        if (_buf[i + _pos] != _token)
+        if (_buf[i + _pos] != _token && _buf[i + _pos] != '\r' && _buf[i + _pos] != '\n')
         {
             //do something here to modify buf and write the characters at the back
-            //if there is too many characters to fit set last pos to npos
+            file_pos = npos;
+            return _buf;
         }
     }
 
@@ -59,12 +60,13 @@ T &fm::buf_insert(T& _buf, std::string_view _content, const size_t &_pos, const 
     return _buf;
 }
 
-size_t& fm::fast_insert(std::fstream &_file, std::string_view _content, const size_t &_pos, const size_t& _beg, const size_t& _end, const char &_token, size_t& _freespace)
+size_t& fm::fast_insert(std::fstream &_file, std::string_view _content, const size_t &_pos, const size_t& _beg, const size_t& _end, const char &_token)
 {
     std::string _temp_content = _content.data();
     _temp_content += "\r\n";
     size_t space = _end - _beg;
     size_t contentsize = _temp_content.size();
+    size_t pos_minus_one = _pos - 1;
 
     try
     {
@@ -78,19 +80,20 @@ size_t& fm::fast_insert(std::fstream &_file, std::string_view _content, const si
         buf[space] = '\0';
     
         //see if space is enough
-        if (_freespace < contentsize || space < contentsize)
+        if (space < contentsize)
         {
-            return slow_insert(_file, _content, _pos, _beg, _end, _token, _freespace);
+            return slow_insert(_file, _content, pos_minus_one, _beg, _end, _token);
         }
 
-        buf_insert(buf, _temp_content, (_pos - _beg), _token);
+        buf_insert(buf, _temp_content, (pos_minus_one - _beg), _token);
+        //check if space was to short -> file_pos = npos
+        if(file_pos == npos)
+            return file_pos;
 
         //insert modified buffer in file
         _file.seekp(_beg);
         _file << buf;
-
-        //update _freespace 
-        _freespace -= contentsize;
+        file_pos = _file.tellp();
 
         _file.flush();
         _file.clear();
@@ -98,17 +101,16 @@ size_t& fm::fast_insert(std::fstream &_file, std::string_view _content, const si
     }
     catch (const std::out_of_range oor)
     {
-         _freespace = npos;
-         return _freespace;
+        return file_pos = npos;
     }
-    catch(const std::ios::failure &e){
-         _freespace = npos;
-        return _freespace;
+    catch(const std::ios::failure &e)
+    {
+        return file_pos = npos;
     }
-    return _freespace;
+    return file_pos;
 }
 
-size_t& fm::slow_insert(std::fstream &_file, std::string_view _content, const size_t &_pos, const size_t& _beg, const size_t& _end, const char &_token, size_t& _freespace)
+size_t& fm::slow_insert(std::fstream &_file, std::string_view _content, const size_t &_pos, const size_t& _beg, const size_t& _end, const char &_token)
 {
 
 }
