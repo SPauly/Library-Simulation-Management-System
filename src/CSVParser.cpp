@@ -45,20 +45,31 @@ namespace csv
         m_data.push_back(std::string(_value));
     };
 
-    bool Row::change_value_in(std::string_view _header, std::string_view _newvalue){
+    bool Row::change_value_in_to(std::string_view _header, std::string_view _newvalue){
         if (mptr_header)
         {
             size_t pos = mptr_header->get_item_position(_header);
-            if(_newvalue.size() < m_data.at(pos).size() < _newvalue.size()){
+            if(_newvalue.size() == m_data.at(pos).size()){
+                m_data.at(pos) = _newvalue;
+            } else{
                 return false;
             }
-            m_data.at(pos) = _newvalue;
         }
         else
         {
             throw Error("Row: not linked to valid header");
         }
         return true;
+    }
+
+    std::string_view Row::string(){
+        m_rowstring.clear();
+        for(int i = 0; i < m_data.size() - 1; i++){
+            m_rowstring += m_data.at(i) + ",";
+        }
+        m_rowstring += m_data.at(m_data.size()-1);
+        m_rowstring += "\r\n";
+        return m_rowstring;
     }
 
     std::string_view Row::getvalue(unsigned int _header) const
@@ -96,6 +107,11 @@ namespace csv
         }
 
         throw Error("Row: Item not found");
+    }
+
+    const size_t& Row::getindex()
+    {
+        return m_index;
     }
 
     Row& Row::set_headerptr( Row* _headerptr){
@@ -257,8 +273,30 @@ namespace csv
         }
     }
 
-    bool CSVParser::updateRow(Row& _row){
-
+    bool CSVParser::updateRow(Row* _row)
+    {
+        if (!m_DATABASE.is_open())
+        {
+            return false;
+        }
+        try
+        {
+            std::string tmp_line = "";
+            m_DATABASE.seekp(0, std::ios::beg);
+            for (int i = 0; i < _row->getindex(); i++)
+            {
+                fm::_getline(m_DATABASE, tmp_line);
+            }
+            m_DATABASE.seekp(m_DATABASE.tellg());
+            m_DATABASE << _row->string();
+            m_DATABASE.flush();
+            m_DATABASE.clear();
+        }
+        catch (std::ios::failure &e)
+        {
+            return false;
+        }
+        return true;
     }
 
     Row* CSVParser::find_first_of(std::string_view _str, std::string_view _header){

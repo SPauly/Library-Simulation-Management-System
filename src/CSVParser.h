@@ -34,11 +34,13 @@ namespace csv
         size_t size();
         void add_value(std::string_view);
         Row& set_headerptr(Row*); 
-        bool change_value_in(std::string_view, std::string_view); //new value, Header to change -> returns false if new value is bigger than old
+        bool change_value_in_to(std::string_view, std::string_view); //new value, Header to change -> returns false if new value is bigger than old
+        std::string_view string();
 
         std::string_view getvalue(unsigned int) const;
         std::string_view getvalue(std::string_view) const;
         unsigned int& get_item_position(std::string_view);
+        const size_t& getindex();
         std::string_view operator[] (unsigned int &) const;
         std::string_view operator[] (std::string_view) const;
 
@@ -48,6 +50,7 @@ namespace csv
         Row* mptr_header = nullptr;
         unsigned int m_item_pos = 0;
         size_t m_index = npos;
+        std::string m_rowstring = "";
     };
 
     class Header : public Row
@@ -76,7 +79,7 @@ namespace csv
         const size_t size();
         Row& getRow(unsigned int&);
         bool addRow(Row&);
-        bool updateRow(Row&);
+        bool updateRow(Row*);
         Row* find_first_of(std::string_view,std::string_view); //later return iterator
     #ifdef _DEBUG_CSV
         void print_csv();

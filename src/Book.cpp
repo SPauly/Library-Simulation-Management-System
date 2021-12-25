@@ -22,6 +22,8 @@ Book::~Book(){
 }
 
 int &Book::increase_rented(){
+    if(mptr_info->change_value_in_to("RENTED", "0020"))
+        mptr_parser->updateRow(mptr_info);
 }
 
 bool Book::is_available(){
