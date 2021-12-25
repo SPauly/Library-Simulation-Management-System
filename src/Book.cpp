@@ -66,3 +66,7 @@ bool Book::is_available(){
 std::string_view Book::get_BID(){
     return mptr_info->getvalue(0);
 }
+
+csv::Row &Book::get_Row(){
+    return *mptr_info;
+}

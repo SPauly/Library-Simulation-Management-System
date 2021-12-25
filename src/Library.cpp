@@ -31,6 +31,12 @@ bool Library::run_library() {
 			switch (input)
 			{
                 case '1':
+                    if(!m_user.can_rent()){
+                        log("You can't rent more than ");
+                        log(user::rentable_books);
+                        log(" Books. Please return one first.\n");
+                        break;
+                    }
                     log("Enter Bookname: ");
                     std::getline(std::cin, bookname);
                     if(!rent_book(bookname)){

@@ -44,7 +44,7 @@ T &fm::buf_insert(T& _buf, std::string_view _content, const size_t &_pos, const 
     //check if space is actualy free
     for (int i = 0; i < _content.size(); i++)
     {
-        if (_buf[i + _pos] != _token)
+        if (_buf[i + _pos] != _token && _buf[i + _pos] != '\r' && _buf[i + _pos] != '\n')
         {
             //do something here to modify buf and write the characters at the back
             file_pos = npos;
@@ -86,6 +86,9 @@ size_t& fm::fast_insert(std::fstream &_file, std::string_view _content, const si
         }
 
         buf_insert(buf, _temp_content, (pos_minus_one - _beg), _token);
+        //check if space was to short -> file_pos = npos
+        if(file_pos == npos)
+            return file_pos;
 
         //insert modified buffer in file
         _file.seekp(_beg);

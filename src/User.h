@@ -43,8 +43,8 @@ namespace user
         _Usersize = 420
     };
 
-    static constexpr _Size usersize = (_Size)460;
-    static constexpr _Size publishersize = (_Size)690;
+    static constexpr _Size usersize = (_Size)456;
+    static constexpr _Size publishersize = (_Size)684;
     
     struct _ID
     {
@@ -97,6 +97,8 @@ namespace user
         }
     };
 
+    static size_t rentable_books = 10;
+
     class User
     { //holds the user and is responsible for login, logout and activity log -> gets automatically deleted with logout
     private:
@@ -136,6 +138,7 @@ namespace user
         const _Userstate &get_state();
         std::string_view get_name();
         const _ID &get_id();
+        bool can_rent();
     };
 
 }

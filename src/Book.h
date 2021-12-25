@@ -18,4 +18,5 @@ public:
 
     bool is_available();
     std::string_view get_BID();
+    csv::Row& get_Row();
 };
