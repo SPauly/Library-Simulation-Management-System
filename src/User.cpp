@@ -33,7 +33,7 @@ namespace user
             ++_tries;
         }
 
-        return m_ID.mode = failure;
+        return mf_set_mode(failure);
     }
 
     _Openmode &User::mf_create_user(csv::CSVParser &_parser)
@@ -69,6 +69,8 @@ namespace user
             log("Create User Account:\n");
             mode = user;
         }
+        // set mode to logged in
+        m_mode = mode;
 
         //Get Username
         do
