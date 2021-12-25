@@ -176,15 +176,6 @@ namespace user
 
             //finish initialization of dimensions
             m_dimensions.space = m_dimensions.end - m_dimensions.beg;
-            switch (m_mode)
-            {
-            case publisher:
-                m_dimensions.freespace = publishersize;
-                break;
-            default:
-                m_dimensions.freespace = usersize;
-                break;
-            }
         }
         catch (const std::ifstream::failure &e)
         {
@@ -301,14 +292,21 @@ namespace user
         }
         catch (const std::ifstream::failure &e) //means something went wrong with reading
         {
-            log("\nError loading userfile\n");
+            log("Error loading userfile\n");
             mf_set_state(failbit);
             mf_set_mode(failure);
             return m_mode;
         }
         catch (const std::invalid_argument &e)
         { //means stoi did get an invalid argument
-            log("\nError reading next position in Userinfo\n");
+            log("Error reading next position in Userinfo\n");
+            mf_set_state(failbit);
+            mf_set_mode(failure);
+            return m_mode;
+        }
+        catch (const std::out_of_range &e)
+        { //means stoi did get an invalid argument
+            log("out_of_range reading in Userinfo\n");
             mf_set_state(failbit);
             mf_set_mode(failure);
             return m_mode;

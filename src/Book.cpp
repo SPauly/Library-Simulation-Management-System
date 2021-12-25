@@ -21,7 +21,7 @@ Book::~Book(){
     delete mptr_info;
 }
 
-int Book::increase_rented(){
+size_t Book::increase_rented(){
     size_t currently_rented = 0;
     int rented_length = 4; 
     std::string currently_rented_s(rented_length--, '0');

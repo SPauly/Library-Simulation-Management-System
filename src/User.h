@@ -77,7 +77,6 @@ namespace user
         size_t beg = 0;
         size_t end = 0;
         size_t space = 0;
-        size_t freespace = usersize;
         const char token = '-';
     };
 
