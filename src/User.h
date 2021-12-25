@@ -1,5 +1,7 @@
 #pragma once
 #include "CSVParser.h"
+#include "Book.h"
+#include "Time.h"
 #include <iostream>
 #include <limits>
 #include <regex>
@@ -41,8 +43,8 @@ namespace user
         _Usersize = 420
     };
 
-    static constexpr _Size usersize = (_Size)420;
-    static constexpr _Size publishersize = (_Size)630;
+    static constexpr _Size usersize = (_Size)456;
+    static constexpr _Size publishersize = (_Size)684;
     
     struct _ID
     {
@@ -75,7 +77,6 @@ namespace user
         size_t beg = 0;
         size_t end = 0;
         size_t space = 0;
-        size_t freespace = usersize;
         const char token = '-';
     };
 
@@ -96,6 +97,8 @@ namespace user
         }
     };
 
+    static size_t rentable_books = 10;
+
     class User
     { //holds the user and is responsible for login, logout and activity log -> gets automatically deleted with logout
     private:
@@ -111,7 +114,7 @@ namespace user
         std::vector<csv::Row> mvec_owned;
         std::vector<csv::Row> mvec_published;
 
-        std::string m_path_userinfo{fm::init_workingdir() + "Data\\Userinfo.txt"};
+        std::string m_path_userinfo{fm::init_workingdir() + "Data/Userinfo.txt"};
         csv::Header m_bookheader{"BID,DATE,POSITION"};
         std::fstream m_userinfo_txt;
 
@@ -127,6 +130,7 @@ namespace user
         User();
         ~User();
 
+        _Userstate &add_book(Book&);
         _Openmode &login();
         _Openmode &logout();
 
@@ -134,6 +138,7 @@ namespace user
         const _Userstate &get_state();
         std::string_view get_name();
         const _ID &get_id();
+        bool can_rent();
     };
 
 }

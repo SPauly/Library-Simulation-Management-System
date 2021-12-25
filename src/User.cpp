@@ -17,7 +17,7 @@ namespace user
             log("Password>> ");
             std::getline(std::cin, _password);
 
-            for (csv::_HEADER_TYPE i = 0; i < _parser.size(); i++)
+            for (unsigned int i = 0; i < _parser.size(); i++)
             {
                 if (_parser.getRow(i)["USERNAME"] == _username)
                 {
@@ -33,7 +33,7 @@ namespace user
             ++_tries;
         }
 
-        return m_ID.mode = failure;
+        return mf_set_mode(failure);
     }
 
     _Openmode &User::mf_create_user(csv::CSVParser &_parser)
@@ -69,6 +69,8 @@ namespace user
             log("Create User Account:\n");
             mode = user;
         }
+        // set mode to logged in
+        m_mode = mode;
 
         //Get Username
         do
@@ -176,15 +178,6 @@ namespace user
 
             //finish initialization of dimensions
             m_dimensions.space = m_dimensions.end - m_dimensions.beg;
-            switch (m_mode)
-            {
-            case publisher:
-                m_dimensions.freespace = publishersize;
-                break;
-            default:
-                m_dimensions.freespace = usersize;
-                break;
-            }
         }
         catch (const std::ifstream::failure &e)
         {
@@ -208,11 +201,12 @@ namespace user
         try
         {
             //stack variables
-            int _next_position = 0;
+            int start_position = 0;
+            int next_position = 0;
 
             //set position at beginning and find the next user position while checking for the uid
             m_userinfo_txt.seekg(std::ios::beg);
-            _next_position = std::ios::beg;
+            next_position = std::ios::beg;
             std::string line_tmp;
             std::string sub_tmp;
             std::string::size_type _StartIterator = 0;
@@ -222,11 +216,12 @@ namespace user
             {
                 do
                 {
-                    m_userinfo_txt.seekg(_next_position);
+                    m_userinfo_txt.seekg(next_position);
                     fm::_getline(m_userinfo_txt, line_tmp);
                     _ItemIteratorPos = line_tmp.find_first_of("~", _StartIterator);
                     sub_tmp = std::string(line_tmp.substr(_StartIterator, _ItemIteratorPos - _StartIterator));
-                    _next_position = std::stoi(sub_tmp);
+                    start_position = next_position;
+                    next_position = std::stoi(sub_tmp);
                     _StartIterator = 0;
 
                 } while (line_tmp.find(m_ID.id_string) == std::string::npos && m_userinfo_txt.is_open());
@@ -236,13 +231,17 @@ namespace user
                 log("\nIt seems this User does not yet exist. Please create a new one.\n");
                 return mf_create_user_info();
             };
+            //initialize dimensions of user
+            m_dimensions.beg = start_position;
+            m_dimensions.end = next_position;
+            m_dimensions.space = next_position - start_position;
 
             //read the name
             fm::_getline(m_userinfo_txt, line_tmp);
             _ItemIteratorPos = line_tmp.find_first_of(":");
             sub_tmp = std::string(line_tmp.substr(_ItemIteratorPos + 1));
             m_user_name.init_name(sub_tmp);
-            fm::_getline(m_userinfo_txt, line_tmp);
+            fm::_getline(m_userinfo_txt, line_tmp); //this line can be skiped since it only says Books:
 
             //read the books
             fm::_getline(m_userinfo_txt, line_tmp);
@@ -255,7 +254,7 @@ namespace user
             //read the owned books
             try
             {
-                fm::_getline(m_userinfo_txt, line_tmp);
+                fm::_getline(m_userinfo_txt, line_tmp); //skip the line with Owned:
                 while (line_tmp.at(0) == 'B')
                 {
                     mvec_owned.push_back(csv::Row(line_tmp, &m_bookheader));
@@ -276,7 +275,7 @@ namespace user
             {
                 try
                 {
-                    fm::_getline(m_userinfo_txt, line_tmp);
+                    fm::_getline(m_userinfo_txt, line_tmp); //skip the line with Published:
                     while (line_tmp.at(0) == 'B')
                     {
                         mvec_owned.push_back(csv::Row(line_tmp, &m_bookheader));
@@ -295,14 +294,21 @@ namespace user
         }
         catch (const std::ifstream::failure &e) //means something went wrong with reading
         {
-            log("\nError loading userfile\n");
+            log("Error loading userfile\n");
             mf_set_state(failbit);
             mf_set_mode(failure);
             return m_mode;
         }
         catch (const std::invalid_argument &e)
         { //means stoi did get an invalid argument
-            log("\nError reading next position in Userinfo\n");
+            log("Error reading next position in Userinfo\n");
+            mf_set_state(failbit);
+            mf_set_mode(failure);
+            return m_mode;
+        }
+        catch (const std::out_of_range &e)
+        { //means stoi did get an invalid argument
+            log("out_of_range reading in Userinfo\n");
             mf_set_state(failbit);
             mf_set_mode(failure);
             return m_mode;
@@ -430,13 +436,45 @@ namespace user
         m_userinfo_txt.close();
     }
 
+    _Userstate &User::add_book(Book& _book){
+        if(!this->can_rent()){
+            return mf_set_state(failbit);
+        }
+        std::string bookentry = "";
+        bookentry += _book.get_BID();
+        bookentry += ',';
+        //add date
+        char datebuf[libtime::MAXDATELENGTH] = {NULL};
+        libtime::getdate_mmddyyyy(datebuf);
+        bookentry.append(datebuf);
+        bookentry += ',';
+        //reading pos = begin
+        bookentry += "0000";
+        
+        try{
+            char finder = 0;
+            m_userinfo_txt.seekg(m_dimensions.beg);
+            do{
+                m_userinfo_txt.get(finder);
+            } while(finder != '-' && finder != 'O');
+            fm::fast_insert(m_userinfo_txt, bookentry, m_userinfo_txt.tellg(), m_dimensions.beg, m_dimensions.end, '-');
+            //add book to user in class
+            mvec_books.push_back(csv::Row(_book.get_Row())); //temporaryly only add the row here
+        }
+        catch(std::ios::failure &e){
+            return mf_set_state(failbit);
+        }
+
+        return m_state;
+    }
+
     _Openmode &User::login()
     {
         try
         {
             //initialize needed files
             csv::Header _userfile_header{"USERNAME,PASSWORD,UID"};
-            std::string _path_userfile{fm::init_workingdir() + "Data\\Userfile.csv"};
+            std::string _path_userfile{fm::init_workingdir() + "Data/Userfile.csv"};
             csv::CSVParser _userfile_csv{_path_userfile, _userfile_header};
 
             //login page
@@ -520,6 +558,10 @@ namespace user
     const _ID &User::get_id()
     {
         return m_ID;
+    }
+
+    bool User::can_rent() {
+        return mvec_books.size() < rentable_books;
     }
 
 } //end user

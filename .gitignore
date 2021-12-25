@@ -5,7 +5,6 @@
 CppProperties.json
 
 #ignore database files
-Inventory.csv
 Userfile.csv
 Userinfo.txt
 

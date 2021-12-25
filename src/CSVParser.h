@@ -12,7 +12,7 @@
 
 namespace csv
 {
-    using _HEADER_TYPE = unsigned int;
+    const size_t npos = -1;
 
     class Error : public std::runtime_error {
     public:
@@ -26,25 +26,31 @@ namespace csv
         Row();
         Row(std::string_view);
         Row(std::string_view, Row*);
+        Row(std::string_view, Row*, const size_t&);
         Row(std::vector<std::string>&);
 
         ~Row();
 
-        unsigned int size();
+        size_t size();
         void add_value(std::string_view);
-        std::string_view getvalue(_HEADER_TYPE &) const;
-        _HEADER_TYPE& get_item_position(std::string_view);
-        Row& set_headerptr(Row*);
+        Row& set_headerptr(Row*); 
+        bool change_value_in_to(std::string_view, std::string_view); //new value, Header to change -> returns false if new value is bigger than old
+        std::string_view string();
 
-
-        std::string_view operator[] (_HEADER_TYPE &) const;
+        std::string_view getvalue(unsigned int) const;
+        std::string_view getvalue(std::string_view) const;
+        unsigned int& get_item_position(std::string_view);
+        const size_t& getindex();
+        std::string_view operator[] (unsigned int &) const;
         std::string_view operator[] (std::string_view) const;
 
     protected:
         std::vector<std::string> m_data;
     private:
         Row* mptr_header = nullptr;
-        _HEADER_TYPE m_item_pos = 0;
+        unsigned int m_item_pos = 0;
+        size_t m_index = npos;
+        std::string m_rowstring = "";
     };
 
     class Header : public Row
@@ -58,8 +64,9 @@ namespace csv
 
         std::string_view string();
     public:
-        _HEADER_TYPE _header_size;
+        size_t _header_size;
         std::string *_header_ptr;
+        const size_t _index = 0; 
     };
 
     class CSVParser
@@ -69,24 +76,25 @@ namespace csv
         CSVParser(const std::string &, Header&);
         ~CSVParser();
 
-        const unsigned int size();
+        const size_t size();
         Row& getRow(unsigned int&);
         bool addRow(Row&);
-        bool find_first_of(std::string_view,std::string_view); //later return iterator
+        bool updateRow(Row*);
+        Row* find_first_of(std::string_view,std::string_view); //later return iterator
+        bool is_good();
     #ifdef _DEBUG_CSV
         void print_csv();
     #endif
-
-    public:
         Header *_ptr_header = nullptr;
-        bool _csvgood = false;
 
     private:
+        bool _csvgood = false;
         std::string m_CURRENT_FILE;
         std::fstream m_DATABASE;
         std::vector<Row> m_content;
-    private:
-        std::fstream& m_create_database();
+        size_t m_index_pos = 0;
+
+        std::fstream& mf_create_database();
     };
 
 } // namespace csv

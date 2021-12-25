@@ -23,6 +23,11 @@ namespace csv
         mptr_header = _header;
     }
 
+    Row::Row(std::string_view _row, Row* _header, const size_t& _index = npos): Row(_row) {
+        mptr_header = _header;
+        m_index = _index;
+    }
+
     Row::Row(std::vector<std::string> &_row){
         m_data.swap(_row);
         _row.clear();
@@ -32,7 +37,7 @@ namespace csv
         m_data.clear();
     };
 
-    unsigned int Row::size(){
+    size_t Row::size(){
         return m_data.size();
     }
 
@@ -40,7 +45,34 @@ namespace csv
         m_data.push_back(std::string(_value));
     };
 
-    std::string_view Row::getvalue(_HEADER_TYPE &_header) const
+    bool Row::change_value_in_to(std::string_view _header, std::string_view _newvalue){
+        if (mptr_header)
+        {
+            size_t pos = mptr_header->get_item_position(_header);
+            if(_newvalue.size() == m_data.at(pos).size()){
+                m_data.at(pos) = _newvalue;
+            } else{
+                return false;
+            }
+        }
+        else
+        {
+            throw Error("Row: not linked to valid header");
+        }
+        return true;
+    }
+
+    std::string_view Row::string(){
+        m_rowstring.clear();
+        for(int i = 0; i < m_data.size() - 1; i++){
+            m_rowstring += m_data.at(i) + ",";
+        }
+        m_rowstring += m_data.at(m_data.size()-1);
+        m_rowstring += "\r\n";
+        return m_rowstring;
+    }
+
+    std::string_view Row::getvalue(unsigned int _header) const
     {   
         if(_header < m_data.size())
             return m_data.at(_header);
@@ -49,7 +81,20 @@ namespace csv
         }
     };
 
-    _HEADER_TYPE &Row::get_item_position(std::string_view _header) 
+    std::string_view Row::getvalue(std::string_view _header) const
+    {
+        if (mptr_header)
+        {
+            size_t pos = mptr_header->get_item_position(_header);
+            return m_data.at(pos);
+        }
+        else
+        {
+            throw Error("Row: not linked to valid header");
+        }
+    }
+
+    unsigned int &Row::get_item_position(std::string_view _header) 
     {
         std::vector<std::string>::const_iterator it;
         m_item_pos = 0;
@@ -64,19 +109,24 @@ namespace csv
         throw Error("Row: Item not found");
     }
 
+    const size_t& Row::getindex()
+    {
+        return m_index;
+    }
+
     Row& Row::set_headerptr( Row* _headerptr){
         mptr_header = _headerptr;
         return *mptr_header;
     }
 
-    std::string_view Row::operator[] (_HEADER_TYPE &_header) const {
+    std::string_view Row::operator[] (unsigned int &_header) const {
         return this->getvalue(_header);
     };
 
     std::string_view Row::operator[] (std::string_view _header) const {
         if (mptr_header)
         {
-            _HEADER_TYPE pos = mptr_header->get_item_position(_header);
+            size_t pos = mptr_header->get_item_position(_header);
             return m_data.at(pos);
         }
         else
@@ -133,7 +183,8 @@ namespace csv
             {
                 while (fm::_getline(m_DATABASE, *tmp_line))
                 {
-                    m_content.push_back(Row(*tmp_line, _ptr_header));
+                    ++m_index_pos;
+                    m_content.push_back(Row(*tmp_line, _ptr_header, m_index_pos));
                 }
             }
             catch (const std::fstream::failure &e)
@@ -149,7 +200,7 @@ namespace csv
         catch (const std::fstream::failure &e)
         {
             try{
-                m_create_database();
+                mf_create_database();
                 _csvgood = true;
             }
             catch (const std::fstream::failure &e){
@@ -170,7 +221,7 @@ namespace csv
         m_content.clear();
     }
 
-    const unsigned int CSVParser::size() {
+    const size_t CSVParser::size() {
         return m_content.size();
     }
 
@@ -222,19 +273,45 @@ namespace csv
         }
     }
 
-    bool CSVParser::find_first_of(std::string_view _str, std::string_view _pos){
-        _HEADER_TYPE _tmp_pos = _ptr_header->get_item_position(_pos);
+    bool CSVParser::updateRow(Row* _row)
+    {
+        if (!m_DATABASE.is_open())
+        {
+            return false;
+        }
+        try
+        {
+            std::string tmp_line = "";
+            m_DATABASE.seekp(0, std::ios::beg);
+            for (int i = 0; i < _row->getindex(); i++)
+            {
+                fm::_getline(m_DATABASE, tmp_line);
+            }
+            m_DATABASE.seekp(m_DATABASE.tellg());
+            m_DATABASE << _row->string();
+            m_DATABASE.flush();
+            m_DATABASE.clear();
+        }
+        catch (std::ios::failure &e)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    Row* CSVParser::find_first_of(std::string_view _str, std::string_view _header){
+        unsigned int _tmp_pos = _ptr_header->get_item_position(_header);
 
         for(int i = 0; i < m_content.size(); i++){
             if(m_content.at(i).getvalue(_tmp_pos) == _str){
-                return true;
+                return &m_content.at(i);
             }
         }
 
-        return false;
+        return nullptr;
     }
 
-    std::fstream &CSVParser::m_create_database()
+    std::fstream &CSVParser::mf_create_database()
     {
         m_DATABASE.open(m_CURRENT_FILE, std::ios::in | std::ios::out | std::ios::binary | std::ios::app);
         addRow(*_ptr_header);
@@ -244,18 +321,22 @@ namespace csv
         return m_DATABASE;
     }
 
+    bool CSVParser::is_good(){
+        return _csvgood;
+    }
+    
 #ifdef _DEBUG_CSV
     void CSVParser::print_csv()
     {
-        for (_HEADER_TYPE i = 0; i < _ptr_header->_header_size; i++)
+        for (size_t i = 0; i < _ptr_header->_header_size; i++)
         {
             std::cout << _ptr_header->getvalue(i);
             std::cout << ",";
         }
         std::cout << std::endl;
-        for (_HEADER_TYPE i = 0; i < m_content.size(); i++)
+        for (size_t i = 0; i < m_content.size(); i++)
         {
-            for (_HEADER_TYPE i2 = 0; i2 < _ptr_header->_header_size; i2++)
+            for (size_t i2 = 0; i2 < _ptr_header->_header_size; i2++)
             {
                 std::cout << m_content.at(i).getvalue(i2);
                 std::cout << ",";
