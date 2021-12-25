@@ -436,8 +436,10 @@ namespace user
         m_userinfo_txt.close();
     }
 
-    _Userstate &User::add_book(Book& _book){
-        if(!this->can_rent()){
+    _Userstate &User::add_book(Book &_book)
+    {
+        if (!this->can_rent())
+        {
             return mf_set_state(failbit);
         }
         std::string bookentry = "";
@@ -450,18 +452,21 @@ namespace user
         bookentry += ',';
         //reading pos = begin
         bookentry += "0000";
-        
-        try{
+
+        try
+        {
             char finder = 0;
             m_userinfo_txt.seekg(m_dimensions.beg);
-            do{
+            do
+            {
                 m_userinfo_txt.get(finder);
-            } while(finder != '-' && finder != 'O');
+            } while (finder != '-' && finder != 'O');
             fm::fast_insert(m_userinfo_txt, bookentry, m_userinfo_txt.tellg(), m_dimensions.beg, m_dimensions.end, '-');
             //add book to user in class
             mvec_books.push_back(csv::Row(_book.get_Row())); //temporaryly only add the row here
         }
-        catch(std::ios::failure &e){
+        catch (std::ios::failure &e)
+        {
             return mf_set_state(failbit);
         }
 
@@ -560,7 +565,8 @@ namespace user
         return m_ID;
     }
 
-    bool User::can_rent() {
+    bool User::can_rent()
+    {
         return mvec_books.size() < rentable_books;
     }
 

@@ -4,7 +4,7 @@ namespace csv
 {
     //class Row
 
-    Row::Row(){}
+    Row::Row() {}
 
     Row::Row(std::string_view _row)
     {
@@ -19,39 +19,49 @@ namespace csv
         } while (_ItemIteratorPos != std::string::npos);
     };
 
-    Row::Row(std::string_view _row, Row* _header): Row(_row) {
+    Row::Row(std::string_view _row, Row *_header) : Row(_row)
+    {
         mptr_header = _header;
     }
 
-    Row::Row(std::string_view _row, Row* _header, const size_t& _index = npos): Row(_row) {
+    Row::Row(std::string_view _row, Row *_header, const size_t &_index = npos) : Row(_row)
+    {
         mptr_header = _header;
         m_index = _index;
     }
 
-    Row::Row(std::vector<std::string> &_row){
+    Row::Row(std::vector<std::string> &_row)
+    {
         m_data.swap(_row);
         _row.clear();
     }
 
-    Row::~Row(){
+    Row::~Row()
+    {
         m_data.clear();
     };
 
-    size_t Row::size(){
+    size_t Row::size()
+    {
         return m_data.size();
     }
 
-    void Row::add_value(std::string_view _value){
+    void Row::add_value(std::string_view _value)
+    {
         m_data.push_back(std::string(_value));
     };
 
-    bool Row::change_value_in_to(std::string_view _header, std::string_view _newvalue){
+    bool Row::change_value_in_to(std::string_view _header, std::string_view _newvalue)
+    {
         if (mptr_header)
         {
             size_t pos = mptr_header->get_item_position(_header);
-            if(_newvalue.size() == m_data.at(pos).size()){
+            if (_newvalue.size() == m_data.at(pos).size())
+            {
                 m_data.at(pos) = _newvalue;
-            } else{
+            }
+            else
+            {
                 return false;
             }
         }
@@ -62,21 +72,24 @@ namespace csv
         return true;
     }
 
-    std::string_view Row::string(){
+    std::string_view Row::string()
+    {
         m_rowstring.clear();
-        for(int i = 0; i < m_data.size() - 1; i++){
+        for (int i = 0; i < m_data.size() - 1; i++)
+        {
             m_rowstring += m_data.at(i) + ",";
         }
-        m_rowstring += m_data.at(m_data.size()-1);
+        m_rowstring += m_data.at(m_data.size() - 1);
         m_rowstring += "\r\n";
         return m_rowstring;
     }
 
     std::string_view Row::getvalue(unsigned int _header) const
-    {   
-        if(_header < m_data.size())
+    {
+        if (_header < m_data.size())
             return m_data.at(_header);
-        else{
+        else
+        {
             throw Error("Row: out of range");
         }
     };
@@ -94,7 +107,7 @@ namespace csv
         }
     }
 
-    unsigned int &Row::get_item_position(std::string_view _header) 
+    unsigned int &Row::get_item_position(std::string_view _header)
     {
         std::vector<std::string>::const_iterator it;
         m_item_pos = 0;
@@ -109,21 +122,24 @@ namespace csv
         throw Error("Row: Item not found");
     }
 
-    const size_t& Row::getindex()
+    const size_t &Row::getindex()
     {
         return m_index;
     }
 
-    Row& Row::set_headerptr( Row* _headerptr){
+    Row &Row::set_headerptr(Row *_headerptr)
+    {
         mptr_header = _headerptr;
         return *mptr_header;
     }
 
-    std::string_view Row::operator[] (unsigned int &_header) const {
+    std::string_view Row::operator[](unsigned int &_header) const
+    {
         return this->getvalue(_header);
     };
 
-    std::string_view Row::operator[] (std::string_view _header) const {
+    std::string_view Row::operator[](std::string_view _header) const
+    {
         if (mptr_header)
         {
             size_t pos = mptr_header->get_item_position(_header);
@@ -145,14 +161,15 @@ namespace csv
         m_header = _row;
     };
 
-    std::string_view Header::string(){
+    std::string_view Header::string()
+    {
         return m_header;
     }
 
     //end class Header
 
     //class CSVParser
-    CSVParser::CSVParser(const std::string &PATH_ref, Header& _header_structure)
+    CSVParser::CSVParser(const std::string &PATH_ref, Header &_header_structure)
     {
         //initialize important references before exceptions
         m_CURRENT_FILE = PATH_ref;
@@ -169,15 +186,16 @@ namespace csv
             std::string *tmp_line = new std::string;
             tmp_line->clear();
             fm::_getline(m_DATABASE, *tmp_line);
-            if(*tmp_line != _header_structure.string()){
+            if (*tmp_line != _header_structure.string())
+            {
                 m_DATABASE.seekp(0, std::ios::beg);
-                m_DATABASE << _header_structure.string() << "\r\n";    //temporary solution!!! Use insert in file function here instead
+                m_DATABASE << _header_structure.string() << "\r\n"; //temporary solution!!! Use insert in file function here instead
                 m_DATABASE.flush();
             }
             tmp_line->clear();
 
             //check m_DATABASE for consistency
-            
+
             //init m_content
             try
             {
@@ -194,20 +212,23 @@ namespace csv
             delete tmp_line;
             m_DATABASE.clear();
             m_DATABASE.flush();
-            
+
             _csvgood = true;
         }
         catch (const std::fstream::failure &e)
         {
-            try{
+            try
+            {
                 mf_create_database();
                 _csvgood = true;
             }
-            catch (const std::fstream::failure &e){
+            catch (const std::fstream::failure &e)
+            {
                 _csvgood = false;
                 throw Error(std::string("CTOR: Failed to create new Database: ").append(e.what()));
             }
-            catch (const csv::Error &e){
+            catch (const csv::Error &e)
+            {
                 _csvgood = false;
                 throw Error(std::string("CTOR: Failed initialize new Database: ").append(e.what()));
             }
@@ -221,19 +242,22 @@ namespace csv
         m_content.clear();
     }
 
-    const size_t CSVParser::size() {
+    const size_t CSVParser::size()
+    {
         return m_content.size();
     }
 
-    Row& CSVParser::getRow(unsigned int& _row){
-        if(_row < m_content.size())
+    Row &CSVParser::getRow(unsigned int &_row)
+    {
+        if (_row < m_content.size())
             return m_content[_row];
-        
+
         throw Error("CSV: out of range");
     }
 
-    bool CSVParser::addRow(Row& _row) {
-        if(_ptr_header)
+    bool CSVParser::addRow(Row &_row)
+    {
+        if (_ptr_header)
             _row.set_headerptr(_ptr_header);
         else
             throw Error("CSV: Cannot add row without linking parser to valid header element first");
@@ -253,27 +277,32 @@ namespace csv
                 m_content.push_back(_row);
                 return true;
             }
-            else{
+            else
+            {
                 m_DATABASE.flush();
                 m_DATABASE.close();
-                try {
+                try
+                {
                     m_DATABASE.open(m_CURRENT_FILE, std::ios::in | std::ios::out);
                     throw Error("CSV: Error while writing database");
                 }
-                catch (std::ios::failure &e){
+                catch (std::ios::failure &e)
+                {
                     throw Error("CSV: failed to open database");
                 }
             }
         }
-        catch(std::out_of_range &oor){
+        catch (std::out_of_range &oor)
+        {
             throw Error("CSV: out of range");
         }
-        catch(csv::Error &e){
+        catch (csv::Error &e)
+        {
             throw Error("CSV: out of range");
         }
     }
 
-    bool CSVParser::updateRow(Row* _row)
+    bool CSVParser::updateRow(Row *_row)
     {
         if (!m_DATABASE.is_open())
         {
@@ -299,11 +328,14 @@ namespace csv
         return true;
     }
 
-    Row* CSVParser::find_first_of(std::string_view _str, std::string_view _header){
+    Row *CSVParser::find_first_of(std::string_view _str, std::string_view _header)
+    {
         unsigned int _tmp_pos = _ptr_header->get_item_position(_header);
 
-        for(int i = 0; i < m_content.size(); i++){
-            if(m_content.at(i).getvalue(_tmp_pos) == _str){
+        for (int i = 0; i < m_content.size(); i++)
+        {
+            if (m_content.at(i).getvalue(_tmp_pos) == _str)
+            {
                 return &m_content.at(i);
             }
         }
@@ -321,10 +353,11 @@ namespace csv
         return m_DATABASE;
     }
 
-    bool CSVParser::is_good(){
+    bool CSVParser::is_good()
+    {
         return _csvgood;
     }
-    
+
 #ifdef _DEBUG_CSV
     void CSVParser::print_csv()
     {

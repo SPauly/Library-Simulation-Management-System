@@ -45,7 +45,7 @@ namespace user
 
     static constexpr _Size usersize = (_Size)456;
     static constexpr _Size publishersize = (_Size)684;
-    
+
     struct _ID
     {
         _Openmode mode = notlogged;
@@ -130,7 +130,7 @@ namespace user
         User();
         ~User();
 
-        _Userstate &add_book(Book&);
+        _Userstate &add_book(Book &);
         _Openmode &login();
         _Openmode &logout();
 

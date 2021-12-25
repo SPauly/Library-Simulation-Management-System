@@ -12,7 +12,7 @@ std::string &fm::init_workingdir()
     std::string str(temp_ws.size(), 0);
     std::transform(temp_ws.begin(), temp_ws.end(), str.begin(), [](wchar_t c)
                    { return (char)c; });
-    
+
     _fm_path = str;
     _fm_path.remove_filename();
     work_dir = _fm_path.string();
@@ -26,18 +26,21 @@ std::string &fm::init_workingdir()
     return work_dir;
 #endif
 }
- 
-std::fstream& fm::_getline(std::fstream &stream, std::string& line){
-    if ( std::getline( stream, line) ) {
-       if ( line.size() && line[line.size()-1] == '\r' ) {
-           line.pop_back();
-       }
+
+std::fstream &fm::_getline(std::fstream &stream, std::string &line)
+{
+    if (std::getline(stream, line))
+    {
+        if (line.size() && line[line.size() - 1] == '\r')
+        {
+            line.pop_back();
+        }
     }
     return stream;
 }
 
 template <typename T>
-T &fm::buf_insert(T& _buf, std::string_view _content, const size_t &_pos, const char &_token) [[deprecated("This function currently has no oor checks")]]
+T &fm::buf_insert(T &_buf, std::string_view _content, const size_t &_pos, const char &_token) [[deprecated("This function currently has no oor checks")]]
 {
     //check if buf is big enough
 
@@ -53,14 +56,15 @@ T &fm::buf_insert(T& _buf, std::string_view _content, const size_t &_pos, const 
     }
 
     //insert _content into buffer
-    for (int i = 0; i < _content.size(); i++){
+    for (int i = 0; i < _content.size(); i++)
+    {
         _buf[i + _pos] = _content.at(i);
     }
 
     return _buf;
 }
 
-size_t& fm::fast_insert(std::fstream &_file, std::string_view _content, const size_t &_pos, const size_t& _beg, const size_t& _end, const char &_token)
+size_t &fm::fast_insert(std::fstream &_file, std::string_view _content, const size_t &_pos, const size_t &_beg, const size_t &_end, const char &_token)
 {
     std::string _temp_content = _content.data();
     _temp_content += "\r\n";
@@ -78,7 +82,7 @@ size_t& fm::fast_insert(std::fstream &_file, std::string_view _content, const si
             _file.get(buf[i]);
         }
         buf[space] = '\0';
-    
+
         //see if space is enough
         if (space < contentsize)
         {
@@ -87,7 +91,7 @@ size_t& fm::fast_insert(std::fstream &_file, std::string_view _content, const si
 
         buf_insert(buf, _temp_content, (pos_minus_one - _beg), _token);
         //check if space was to short -> file_pos = npos
-        if(file_pos == npos)
+        if (file_pos == npos)
             return file_pos;
 
         //insert modified buffer in file
@@ -103,14 +107,13 @@ size_t& fm::fast_insert(std::fstream &_file, std::string_view _content, const si
     {
         return file_pos = npos;
     }
-    catch(const std::ios::failure &e)
+    catch (const std::ios::failure &e)
     {
         return file_pos = npos;
     }
     return file_pos;
 }
 
-size_t& fm::slow_insert(std::fstream &_file, std::string_view _content, const size_t &_pos, const size_t& _beg, const size_t& _end, const char &_token)
+size_t &fm::slow_insert(std::fstream &_file, std::string_view _content, const size_t &_pos, const size_t &_beg, const size_t &_end, const char &_token)
 {
-
 }
