@@ -3,23 +3,28 @@
 #include "Book.h"
 #include <vector>
 
-class Library
+namespace LSMS
 {
-private:
-    bool m_is_good = true;
-    user::User m_user{};
-    Book *mptr_book = nullptr;
 
-    csv::Header m_inventory_structure{"BID,NAME,AUTHOR,COPIES,RENTED,LINK"};
-    std::string m_inventory_path{(fm::init_workingdir() + "Data/Inventory.csv")};
-    csv::CSVParser m_inventory_csv{m_inventory_path, m_inventory_structure};
+    class Library
+    {
+    private:
+        bool m_running = true;
+        user::User m_user{};
+        Book *mptr_book = nullptr;
 
-    bool mf_sync_lib();
+        csv::Header m_inventory_structure{"BID,NAME,AUTHOR,COPIES,RENTED,LINK"};
+        std::string m_inventory_path{(fm::init_workingdir() + "Data/Inventory.csv")};
+        csv::CSVParser m_inventory_csv{m_inventory_path, m_inventory_structure};
 
-public:
-    Library();
-    ~Library();
+        bool mf_sync_lib();
+        bool mf_rent_book(std::string_view);
 
-    bool run_library();
-    bool rent_book(std::string_view);
-};
+    public:
+        Library();
+        ~Library();
+
+        bool run();
+    };
+
+}

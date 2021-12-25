@@ -10,12 +10,12 @@ int main()
 {
 	try
 	{
-		Library lib{};
+		LSMS::Library lib{};
 		print_welcome();
 		std::cin.get();
 		system("cls");
 
-		while (lib.run_library())
+		while (lib.run())
 		{
 			system("cls");
 		}
