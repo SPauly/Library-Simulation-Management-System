@@ -14,7 +14,7 @@ public:
     
     void init(csv::Row*);
 
-    int &increase_rented();
+    int increase_rented();
 
     bool is_available();
     std::string_view get_BID();
