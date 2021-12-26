@@ -23,7 +23,7 @@ int main()
 	catch (const csv::Error &e)
 	{
 	}
-	catch (const user::Error &e)
+	catch (const LSMS::user::Error &e)
 	{
 	}
 

@@ -1,7 +1,6 @@
 #pragma once
 #include "User.h"
 #include "Book.h"
-#include <vector>
 
 namespace LSMS
 {
@@ -9,7 +8,7 @@ namespace LSMS
     class Library
     {
     private:
-        bool m_running = true;
+        bool m_running = false;
         user::User m_user{};
         Book *mptr_book = nullptr;
 

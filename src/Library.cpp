@@ -8,17 +8,16 @@ namespace LSMS
 
     bool Library::run()
     {
+        m_running = true;
+
         char input;
         std::string bookname = "";
-        while (m_user.get_mode() == user::notlogged)
-        {
-            if (m_user.login())
-            {
-                log("================== WELCOME BACK ");
-                log(m_user.get_name());
-                log(" ===================\n");
-            }
-        }
+        
+        while (m_user.login() == user::notlogged)
+        {}
+        log("================== WELCOME BACK ");
+        log(m_user.get_name());
+        log(" ===================\n");
 
         while (m_running && m_user.get_mode())
         {
