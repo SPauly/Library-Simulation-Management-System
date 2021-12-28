@@ -536,6 +536,9 @@ namespace user
 
     _Openmode &User::logout()
     {
+        mvec_books.clear();
+        mvec_owned.clear();
+        mvec_published.clear();
         mf_set_mode(notlogged);
         return m_mode;
     }

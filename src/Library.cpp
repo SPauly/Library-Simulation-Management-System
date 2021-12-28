@@ -7,6 +7,8 @@ Library::~Library(){}
 bool Library::run_library() {
     char input;
     std::string bookname = "";
+    m_is_good = true;
+    
     if(m_user.get_mode() == user::notlogged){
         if(m_user.login()){
             log("================== WELCOME BACK ");
