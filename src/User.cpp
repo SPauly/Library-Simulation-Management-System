@@ -456,13 +456,24 @@ namespace user
             std::string temp_line;
             m_userinfo_txt.seekg(m_dimensions.beg);
             m_userinfo_txt.get(finder);
-            while(finder != '-' && finder != 'O'){
+            //skip lines as long as it doesn't start with - or if we want to find 'Owned' O 
+            while((finder != '-' && finder != 'O') || (_buy && finder != 'O')){ 
                 std::getline(m_userinfo_txt, temp_line);
                 m_userinfo_txt.get(finder);
             }
-            fm::fast_insert(m_userinfo_txt, bookentry, m_userinfo_txt.tellg(), m_dimensions.beg, m_dimensions.end, '-');
-            //add book to user in class
-            mvec_books.push_back(csv::Row(_book.get_Row())); //temporaryly only add the row here
+            //if we want to find the Owned section skip lines till we find - or reach the end
+            while((_buy && finder != '-') && (finder != '~' && finder != 'P') ){
+                std::getline(m_userinfo_txt, temp_line);
+                m_userinfo_txt.get(finder);
+            }
+
+            if(fm::fast_insert(m_userinfo_txt, bookentry, m_userinfo_txt.tellg(), m_dimensions.beg, m_dimensions.end, '-') != fm::npos){
+                if(!_buy)
+                    mvec_books.push_back(csv::Row(_book.get_Row())); //temporaryly only add the row here
+                else
+                    mvec_owned.push_back(csv::Row(_book.get_Row()));
+            }            
+            temp_line.clear();
         }
         catch(std::ios::failure &e){
             return mf_set_state(failbit);

@@ -25,7 +25,7 @@ bool Library::run_library()
         log("\n                           Menu\n");
         log(" [1] Rent a book (beta)            [2] Read a book (unavailable)\n");
         log(" [3] Show my books (unavailable)   [4] List books (unavailable)\n");
-        log(" [5] Buy a book (unavailable)      [6] Return a book (unavailable)\n");
+        log(" [5] Buy a book (beta)             [6] Return a book (unavailable)\n");
         log(" [7] Log out                       [8] Exit\n");
         log("\nWhat do you want to do (1-9)>>");
 
@@ -72,12 +72,12 @@ bool Library::run_library()
                 log("Bought " + bookname);
                 bookname.clear();
                 break;
-            case '8':
+            case '7':
                 log("Logging out\n");
                 m_user.logout();
                 log("Logout successful. Press 'Enter'\n");
                 return m_is_good = true;
-            case '9':
+            case '8':
                 m_user.logout();
                 return m_is_good = false;
             default:
