@@ -98,6 +98,7 @@ namespace user
     };
 
     static size_t rentable_books = 10;
+    static size_t buyable_books = 10;
 
     class User
     { //holds the user and is responsible for login, logout and activity log -> gets automatically deleted with logout
@@ -130,7 +131,7 @@ namespace user
         User();
         ~User();
 
-        _Userstate &add_book(Book&);
+        _Userstate &add_book(Book&, bool); //Default: false = write to rented, true = write to owned
         _Openmode &login();
         _Openmode &logout();
 
@@ -139,6 +140,7 @@ namespace user
         std::string_view get_name();
         const _ID &get_id();
         bool can_rent();
+        bool can_buy();
     };
 
 }
