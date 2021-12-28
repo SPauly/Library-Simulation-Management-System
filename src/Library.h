@@ -4,7 +4,9 @@
 
 namespace LSMS
 {
-
+#ifndef log
+    #define log(x) std::cout << x
+#endif
     class Library
     {
     private:

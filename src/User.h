@@ -11,8 +11,10 @@ namespace LSMS
 {
     namespace user
     {
-#define log(x) std::cout << x
 
+#ifndef log
+    #define log(x) std::cout << x
+#endif
         class Error : public std::runtime_error
         {
         public:
