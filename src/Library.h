@@ -17,7 +17,7 @@ namespace LSMS
         csv::CSVParser m_inventory_csv{m_inventory_path, m_inventory_structure};
 
         bool mf_sync_lib();
-        bool mf_rent_book(std::string_view);
+        bool mf_rent_or_buy_book(std::string_view, bool); //default: false = rent, true = buy
 
     public:
         Library();

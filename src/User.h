@@ -100,6 +100,7 @@ namespace LSMS
         };
 
         static size_t rentable_books = 10;
+        static size_t buyable_books = 10;
 
         class User
         { //holds the user and is responsible for login, logout and activity log -> gets automatically deleted with logout
@@ -132,7 +133,7 @@ namespace LSMS
             User();
             ~User();
 
-            _Userstate &add_book(Book &);
+            _Userstate &add_book(Book &, bool);
             _Openmode &login();
             _Openmode &logout();
 
@@ -141,6 +142,7 @@ namespace LSMS
             std::string_view get_name();
             const _ID &get_id();
             bool can_rent();
+            bool can_buy();
         };
 
     }

@@ -438,9 +438,9 @@ namespace LSMS
             m_userinfo_txt.close();
         }
 
-        _Userstate &User::add_book(Book &_book)
+        _Userstate &User::add_book(Book &_book, bool _buy = false)
         {
-            if (!this->can_rent())
+            if (!this->can_rent() && !_buy || !this->can_buy() && _buy)
             {
                 return mf_set_state(failbit);
             }
@@ -458,14 +458,30 @@ namespace LSMS
             try
             {
                 char finder = 0;
+                std::string temp_line;
                 m_userinfo_txt.seekg(m_dimensions.beg);
-                do
+                m_userinfo_txt.get(finder);
+                //skip lines as long as it doesn't start with - or if we want to find 'Owned' O
+                while ((finder != '-' && finder != 'O') || (_buy && finder != 'O'))
                 {
+                    std::getline(m_userinfo_txt, temp_line);
                     m_userinfo_txt.get(finder);
-                } while (finder != '-' && finder != 'O');
-                fm::fast_insert(m_userinfo_txt, bookentry, m_userinfo_txt.tellg(), m_dimensions.beg, m_dimensions.end, '-');
-                //add book to user in class
-                mvec_books.push_back(csv::Row(_book.get_Row())); //temporaryly only add the row here
+                }
+                //if we want to find the Owned section skip lines till we find - or reach the end
+                while ((_buy && finder != '-') && (finder != '~' && finder != 'P'))
+                {
+                    std::getline(m_userinfo_txt, temp_line);
+                    m_userinfo_txt.get(finder);
+                }
+
+                if (fm::fast_insert(m_userinfo_txt, bookentry, m_userinfo_txt.tellg(), m_dimensions.beg, m_dimensions.end, '-') != fm::npos)
+                {
+                    if (!_buy)
+                        mvec_books.push_back(csv::Row(_book.get_Row())); //temporaryly only add the row here
+                    else
+                        mvec_owned.push_back(csv::Row(_book.get_Row()));
+                }
+                temp_line.clear();
             }
             catch (std::ios::failure &e)
             {
@@ -541,14 +557,17 @@ namespace LSMS
             }
         }
 
-        _Openmode &User::logout()
+        const _Openmode &User::get_mode()
         {
-            mf_set_mode(notlogged);
             return m_mode;
         }
 
-        const _Openmode &User::get_mode()
+        _Openmode &User::logout()
         {
+            mvec_books.clear();
+            mvec_owned.clear();
+            mvec_published.clear();
+            mf_set_mode(notlogged);
             return m_mode;
         }
 
@@ -571,7 +590,10 @@ namespace LSMS
         {
             return mvec_books.size() < rentable_books;
         }
-
+        bool User::can_buy()
+        {
+            return mvec_owned.size() < buyable_books;
+        }
     } //end user
 
-}
+} //end user
