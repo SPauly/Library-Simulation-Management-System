@@ -8,24 +8,14 @@ void print_welcome();
 
 int main()
 {
-	try
-	{
-		LSMS::Library lib{};
-		print_welcome();
-		std::cin.get();
-		system("cls");
 
-		while (lib.run())
-		{
-			system("cls");
-		}
-	}
-	catch (const csv::Error &e)
-	{
-	}
-	catch (const LSMS::user::Error &e)
-	{
-	}
+	LSMS::Library lib{};
+	
+	print_welcome();
+	std::cin.get();
+	system("cls");
+
+	lib.run();
 
 	return 0;
 }

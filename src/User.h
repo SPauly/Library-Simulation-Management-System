@@ -9,11 +9,14 @@
 
 namespace LSMS
 {
+#ifndef BOOK_PTR()
+#define BOOK_PTR() GetBookInstance()
+#endif
     namespace user
     {
 
 #ifndef log
-    #define log(x) std::cout << x
+#define log(x) std::cout << x
 #endif
         class Error : public std::runtime_error
         {
@@ -143,6 +146,9 @@ namespace LSMS
             const _Userstate &get_state();
             std::string_view get_name();
             const _ID &get_id();
+            std::string get_rented();
+            std::string get_owned();
+            std::string get_published();
             bool can_rent();
             bool can_buy();
         };
