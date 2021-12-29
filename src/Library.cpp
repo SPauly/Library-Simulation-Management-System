@@ -21,11 +21,14 @@ namespace LSMS
         std::string bookname = "";
         while (m_running)
         {
-            while (m_user.login() == user::notlogged)
+            while (m_user.login() == user::notlogged && m_user.get_mode())
             {
-                if (!m_user.get_mode())
-                    return m_running = false;
             }
+            if (m_user.get_mode() == user::failure)
+            {
+                return m_running = false;
+            }
+            
             log("================== WELCOME BACK ");
             log(m_user.get_name());
             log(" ===================\n");
@@ -145,13 +148,13 @@ namespace LSMS
 
     std::string &Library::mf_get_my_books(std::string &_books)
     {
-        _books += "\n\nRented Books: (Name, Author, Date)\n";
+        _books += "\n\nRented Books: (Book Name, Author, Date)\n";
         _books += m_user.get_rented();
-        _books += "\nOwned Books: (Name, Author)\n";
+        _books += "\nOwned Books: (Book Name, Author, Date)\n";
         _books += m_user.get_owned();
         if (m_user.get_mode() == user::publisher)
         {
-            _books += "\nPublished Books: (Name, Date, Copies, Rented)\n";
+            _books += "\nPublished Books: (Book Name, Date, Copies, Rented)\n";
             _books += m_user.get_published();
         }
         return _books;
