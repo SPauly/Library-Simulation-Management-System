@@ -256,6 +256,8 @@ namespace LSMS
                 //read the owned books
                 try
                 {
+                    if (line_tmp.at(0) == '-')
+                        fm::_getline(m_userinfo_txt, line_tmp);
                     fm::_getline(m_userinfo_txt, line_tmp); //skip the line with Owned:
                     while (line_tmp.at(0) == 'B')
                     {
@@ -277,10 +279,12 @@ namespace LSMS
                 {
                     try
                     {
+                        if (line_tmp.at(0) == '-')
+                            fm::_getline(m_userinfo_txt, line_tmp);
                         fm::_getline(m_userinfo_txt, line_tmp); //skip the line with Published:
                         while (line_tmp.at(0) == 'B')
                         {
-                            mvec_owned.push_back(csv::Row(line_tmp, &m_bookheader));
+                            mvec_published.push_back(csv::Row(line_tmp, &m_bookheader));
                             fm::_getline(m_userinfo_txt, line_tmp);
                         }
                     }
@@ -584,6 +588,48 @@ namespace LSMS
         const _ID &User::get_id()
         {
             return m_ID;
+        }
+
+        std::string User::get_rented()
+        {
+            std::string rented = "";
+            for (int i = 0; i < mvec_books.size(); i++)
+            {
+                BOOK_PTR()->init(&mvec_books.at(i));
+                rented += BOOK_PTR()->get_public_info();
+                rented += ", ";
+                rented += mvec_books.at(i).getvalue("DATE");
+                rented += '\n';
+            }
+            return rented;
+        }
+
+        std::string User::get_owned()
+        {
+            std::string owned = "";
+            for (int i = 0; i < mvec_owned.size(); i++)
+            {
+                BOOK_PTR()->init(&mvec_owned.at(i));
+                owned += BOOK_PTR()->get_public_info();
+                owned += ", ";
+                owned += mvec_owned.at(i).getvalue("DATE");
+                owned += '\n';
+            }
+            return owned;
+        }
+
+        std::string User::get_published()
+        {
+            std::string published = "";
+            for (int i = 0; i < mvec_published.size(); i++)
+            {
+                BOOK_PTR()->init(&mvec_published.at(i));
+                published += BOOK_PTR()->get_insight_info();
+                published += ", ";
+                published += mvec_published.at(i).getvalue("DATE");
+                published += '\n';
+            }
+            return published;
         }
 
         bool User::can_rent()

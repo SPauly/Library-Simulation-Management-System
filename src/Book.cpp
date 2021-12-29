@@ -13,6 +13,13 @@ namespace LSMS
         mptr_parser = _ptr_parser;
     }
 
+    Book::Book(csv::CSVParser *_ptr_parser)
+    {
+        if (!_ptr_parser)
+            throw csv::Error("Book: Parser points to nullptr");
+        mptr_parser = _ptr_parser;
+    }
+
     void Book::init(csv::Row *_ptr_row)
     {
         if (!_ptr_row)
@@ -27,6 +34,11 @@ namespace LSMS
 
     size_t Book::increase_rented()
     {
+        if (!mptr_parser)
+        {
+            throw csv::Error("Book: Parser not connected");
+        }
+
         size_t currently_rented = 0;
         int format_length = 4;
         std::string currently_rented_s(format_length--, '0');
@@ -78,6 +90,47 @@ namespace LSMS
     csv::Row &Book::get_Row()
     {
         return *mptr_info;
+    }
+
+    std::string_view Book::get_public_info()
+    {
+        std::string temp = "";
+        csv::Row *row_ptr = mptr_parser->find_first_of(mptr_info->getvalue(0), "BID");
+        if (row_ptr)
+        {
+            temp += row_ptr->getvalue("NAME");
+            temp += ", ";
+            temp += row_ptr->getvalue("AUTHOR");
+        }
+        return temp;
+    }
+
+    std::string_view Book::get_insight_info()
+    {
+        std::string temp = "";
+        csv::Row *row_ptr = mptr_parser->find_first_of(mptr_info->getvalue(0), "BID");
+        if (row_ptr)
+        {
+            temp += row_ptr->getvalue("NAME");
+            temp += ", ";
+            temp += row_ptr->getvalue("AUTHOR");
+            temp += ", ";
+            temp += row_ptr->getvalue("COPIES");
+            temp += ", ";
+            temp += row_ptr->getvalue("RENTED");
+        }
+        return temp;
+    }
+
+    std::string_view Book::get_admin_info()
+    {
+        std::string temp = "";
+        csv::Row *row_ptr = mptr_parser->find_first_of(mptr_info->getvalue(0), "BID");
+        if (row_ptr)
+        {
+            temp += row_ptr->string();
+        }
+        return temp;
     }
 
 }
