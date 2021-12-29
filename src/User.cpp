@@ -598,7 +598,14 @@ namespace LSMS
                 BOOK_PTR()->init(&mvec_books.at(i));
                 rented += BOOK_PTR()->get_public_info();
                 rented += ", ";
-                rented += mvec_books.at(i).getvalue("DATE");
+                try
+                {
+                    rented += mvec_books.at(i).getvalue("DATE");
+                }
+                catch (csv::Error &e)
+                {
+                    rented += "now";
+                }
                 rented += '\n';
             }
             return rented;
@@ -612,7 +619,14 @@ namespace LSMS
                 BOOK_PTR()->init(&mvec_owned.at(i));
                 owned += BOOK_PTR()->get_public_info();
                 owned += ", ";
-                owned += mvec_owned.at(i).getvalue("DATE");
+                try
+                {
+                    owned += mvec_owned.at(i).getvalue("DATE");
+                }
+                catch (csv::Error &e)
+                {
+                    owned += "now";
+                }
                 owned += '\n';
             }
             return owned;
@@ -626,7 +640,14 @@ namespace LSMS
                 BOOK_PTR()->init(&mvec_published.at(i));
                 published += BOOK_PTR()->get_insight_info();
                 published += ", ";
-                published += mvec_published.at(i).getvalue("DATE");
+                try
+                {
+                    published += mvec_published.at(i).getvalue("DATE");
+                }
+                catch (csv::Error &e)
+                {
+                    published += "now";
+                }
                 published += '\n';
             }
             return published;

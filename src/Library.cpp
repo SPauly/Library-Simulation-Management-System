@@ -34,7 +34,7 @@ namespace LSMS
             {
                 log("\n                           Menu\n");
                 log(" [1] Rent a book (beta)            [2] Read a book (unavailable)\n");
-                log(" [3] Show my books (unavailable)   [4] List books (unavailable)\n");
+                log(" [3] Show my books (beta)          [4] List books (unavailable)\n");
                 log(" [5] Buy a book (beta)             [6] Return a book (unavailable)\n");
                 log(" [7] Log out                       [8] Exit\n");
                 log("\nWhat do you want to do (1-8)>>");
