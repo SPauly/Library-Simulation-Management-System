@@ -32,12 +32,14 @@ namespace LSMS
 
             while (m_user.get_mode() && m_user.get_mode() != user::notlogged)
             {
-                log("\n                           Menu\n");
-                log(" [1] Rent a book (beta)            [2] Read a book (unavailable)\n");
-                log(" [3] Show my books (beta)          [4] List books (unavailable)\n");
-                log(" [5] Buy a book (beta)             [6] Return a book (unavailable)\n");
+                log("\nPRESS ENTER TO GET TO THE MENU\n");
+                std::cin.get();
+                log("\n---------------------------- MENU -----------------------------\n");
+                log(" [1] Rent a book                   [2] Read a book (unavailable)\n");
+                log(" [3] Show my books                 [4] List books\n");
+                log(" [5] Buy a book                    [6] Return a book (unavailable)\n");
                 log(" [7] Log out                       [8] Exit\n");
-                log("\nWhat do you want to do (1-8)>>");
+                log("\nWhat do you want to do? (1-8)>>");
 
                 std::cin >> input;
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -69,6 +71,12 @@ namespace LSMS
                         std::string temp = "";
                         log(this->mf_get_my_books(temp));
                         temp.clear();
+                    }
+                    break;
+                    case '4':
+                    {
+                        std::string temp{""};
+                        log(mf_list_books(temp));
                     }
                     break;
                     case '5':
@@ -147,6 +155,32 @@ namespace LSMS
             _books += m_user.get_published();
         }
         return _books;
+    }
+
+    std::string &Library::mf_list_books(std::string &_list)
+    {
+        _list = "\n---------All available Books---------\n";
+        try
+        {
+            for (unsigned int i = 0; i < m_inventory_csv.size(); i++)
+            {
+                _list += m_inventory_csv.getRow(i).getvalue("NAME");
+                _list += "\n    Author: ";
+                _list += m_inventory_csv.getRow(i).getvalue("AUTHOR");
+                _list += "  Copies: ";
+                _list += m_inventory_csv.getRow(i).getvalue("COPIES");
+                _list += "  Rented: ";
+                _list += m_inventory_csv.getRow(i).getvalue("RENTED");
+                _list += "\n";
+            }
+        }
+        catch (csv::Error &e)
+        {
+            _list += "Failed to read Database due to: ";
+            _list += e.what();
+        }
+
+        return _list;
     }
 
 }
