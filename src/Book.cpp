@@ -20,16 +20,37 @@ namespace LSMS
         mptr_parser = _ptr_parser;
     }
 
-    void Book::init(csv::Row *_ptr_row)
+    bool Book::init(csv::Row *_ptr_row)
     {
         if (!_ptr_row)
             throw csv::Error("Book: Row points to nullptr");
-        mptr_info = _ptr_row;
+        try
+        {
+            _ptr_row->get_headerptr()->getvalue("NAME"); //try if row is initialized with the right header
+        }
+        catch (const csv::Error &e)
+        { //must be the BID,DATE,POS
+            if (mptr_parser)
+            {
+                mptr_row = mptr_parser->find_first_of(_ptr_row->getvalue("BID"), "BID");
+                mptr_userinfo_style = _ptr_row;
+                return true;
+            }
+            else
+            {
+                mptr_row = nullptr;
+                mptr_userinfo_style = _ptr_row;
+                return false;
+            }
+        }
+
+        mptr_row = _ptr_row;
+        return true;
     }
 
     Book::~Book()
     {
-        delete mptr_info;
+        delete mptr_row;
     }
 
     size_t Book::increase_rented()
@@ -45,7 +66,7 @@ namespace LSMS
 
         try
         {
-            currently_rented = std::stoi(mptr_info->getvalue("RENTED").data());
+            currently_rented = std::stoi(mptr_row->getvalue("RENTED").data());
             ++currently_rented;
             //Format string to 0001
             for (int val = (currently_rented < 0) ? -currently_rented : currently_rented; format_length >= 0 && val != 0; --format_length, val /= 10)
@@ -58,8 +79,8 @@ namespace LSMS
             return csv::npos;
         }
 
-        if (mptr_info->change_value_in_to("RENTED", currently_rented_s))
-            if (mptr_parser->updateRow(mptr_info))
+        if (mptr_row->change_value_in_to("RENTED", currently_rented_s))
+            if (mptr_parser->updateRow(mptr_row))
                 return currently_rented;
             else
                 return csv::npos;
@@ -71,8 +92,8 @@ namespace LSMS
     {
         try
         {
-            int copies = std::stoi(mptr_info->getvalue("COPIES").data());
-            int rented = std::stoi(mptr_info->getvalue("RENTED").data());
+            int copies = std::stoi(mptr_row->getvalue("COPIES").data());
+            int rented = std::stoi(mptr_row->getvalue("RENTED").data());
             return copies - rented;
         }
         catch (const std::invalid_argument &)
@@ -84,18 +105,37 @@ namespace LSMS
 
     std::string_view Book::get_BID()
     {
-        return mptr_info->getvalue(0);
+        try
+        {
+            return mptr_row->getvalue(0);
+        }
+        catch (csv::Error &e)
+        {
+            return "CSVError not found";
+        }
+    }
+
+    std::string_view Book::get_NAME()
+    {
+        try
+        {
+            return mptr_row->getvalue("NAME");
+        }
+        catch (csv::Error &e)
+        {
+            return "CSVError Name not found";
+        }
     }
 
     csv::Row &Book::get_Row()
     {
-        return *mptr_info;
+        return *mptr_row;
     }
 
     std::string_view Book::get_public_info()
     {
         std::string temp = "";
-        csv::Row *row_ptr = mptr_parser->find_first_of(mptr_info->getvalue(0), "BID");
+        csv::Row *row_ptr = mptr_parser->find_first_of(mptr_row->getvalue(0), "BID");
         if (row_ptr)
         {
             temp += row_ptr->getvalue("NAME");
@@ -108,7 +148,7 @@ namespace LSMS
     std::string_view Book::get_insight_info()
     {
         std::string temp = "";
-        csv::Row *row_ptr = mptr_parser->find_first_of(mptr_info->getvalue(0), "BID");
+        csv::Row *row_ptr = mptr_parser->find_first_of(mptr_row->getvalue(0), "BID");
         if (row_ptr)
         {
             temp += row_ptr->getvalue("NAME");
@@ -125,7 +165,7 @@ namespace LSMS
     std::string_view Book::get_admin_info()
     {
         std::string temp = "";
-        csv::Row *row_ptr = mptr_parser->find_first_of(mptr_info->getvalue(0), "BID");
+        csv::Row *row_ptr = mptr_parser->find_first_of(mptr_row->getvalue(0), "BID");
         if (row_ptr)
         {
             temp += row_ptr->string();

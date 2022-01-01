@@ -27,6 +27,7 @@ namespace LSMS
         bool mf_rent_or_buy_book(std::string_view, bool); //default: false = rent, true = buy
         std::string &mf_get_my_books(std::string &);
         std::string &mf_list_books(std::string &);
+        bool mf_read_book(std::string_view);
 
     public:
         Library();

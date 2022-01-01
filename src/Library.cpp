@@ -28,7 +28,7 @@ namespace LSMS
             {
                 return m_running = false;
             }
-            
+
             log("================== WELCOME BACK ");
             log(m_user.get_name());
             log(" ===================\n");
@@ -68,6 +68,12 @@ namespace LSMS
                         }
                         log("Rented " + bookname);
                         bookname.clear();
+                        break;
+                    case '2':
+                        bookname.clear();
+                        log("Enter Bookname: ");
+                        std::getline(std::cin, bookname);
+                        mf_read_book(bookname);
                         break;
                     case '3':
                     {
@@ -184,6 +190,36 @@ namespace LSMS
         }
 
         return _list;
+    }
+
+    bool Library::mf_read_book(std::string_view _bookname)
+    {
+        char input = 0;
+        try
+        {
+            BOOK_PTR()->init(m_user.has_book(_bookname));
+            log("\n----------- Reading Mode: " << _bookname << " ------------\n");
+
+            do
+            {
+                log("Reading Position: " << BOOK_PTR()->get_pos() << "\n\n");
+                log(BOOK_PTR()->get_current_page());
+                log("\n Press ENTER for next page. (e + ENTER for exit):\n");
+                std::cin >> input;
+                if (std::cin.fail())
+                {
+                    std::cin.clear();
+                    break;
+                }
+            } while (input == 0 && BOOK_PTR()->increase_position());
+            
+            return true;
+        }
+        catch (csv::Error &e)
+        {
+            log("Could not find the book in your inventory.\n");
+            return false;
+        }
     }
 
 }

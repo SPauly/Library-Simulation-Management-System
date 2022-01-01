@@ -150,6 +150,10 @@ namespace csv
             throw Error("Row: not linked to valid header");
         }
     };
+
+    Row *Row::get_headerptr() const {
+        return mptr_header;
+    }
     //end class Row
 
     //class Header : public Row

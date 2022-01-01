@@ -151,6 +151,7 @@ namespace LSMS
             std::string get_published();
             bool can_rent();
             bool can_buy();
+            csv::Row* has_book(std::string_view);
         };
 
     }

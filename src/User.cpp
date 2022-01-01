@@ -661,6 +661,36 @@ namespace LSMS
         {
             return mvec_owned.size() < buyable_books;
         }
+
+        csv::Row *User::has_book(std::string_view _bookname)
+        {
+            for (int i = 0; i < mvec_books.size(); i++)
+            {
+                BOOK_PTR()->init(&mvec_books.at(i));
+                if (BOOK_PTR()->get_NAME() == _bookname)
+                {
+                    return &mvec_books.at(i);
+                }
+            }
+            for (int i = 0; i < mvec_owned.size(); i++)
+            {
+                BOOK_PTR()->init(&mvec_owned.at(i));
+                if (BOOK_PTR()->get_NAME() == _bookname)
+                {
+                    return &mvec_owned.at(i);
+                }
+            }
+            for (int i = 0; i < mvec_published.size(); i++)
+            {
+                BOOK_PTR()->init(&mvec_published.at(i));
+                if (BOOK_PTR()->get_NAME() == _bookname)
+                {
+                    return &mvec_published.at(i);
+                }
+            }
+
+            return nullptr;
+        }
     } //end user
 
 } //end user
