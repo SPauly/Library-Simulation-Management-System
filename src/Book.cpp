@@ -139,7 +139,7 @@ namespace LSMS
         return *mptr_row;
     }
 
-    std::string_view Book::get_public_info()
+    std::string Book::get_public_info()
     {
         std::string temp = "";
         csv::Row *row_ptr = mptr_parser->find_first_of(mptr_row->getvalue(0), "BID");
@@ -152,7 +152,7 @@ namespace LSMS
         return temp;
     }
 
-    std::string_view Book::get_insight_info()
+    std::string Book::get_insight_info()
     {
         std::string temp = "";
         csv::Row *row_ptr = mptr_parser->find_first_of(mptr_row->getvalue(0), "BID");
@@ -169,7 +169,7 @@ namespace LSMS
         return temp;
     }
 
-    std::string_view Book::get_admin_info()
+    std::string Book::get_admin_info()
     {
         std::string temp = "";
         csv::Row *row_ptr = mptr_parser->find_first_of(mptr_row->getvalue(0), "BID");

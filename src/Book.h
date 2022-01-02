@@ -27,9 +27,9 @@ namespace LSMS
         std::string_view get_BID();
         std::string_view get_NAME();
         csv::Row &get_Row();
-        std::string_view get_public_info();
-        std::string_view get_insight_info();
-        std::string_view get_admin_info();
+        std::string get_public_info();
+        std::string get_insight_info();
+        std::string get_admin_info();
         size_t get_pos();
         std::string_view get_current_page();
     };
