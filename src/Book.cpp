@@ -22,11 +22,13 @@ namespace LSMS
 
     bool Book::init(csv::Row *_ptr_row)
     {
+        csv::Row *temp_header = nullptr;
         if (!_ptr_row)
             throw csv::Error("Book: Row points to nullptr");
         try
         {
-            _ptr_row->get_headerptr()->getvalue("NAME"); //try if row is initialized with the right header
+            temp_header = _ptr_row->get_headerptr();//try if row is initialized with the right header
+            temp_header->getvalue("NAME");
         }
         catch (const csv::Error &e)
         { //must be the BID,DATE,POS
@@ -86,6 +88,11 @@ namespace LSMS
                 return csv::npos;
         else
             return csv::npos;
+    }
+
+    size_t Book::increase_position()
+    {
+
     }
 
     bool Book::is_available()
@@ -172,5 +179,14 @@ namespace LSMS
         }
         return temp;
     }
+
+    size_t Book::get_pos()
+    {
+
+    }
+
+    std::string_view Book::get_current_page()
+    {}
+
 
 }
