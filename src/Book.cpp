@@ -27,7 +27,7 @@ namespace LSMS
             throw csv::Error("Book: Row points to nullptr");
         try
         {
-            temp_header = _ptr_row->get_headerptr();//try if row is initialized with the right header
+            temp_header = _ptr_row->get_headerptr(); //try if row is initialized with the right header
             temp_header->getvalue("NAME");
         }
         catch (const csv::Error &e)
@@ -53,6 +53,27 @@ namespace LSMS
     Book::~Book()
     {
         delete mptr_row;
+        delete mptr_userinfo_style;
+        m_file.close();
+    }
+
+    bool Book::mf_open()
+    {
+        try
+        {
+            std::string fullpath = fm::init_workingdir() + mptr_row->getvalue("LINK").data();
+            m_file.open(fullpath, std::ios::in | std::ios::out);
+        }
+        catch (const std::fstream::failure &e)
+        {
+            return false;
+        }
+        catch (const csv::Error &e)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     size_t Book::increase_rented()
@@ -92,7 +113,6 @@ namespace LSMS
 
     size_t Book::increase_position()
     {
-
     }
 
     bool Book::is_available()
@@ -182,11 +202,26 @@ namespace LSMS
 
     size_t Book::get_pos()
     {
-
+        if (mptr_userinfo_style)
+        {
+            try
+            {
+                size_t pos = std::stoi(mptr_userinfo_style->getvalue("POSITION").data());
+                return pos;
+            }
+            catch (const std::invalid_argument &ia)
+            {
+                return 0;
+            }
+        }
+        else
+            return 0;
     }
 
     std::string_view Book::get_current_page()
-    {}
-
-
+    {
+        if (!m_is_open && !mf_open())
+            return "Failed to open Book";
+        
+    }
 }

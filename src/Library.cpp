@@ -38,7 +38,7 @@ namespace LSMS
                 log("\nPRESS ENTER TO GET TO THE MENU\n");
                 std::cin.get();
                 log("\n---------------------------- MENU -----------------------------\n");
-                log(" [1] Rent a book                   [2] Read a book (unavailable)\n");
+                log(" [1] Rent a book                   [2] Read a book (beta)\n");
                 log(" [3] Show my books                 [4] List books\n");
                 log(" [5] Buy a book                    [6] Return a book (unavailable)\n");
                 log(" [7] Log out                       [8] Exit\n");

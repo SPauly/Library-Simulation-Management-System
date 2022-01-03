@@ -1,6 +1,8 @@
 #pragma once
 #include "CSVParser.h"
+#include "file_management.h"
 #include <string>
+#include <fstream>
 
 namespace LSMS
 {
@@ -10,6 +12,11 @@ namespace LSMS
         csv::Row *mptr_row = nullptr;
         csv::CSVParser *mptr_parser = nullptr;
         csv::Row *mptr_userinfo_style = nullptr;
+
+        std::fstream m_file;
+        bool m_is_open = false;
+
+        bool mf_open();
 
     public:
         Book() = default;
