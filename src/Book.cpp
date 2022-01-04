@@ -63,17 +63,15 @@ namespace LSMS
         {
             std::string fullpath = fm::init_workingdir() + mptr_row->getvalue("LINK").data();
             m_file.open(fullpath, std::ios::in | std::ios::out);
+            if(m_file.is_open())
+                return m_is_open = true;
         }
         catch (const std::fstream::failure &e)
-        {
-            return false;
-        }
+        {}
         catch (const csv::Error &e)
-        {
-            return false;
-        }
+        {}
 
-        return true;
+        return m_is_open = false;
     }
 
     size_t Book::increase_rented()
@@ -113,6 +111,7 @@ namespace LSMS
 
     size_t Book::increase_position()
     {
+        return 1;
     }
 
     bool Book::is_available()
@@ -220,8 +219,10 @@ namespace LSMS
 
     std::string_view Book::get_current_page()
     {
-        if (!m_is_open && !mf_open())
-            return "Failed to open Book";
+        if (!m_is_open){
+            if(!mf_open())
+                return "Failed to open Book";
+        }
         
     }
 }

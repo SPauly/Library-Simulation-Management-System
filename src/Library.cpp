@@ -194,7 +194,8 @@ namespace LSMS
 
     bool Library::mf_read_book(std::string_view _bookname)
     {
-        char input = 0;
+        std::string tmp = "";
+        std::cin.clear();
         try
         {
             BOOK_PTR()->init(m_user.has_book(_bookname));
@@ -202,16 +203,17 @@ namespace LSMS
 
             do
             {
+                tmp.clear();
                 log("Reading Position: " << BOOK_PTR()->get_pos() << "\n\n");
                 log(BOOK_PTR()->get_current_page());
-                log("\n Press ENTER for next page. (e + ENTER for exit):\n");
-                std::cin >> input;
+                log("\nPress ENTER for next page. (e + ENTER for exit):\n");
+                std::getline(std::cin, tmp);
                 if (std::cin.fail())
                 {
                     std::cin.clear();
                     break;
                 }
-            } while (input == 0 && BOOK_PTR()->increase_position());
+            } while (tmp == "" && BOOK_PTR()->increase_position());
             
             return true;
         }
