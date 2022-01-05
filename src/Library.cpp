@@ -40,7 +40,7 @@ namespace LSMS
                 log("\n---------------------------- MENU -----------------------------\n");
                 log(" [1] Rent a book                   [2] Read a book (beta)\n");
                 log(" [3] Show my books                 [4] List books\n");
-                log(" [5] Buy a book                    [6] Return a book (unavailable)\n");
+                log(" [5] Buy a book                    [6] Return a book\n");
                 log(" [7] Log out                       [8] Exit\n");
                 log("\nWhat do you want to do? (1-8)>>");
 
@@ -104,6 +104,12 @@ namespace LSMS
                             break;
                         }
                         log("Bought " + bookname);
+                        bookname.clear();
+                        break;
+                    case '6':
+                        log("Enter Book you want to return: ");
+                        std::getline(std::cin, bookname);
+                        mf_return_book(bookname);
                         bookname.clear();
                         break;
                     case '7':
@@ -214,13 +220,33 @@ namespace LSMS
                     break;
                 }
             } while (tmp == "" && m_user.change_position_in_book(BOOK_PTR()->get_pos() + 1, _bookname));
-            
+
             return true;
         }
         catch (csv::Error &e)
         {
             log("Could not find the book in your inventory.\n");
             return false;
+        }
+    }
+
+    void Library::mf_return_book(std::string_view _bookname)
+    {
+        try
+        {
+            if (m_user.remove_book(_bookname))
+            { //remove book initializes BOOK_PTR()
+                if (BOOK_PTR()->increase_rented(-1))
+                    log("Returned book successfully\n");
+                else
+                    log("Failed to return to inventory\n");
+            }
+            else
+                log("Failed to remove from Account\n");
+        }
+        catch (csv::Error &e)
+        {
+            log("Could not find the book in your inventory.\n");
         }
     }
 

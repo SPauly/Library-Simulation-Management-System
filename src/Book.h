@@ -16,7 +16,7 @@ namespace LSMS
         std::fstream m_file;
         bool m_is_open = false;
         std::string page = "";
-        const int amount_of_lines = 30; 
+        const int amount_of_lines = 30;
 
         bool mf_open();
 
@@ -29,7 +29,7 @@ namespace LSMS
 
         bool init(csv::Row *);
 
-        size_t increase_rented();
+        size_t increase_rented(int incrementor = 1);
 
         bool is_available();
         std::string_view get_BID();

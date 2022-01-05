@@ -76,7 +76,7 @@ namespace LSMS
         return m_is_open = false;
     }
 
-    size_t Book::increase_rented()
+    size_t Book::increase_rented(int incrementor /*= 1*/)
     {
         if (!mptr_parser)
         {
@@ -90,7 +90,7 @@ namespace LSMS
         try
         {
             currently_rented = std::stoi(mptr_row->getvalue("RENTED").data());
-            ++currently_rented;
+            currently_rented += incrementor;
             //Format string to 0001
             for (int val = (currently_rented < 0) ? -currently_rented : currently_rented; format_length >= 0 && val != 0; --format_length, val /= 10)
                 currently_rented_s[format_length] = '0' + val % 10;
@@ -225,7 +225,8 @@ namespace LSMS
         page.clear();
         int line_count = 0;
         m_file.seekg(0, std::ios::beg);
-        while(m_file && line_count < (get_pos()*amount_of_lines)){
+        while (m_file && line_count < (get_pos() * amount_of_lines))
+        {
             fm::_getline(m_file, line);
             ++line_count;
         }
@@ -237,7 +238,8 @@ namespace LSMS
             ++line_count;
         }
 
-        if(line_count < amount_of_lines) {
+        if (line_count < amount_of_lines)
+        {
             page += "END of file\n";
         }
 

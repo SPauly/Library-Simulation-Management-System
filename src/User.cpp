@@ -727,10 +727,10 @@ namespace LSMS
                 {
                     tmp.clear();
                     last_pos = m_userinfo_txt.tellg();
-                    while (finder != '\n' )
+                    while (finder != '\n')
                     {
                         m_userinfo_txt.get(finder);
-                        if(finder == ',')
+                        if (finder == ',')
                             break;
                         tmp += finder;
                     }
@@ -745,6 +745,64 @@ namespace LSMS
                 return 0;
             }
             return _pos;
+        }
+
+        bool User::remove_book(std::string_view _bookname)
+        {
+            bool flag = false;
+            int pos_in_vector = 0;
+
+            for (; pos_in_vector < mvec_books.size(); pos_in_vector++)
+            {
+                BOOK_PTR()->init(&mvec_books.at(pos_in_vector));
+                if (BOOK_PTR()->get_NAME() == _bookname)
+                {
+                    mvec_books.erase(mvec_books.begin() + pos_in_vector);
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (!flag)
+                return false;
+
+            if (m_userinfo_txt.good() && m_userinfo_txt.is_open())
+            {
+                size_t last_pos = m_dimensions.beg;
+                std::string tmp;
+                char finder = 0;
+
+                m_userinfo_txt.seekg(m_dimensions.beg);
+                std::getline(m_userinfo_txt, tmp); //skip initial line
+                std::getline(m_userinfo_txt, tmp); //skip Name: line
+                while (tmp != BOOK_PTR()->get_BID())
+                {
+                    tmp.clear();
+                    last_pos = m_userinfo_txt.tellg();
+                    while (finder != '\n')
+                    {
+                        m_userinfo_txt.get(finder);
+                        if (finder == ',')
+                            break;
+                        tmp += finder;
+                    }
+                    finder = 0;
+                }
+                m_userinfo_txt.seekp(last_pos);
+
+                for (pos_in_vector; pos_in_vector < mvec_books.size(); pos_in_vector++)
+                {
+                    m_userinfo_txt << mvec_books.at(pos_in_vector).string();
+                }
+                m_userinfo_txt << "---------------------\r\n";
+                m_userinfo_txt.flush();
+            }
+            else
+            {
+                return 0;
+            }
+
+            return true;
         }
     } //end user
 
