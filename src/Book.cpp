@@ -63,13 +63,15 @@ namespace LSMS
         {
             std::string fullpath = fm::init_workingdir() + mptr_row->getvalue("LINK").data();
             m_file.open(fullpath, std::ios::in | std::ios::out);
-            if(m_file.is_open())
+            if (m_file.is_open())
                 return m_is_open = true;
         }
         catch (const std::fstream::failure &e)
-        {}
+        {
+        }
         catch (const csv::Error &e)
-        {}
+        {
+        }
 
         return m_is_open = false;
     }
@@ -219,10 +221,31 @@ namespace LSMS
 
     std::string_view Book::get_current_page()
     {
-        if (!m_is_open){
-            if(!mf_open())
-                return "Failed to open Book";
+        if (!m_is_open)
+        {
+            if (!mf_open())
+                return "Failed to open Book\n";
         }
-        
+        std::string line = "";
+        page.clear();
+        int line_count = 0;
+        m_file.seekg(std::ios::beg, 0);
+        while(m_file && line_count < (get_pos()*amount_of_lines)){
+            fm::_getline(m_file, line);
+            ++line_count;
+        }
+        line_count = 0;
+        while (m_file && line_count < amount_of_lines)
+        {
+            fm::_getline(m_file, line);
+            page += line + "\n";
+            ++line_count;
+        }
+
+        if(line_count < amount_of_lines) {
+            page += "END of file\n";
+        }
+
+        return page;
     }
 }
