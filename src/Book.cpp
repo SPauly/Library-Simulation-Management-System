@@ -229,7 +229,7 @@ namespace LSMS
         std::string line = "";
         page.clear();
         int line_count = 0;
-        m_file.seekg(std::ios::beg, 0);
+        m_file.seekg(0, std::ios::beg);
         while(m_file && line_count < (get_pos()*amount_of_lines)){
             fm::_getline(m_file, line);
             ++line_count;
