@@ -12,11 +12,11 @@ The focus should lie on the code's architecture and efficiency. Therefore the be
 
 ## Features
 * Rent a book -> The function looks up the availability and updates both the userinfo and the inventory
-* Read a book -> still in progress
+* Read a book -> Presents 30 Lines at once
 * Show my books -> function mainly provided by the userclass which returns a string with all the public infos
 * List books 
 * Buy a book -> same as rent a book - this function only writes the book to the `owned` category in userinfo
-* return a book (unavailable)
+* Return a book
 * Different User types -> User is fully supported while Publisher is only implemented on a surface level
 
 ## File structure
