@@ -111,11 +111,6 @@ namespace LSMS
             return csv::npos;
     }
 
-    size_t Book::increase_position()
-    {
-        return 1;
-    }
-
     bool Book::is_available()
     {
         try

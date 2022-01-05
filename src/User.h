@@ -152,6 +152,7 @@ namespace LSMS
             bool can_rent();
             bool can_buy();
             csv::Row* has_book(std::string_view);
+            size_t change_position_in_book(size_t, std::string_view);
         };
 
     }

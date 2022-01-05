@@ -213,7 +213,7 @@ namespace LSMS
                     std::cin.clear();
                     break;
                 }
-            } while (tmp == "" && BOOK_PTR()->increase_position());
+            } while (tmp == "" && m_user.change_position_in_book(BOOK_PTR()->get_pos() + 1, _bookname));
             
             return true;
         }

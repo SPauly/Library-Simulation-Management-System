@@ -691,6 +691,61 @@ namespace LSMS
 
             return nullptr;
         }
+
+        size_t User::change_position_in_book(size_t _pos, std::string_view _bookname)
+        {
+            size_t _position = _pos;
+            int format_length = 4;
+            std::string _position_s(format_length--, '0');
+
+            try
+            {
+                //Format string to 0001
+                for (int val = (_position < 0) ? -_position : _position; format_length >= 0 && val != 0; --format_length, val /= 10)
+                    _position_s[format_length] = '0' + val % 10;
+                if (format_length >= 0 && _position < 0)
+                    _position_s[0] = '-';
+            }
+            catch (const std::invalid_argument &e)
+            {
+                return csv::npos;
+            }
+
+            csv::Row *current_book = this->has_book(_bookname);
+            current_book->change_value_in_to("POSITION", _position_s);
+
+            if (m_userinfo_txt.good() && m_userinfo_txt.is_open())
+            {
+                size_t last_pos = m_dimensions.beg;
+                std::string tmp;
+                char finder = 0;
+
+                m_userinfo_txt.seekg(m_dimensions.beg);
+                std::getline(m_userinfo_txt, tmp); //skip initial line
+                std::getline(m_userinfo_txt, tmp); //skip Name: line
+                while (tmp != BOOK_PTR()->get_BID())
+                {
+                    tmp.clear();
+                    last_pos = m_userinfo_txt.tellg();
+                    while (finder != '\n' )
+                    {
+                        m_userinfo_txt.get(finder);
+                        if(finder == ',')
+                            break;
+                        tmp += finder;
+                    }
+                    finder = 0;
+                }
+                m_userinfo_txt.seekp(last_pos);
+                m_userinfo_txt << current_book->string();
+                m_userinfo_txt.flush();
+            }
+            else
+            {
+                return 0;
+            }
+            return _pos;
+        }
     } //end user
 
 } //end user

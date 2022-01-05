@@ -30,7 +30,6 @@ namespace LSMS
         bool init(csv::Row *);
 
         size_t increase_rented();
-        size_t increase_position();
 
         bool is_available();
         std::string_view get_BID();
