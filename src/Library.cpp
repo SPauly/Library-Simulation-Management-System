@@ -28,7 +28,7 @@ namespace LSMS
             {
                 return m_running = false;
             }
-            
+
             log("================== WELCOME BACK ");
             log(m_user.get_name());
             log(" ===================\n");
@@ -38,7 +38,7 @@ namespace LSMS
                 log("\nPRESS ENTER TO GET TO THE MENU\n");
                 std::cin.get();
                 log("\n---------------------------- MENU -----------------------------\n");
-                log(" [1] Rent a book                   [2] Read a book (unavailable)\n");
+                log(" [1] Rent a book                   [2] Read a book (beta)\n");
                 log(" [3] Show my books                 [4] List books\n");
                 log(" [5] Buy a book                    [6] Return a book (unavailable)\n");
                 log(" [7] Log out                       [8] Exit\n");
@@ -68,6 +68,12 @@ namespace LSMS
                         }
                         log("Rented " + bookname);
                         bookname.clear();
+                        break;
+                    case '2':
+                        bookname.clear();
+                        log("Enter Bookname: ");
+                        std::getline(std::cin, bookname);
+                        mf_read_book(bookname);
                         break;
                     case '3':
                     {
@@ -184,6 +190,38 @@ namespace LSMS
         }
 
         return _list;
+    }
+
+    bool Library::mf_read_book(std::string_view _bookname)
+    {
+        std::string tmp = "";
+        std::cin.clear();
+        try
+        {
+            BOOK_PTR()->init(m_user.has_book(_bookname));
+            log("\n----------- Reading Mode: " << _bookname << " ------------\n");
+
+            do
+            {
+                tmp.clear();
+                log("Reading Position: " << BOOK_PTR()->get_pos() << "\n\n");
+                log(BOOK_PTR()->get_current_page());
+                log("\nPress ENTER for next page. (e + ENTER for exit):\n");
+                std::getline(std::cin, tmp);
+                if (std::cin.fail())
+                {
+                    std::cin.clear();
+                    break;
+                }
+            } while (tmp == "" && m_user.change_position_in_book(BOOK_PTR()->get_pos() + 1, _bookname));
+            
+            return true;
+        }
+        catch (csv::Error &e)
+        {
+            log("Could not find the book in your inventory.\n");
+            return false;
+        }
     }
 
 }

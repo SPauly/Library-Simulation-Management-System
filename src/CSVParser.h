@@ -43,6 +43,7 @@ namespace csv
         const size_t &getindex();
         std::string_view operator[](unsigned int &) const;
         std::string_view operator[](std::string_view) const;
+        Row *get_headerptr() const; 
 
     protected:
         std::vector<std::string> m_data;
@@ -65,6 +66,7 @@ namespace csv
         Header(std::string_view, Row *) = delete;
 
         std::string_view string();
+        Row *get_headerptr() = delete;
 
     public:
         size_t _header_size;
