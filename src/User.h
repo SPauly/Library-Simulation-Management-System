@@ -37,7 +37,7 @@ namespace LSMS
 
         enum _Userstate
         {
-            _Statmask = 0x17
+            _Statmask = 0x3
         };
 
         static constexpr _Userstate goodbit = (_Userstate)0x1; //everything's fine

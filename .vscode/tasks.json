@@ -4,24 +4,8 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
-            "type": "shell",
-            "command": "cl.exe",
-            "args": [
-                "/std:c++17",
-                "/property:GenerateFullPaths=true",
-                "/t:build",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "group": "build",
-            "presentation": {
-                "reveal": "silent"
-            },
-            "problemMatcher": "$msCompile"
-        },
-        {
             "type": "cppbuild",
-            "label": "C/C++: g++.exe Aktive Datei kompilieren",
+            "label": "C/C++: g++.exe Create Server",
             "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
             "args": [
                 "--std",
@@ -32,7 +16,34 @@
                 "-static-libgcc",
                 "-static-libstdc++",
                 "-o",
-                "${workspaceFolder}\\LSMS.exe"
+                "${workspaceFolder}\\LSMSServer.exe"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Compiler: C:\\msys64\\mingw64\\bin\\g++.exe"
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++.exe Create Client",
+            "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
+            "args": [
+                "--std",
+                "c++17",
+                "-g",
+                "${workspaceFolder}\\Client\\src\\*.cpp",
+                "-static",
+                "-static-libgcc",
+                "-static-libstdc++",
+                "-o",
+                "${workspaceFolder}\\Client\\LSMSClient.exe"
             ],
             "options": {
                 "cwd": "${fileDirname}"
