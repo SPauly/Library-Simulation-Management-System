@@ -19,7 +19,7 @@ namespace LSMS
         user::User m_user{};
 
         csv::Header m_inventory_structure{"BID,NAME,AUTHOR,COPIES,RENTED,LINK"};
-        std::string m_inventory_path{(fm::init_workingdir() + "Data/Inventory.csv")};
+        std::string m_inventory_path{(fm::init_workingdir() + "common/Data/Inventory.csv")};
         csv::CSVParser m_inventory_csv{m_inventory_path, m_inventory_structure};
 
         bool mf_startup();

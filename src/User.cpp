@@ -452,7 +452,7 @@ namespace LSMS
             bookentry += _book.get_BID();
             bookentry += ',';
             //add date
-            char datebuf[libtime::MAXDATELENGTH] = {NULL};
+            char datebuf[LSMS::libtime::MAXDATELENGTH] = {NULL};
             libtime::getdate_mmddyyyy(datebuf);
             bookentry.append(datebuf);
             bookentry += ',';
@@ -501,7 +501,7 @@ namespace LSMS
             {
                 //initialize needed files
                 csv::Header _userfile_header{"USERNAME,PASSWORD,UID"};
-                std::string _path_userfile{fm::init_workingdir() + "Data/Userfile.csv"};
+                std::string _path_userfile{fm::init_workingdir() + "common/Data/Userfile.csv"};
                 csv::CSVParser _userfile_csv{_path_userfile, _userfile_header};
 
                 //login page

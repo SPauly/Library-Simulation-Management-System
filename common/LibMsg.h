@@ -9,16 +9,16 @@ namespace LIBMSG {
         //add some more
     };
 
-    struct _Header {
-        _MessageType mt{};
+    template <typename T>
+    struct MessageHeader {
+        T mt{};
         uint32_t size = 0;
     };
 
-    class LibMsg {
-        _Header m_header{};
-        
-    public:
-        
+    template <typename T>
+    struct Message {
+        MessageHeader<T> header{};
+        std::vector<uint8_t> body;
     };
 
 }

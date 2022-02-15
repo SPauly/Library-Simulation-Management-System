@@ -122,7 +122,7 @@ namespace LSMS
             std::vector<csv::Row> mvec_owned;
             std::vector<csv::Row> mvec_published;
 
-            std::string m_path_userinfo{fm::init_workingdir() + "Data/Userinfo.txt"};
+            std::string m_path_userinfo{fm::init_workingdir() + "common/Data/Userinfo.txt"};
             csv::Header m_bookheader{"BID,DATE,POSITION"};
             std::fstream m_userinfo_txt;
 
