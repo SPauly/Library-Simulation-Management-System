@@ -10,7 +10,7 @@ int main()
 {
 
 	LSMS::Library lib{};
-	
+	 
 	print_welcome();
 	std::cin.get();
 	system("cls");

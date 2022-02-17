@@ -444,6 +444,9 @@ namespace LSMS
 
         _Userstate &User::add_book(Book &_book, bool _buy = false)
         {
+
+            //forward declaration of time function
+            
             if (!this->can_rent() && !_buy || !this->can_buy() && _buy)
             {
                 return mf_set_state(failbit);
@@ -452,8 +455,8 @@ namespace LSMS
             bookentry += _book.get_BID();
             bookentry += ',';
             //add date
-            char datebuf[LSMS::libtime::MAXDATELENGTH] = {NULL};
-            libtime::getdate_mmddyyyy(datebuf);
+            char datebuf[LIBTIME::MAXDATELENGTH] = {NULL};
+            LIBTIME::getdate_mmddyyyy(datebuf);
             bookentry.append(datebuf);
             bookentry += ',';
             //reading pos = begin

@@ -11,6 +11,7 @@
                 "--std",
                 "c++17",
                 "-g",
+                "${workspaceFolder}\\common\\*.cpp",
                 "${workspaceFolder}\\src\\*.cpp",
                 "-static",
                 "-static-libgcc",
@@ -38,12 +39,35 @@
                 "--std",
                 "c++17",
                 "-g",
+                "${workspaceFolder}\\common\\*.cpp",
                 "${workspaceFolder}\\Client\\src\\*.cpp",
                 "-static",
                 "-static-libgcc",
                 "-static-libstdc++",
                 "-o",
                 "${workspaceFolder}\\Client\\LSMSClient.exe"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Compiler: C:\\msys64\\mingw64\\bin\\g++.exe"
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++.exe Compile Common Files",
+            "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
+            "args": [
+                "--std",
+                "c++17",
+                "-g",
+                "${workspaceFolder}\\common\\*.cpp"
             ],
             "options": {
                 "cwd": "${fileDirname}"

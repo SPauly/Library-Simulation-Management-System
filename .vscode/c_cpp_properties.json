@@ -3,8 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**",
-                "D:/Programme_D/asio-1.20.0/include/**"
+                "${workspaceFolder}/**"//,
+                //"D:/Programme_D/asio-1.20.0/include/**"
             ],
             "defines": [
                 "_DEBUG",
