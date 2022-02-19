@@ -74,6 +74,23 @@ namespace LSMS
                 }
             };
 
+
+            //forward declaration of Connection Type
+            template <typename T>
+            class Connection;
+            
+            template <typename T>
+            struct Owned_Message {
+                std::shared_ptr<LIBNET::Connection<T>> remote = nullptr;
+                Message<T> msg;
+
+                friend std::ostream& operator<<(std::ostream os, const Owned_Message<T> msg)
+                {
+                    os << msg.msg;
+                    return os;
+                }
+            };
+
         }
     }
 
