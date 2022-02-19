@@ -11,7 +11,8 @@ namespace LSMS
         public:
             TSQueue() = default;
             TSQueue(const TSQueue<T> &) = delete;
-
+            virtual ~TSQueue() { clear(); };
+            
         public:
             const T &front()
             {
@@ -42,7 +43,7 @@ namespace LSMS
                 std::scoped_lock lock(muxQueue);
                 return deqQueue.empty();
             }
-
+    
             size_t count()
             {
                 std::scoped_lock lock(muxQueue);
@@ -53,6 +54,22 @@ namespace LSMS
             {
                 std::scoped_lock lock(muxQueue);
                 deqQueue.clear();
+            }
+
+            T pop_front()
+            {
+                std::scoped_lock lock(muxQueue);
+                auto t = std::move(deqQueue.front());
+                deqQueue.pop_front();
+                return t;
+            }
+
+            T pop_back()
+            {
+                std::scoped_lock lock(muxQueue);
+                auto t = std::move (deqQueue.back);
+                deqQueue.pop_back();
+                return t;
             }
 
         protected:
