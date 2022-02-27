@@ -66,5 +66,6 @@
         "xhash": "cpp",
         "*.rh": "cpp"
     },
-    "C_Cpp.default.cppStandard": "c++17"
+    "C_Cpp.default.cppStandard": "c++17",
+    "C_Cpp.dimInactiveRegions": false
 }

@@ -9,7 +9,7 @@
             "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
             "args": [
                 "--std",
-                "c++17",
+                "c++20",
                 "-g",
                 "${workspaceFolder}\\common\\*.cpp",
                 "${workspaceFolder}\\src\\*.cpp",
@@ -37,7 +37,7 @@
             "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
             "args": [
                 "--std",
-                "c++17",
+                "c++20",
                 "-g",
                 "${workspaceFolder}\\common\\*.cpp",
                 "${workspaceFolder}\\Client\\src\\*.cpp",
@@ -65,9 +65,9 @@
             "command": "C:\\msys64\\mingw64\\bin\\g++.exe",
             "args": [
                 "--std",
-                "c++17",
+                "c++20",
                 "-g",
-                "${workspaceFolder}\\common\\*.cpp"
+                "${workspaceFolder}\\common\\*.cpp" 
             ],
             "options": {
                 "cwd": "${fileDirname}"
