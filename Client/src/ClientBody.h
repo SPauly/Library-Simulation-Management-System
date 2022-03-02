@@ -3,7 +3,7 @@
 
 namespace lsms {
 
-    class Client : public libnet::Client_Interface<libnet::LIBMSG::_DefaultMessageType> {
+    class Client : public libnet::Client_Interface<libnet::libmsg::_DefaultMessageType> {
     private:
         bool m_running = false;
         bool m_connected = false;

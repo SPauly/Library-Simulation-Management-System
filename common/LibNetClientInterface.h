@@ -25,7 +25,7 @@ namespace lsms {
             {
                 try 
                 {
-                    m_connection = std::make_unique<LIBMSG::Owned_Message<T>>();
+                    m_connection = std::make_unique<libmsg::Owned_Message<T>>();
 
                     asio::ip::tcp::resolver resolver(m_context);
                     auto endpoints = resolver.resolve(host, std::to_string(port));
@@ -57,7 +57,7 @@ namespace lsms {
                     return false;
             }
 
-            TSQueue<LIBMSG::Owned_Message<T>>& getIncomming()
+            TSQueue<libmsg::Owned_Message<T>>& getIncomming()
             {
                 return m_qIncommingMessages;
             }
@@ -68,7 +68,7 @@ namespace lsms {
             std::unique_ptr<Connection<T>> m_connection;
 
         private:
-            TSQueue<LIBMSG::Owned_Message<T>> m_qIncommingMessages;
+            TSQueue<libmsg::Owned_Message<T>> m_qIncommingMessages;
         };
 
 

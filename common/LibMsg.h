@@ -7,7 +7,7 @@ namespace lsms
     namespace libnet
     {
 
-        namespace LIBMSG
+        namespace libmsg
         {
 
             enum class _DefaultMessageType : uint8_t

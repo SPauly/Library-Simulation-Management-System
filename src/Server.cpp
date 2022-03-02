@@ -1,24 +1,35 @@
 #include "Library.h"
+#include "LibNet.h"
 
 #include <iostream>
 
 #define log(x) std::cout << x
 
-void print_welcome();
+namespace libnet = lsms::libnet;
+namespace libmsg = lsms::libnet::libmsg;
 
-int main()
+class Server : public libnet::Server_Interface<libmsg::_DefaultMessageType>
 {
+public:
+	Server(uint16_t nPort) : libnet::Server_Interface<libmsg::_DefaultMessageType>(nPort)
+	{}
 
-	lsms::Library lib{};
-	 
-	print_welcome();
-	std::cin.get();
-	system("cls");
+protected:
+	virtual bool on_client_connect(std::shared_ptr<libnet::Connection<libmsg::_DefaultMessageType>> client)
+	{
+		return true;
+	}
+	
+	virtual void on_client_disconnect(std::shared_ptr<libnet::Connection<libmsg::_DefaultMessageType>> client)
+	{
 
-	lib.run();
+	}
 
-	return 0;
-}
+	virtual void on_message(std::shared_ptr<libnet::Connection<libmsg::_DefaultMessageType>> client, libmsg::Message<libnet::Connection<libmsg::_DefaultMessageType>>& msg)
+	{}
+
+};
+
 
 void print_welcome()
 {
@@ -44,3 +55,20 @@ void print_welcome()
 	}
 	file.close();
 };
+
+int main()
+{
+	Server server(60000);
+	server.start_server();
+	
+	lsms::Library lib{};
+	 
+	print_welcome();
+	std::cin.get();
+	system("cls");
+
+	lib.run();
+
+	return 0;
+}
+
