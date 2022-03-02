@@ -7,7 +7,7 @@
 #include <regex>
 #include <random>
 
-namespace LSMS
+namespace lsms
 {
 #ifndef BOOK_PTR()
 #define BOOK_PTR() GetBookInstance()

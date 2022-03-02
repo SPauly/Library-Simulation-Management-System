@@ -9,7 +9,7 @@ void print_welcome();
 int main()
 {
 
-	LSMS::Library lib{};
+	lsms::Library lib{};
 	 
 	print_welcome();
 	std::cin.get();

@@ -1,9 +1,9 @@
 #pragma once
 #include "CommonNetInclude.h"
 
-namespace LSMS
+namespace lsms
 {
-    namespace LIBNET
+    namespace libnet
     {
         template <typename T>
         class TSQueue

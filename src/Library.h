@@ -2,7 +2,7 @@
 #include "User.h"
 #include "Book.h"
 
-namespace LSMS
+namespace lsms
 {
 
 #ifndef BOOK_PTR()

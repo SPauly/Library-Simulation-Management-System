@@ -1,4 +1,7 @@
 #pragma once
-#include "CommonNetInclude.h"
 #include "LibMsg.h"
+#include "LibTSQueue.h"
+#include "LibConnection.h"
+#include "LibNetClientInterface.h"
+#include "LibNetServerInterface.h"
 #include "LibTime.h"

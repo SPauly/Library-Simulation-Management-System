@@ -1,10 +1,11 @@
+#pragma once
 #include "CommonNetInclude.h"
 #include "LibMsg.h"
 #include "LibTSQueue.h"
 #include "LibConnection.h"
 
-namespace LSMS {
-    namespace LIBNET {
+namespace lsms {
+    namespace libnet {
 
         template <typename T>
         class Client_Interface

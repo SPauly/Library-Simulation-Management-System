@@ -64,7 +64,8 @@
         "thread": "cpp",
         "unordered_map": "cpp",
         "xhash": "cpp",
-        "*.rh": "cpp"
+        "*.rh": "cpp",
+        "*.ipp": "cpp"
     },
     "C_Cpp.default.cppStandard": "c++17",
     "C_Cpp.dimInactiveRegions": false

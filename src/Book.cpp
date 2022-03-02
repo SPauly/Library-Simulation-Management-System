@@ -1,5 +1,5 @@
 #include "Book.h"
-namespace LSMS
+namespace lsms
 {
     Book::Book(csv::Row *_ptr_row)
     {

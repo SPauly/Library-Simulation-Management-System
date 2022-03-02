@@ -1,6 +1,6 @@
 #include "User.h"
 
-namespace LSMS
+namespace lsms
 {
     //namespace user
     namespace user

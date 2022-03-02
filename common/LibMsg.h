@@ -1,16 +1,16 @@
 #pragma once
 #include "CommonNetInclude.h"
 
-namespace LSMS
+namespace lsms
 {
 
-    namespace LIBNET
+    namespace libnet
     {
 
         namespace LIBMSG
         {
 
-            enum class _MessageType : uint8_t
+            enum class _DefaultMessageType : uint8_t
             {
                 _request,
                 _answer
@@ -81,7 +81,7 @@ namespace LSMS
             
             template <typename T>
             struct Owned_Message {
-                std::shared_ptr<LIBNET::Connection<T>> remote = nullptr;
+                std::shared_ptr<libnet::Connection<T>> remote = nullptr;
                 Message<T> msg;
 
                 friend std::ostream& operator<<(std::ostream os, const Owned_Message<T> msg)

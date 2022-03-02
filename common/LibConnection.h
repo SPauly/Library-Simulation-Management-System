@@ -3,9 +3,9 @@
 #include "LibMsg.h"
 #include "LibTSQueue.h"
 
-namespace LSMS
+namespace lsms
 {
-    namespace LIBNET
+    namespace libnet
     {
         template <typename T>
         class Connection : public std::enable_shared_from_this<Connection<T>> // enables us to create a shared pointer to this -> similar to this just shared_ptr
