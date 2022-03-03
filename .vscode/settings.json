@@ -64,7 +64,31 @@
         "thread": "cpp",
         "unordered_map": "cpp",
         "xhash": "cpp",
-        "*.rh": "cpp"
+        "*.rh": "cpp",
+        "*.ipp": "cpp",
+        "any": "cpp",
+        "array": "cpp",
+        "bit": "cpp",
+        "*.tcc": "cpp",
+        "bitset": "cpp",
+        "cctype": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "condition_variable": "cpp",
+        "coroutine": "cpp",
+        "csignal": "cpp",
+        "cstdarg": "cpp",
+        "cwctype": "cpp",
+        "deque": "cpp",
+        "map": "cpp",
+        "memory_resource": "cpp",
+        "numeric": "cpp",
+        "optional": "cpp",
+        "source_location": "cpp",
+        "future": "cpp",
+        "ranges": "cpp",
+        "stop_token": "cpp"
     },
-    "C_Cpp.default.cppStandard": "c++17"
+    "C_Cpp.default.cppStandard": "c++17",
+    "C_Cpp.dimInactiveRegions": false
 }

@@ -1,13 +1,13 @@
 #pragma once
 #include "CSVParser.h"
 #include "Book.h"
-#include "Time.h"
+#include "../common/LibTime.h"
 #include <iostream>
 #include <limits>
 #include <regex>
 #include <random>
 
-namespace LSMS
+namespace lsms
 {
 #ifndef BOOK_PTR()
 #define BOOK_PTR() GetBookInstance()
@@ -37,7 +37,7 @@ namespace LSMS
 
         enum _Userstate
         {
-            _Statmask = 0x17
+            _Statmask = 0x3
         };
 
         static constexpr _Userstate goodbit = (_Userstate)0x1; //everything's fine
@@ -122,7 +122,7 @@ namespace LSMS
             std::vector<csv::Row> mvec_owned;
             std::vector<csv::Row> mvec_published;
 
-            std::string m_path_userinfo{fm::init_workingdir() + "Data/Userinfo.txt"};
+            std::string m_path_userinfo{fm::init_workingdir() + "common/Data/Userinfo.txt"};
             csv::Header m_bookheader{"BID,DATE,POSITION"};
             std::fstream m_userinfo_txt;
 

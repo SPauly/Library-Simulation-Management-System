@@ -1,6 +1,6 @@
 #include "Library.h"
 
-namespace LSMS
+namespace lsms
 {
     Library::Library() {}
 

@@ -1,7 +1,0 @@
-BID,NAME,AUTHOR,COPIES,RENTED,LINK
-B123456,FirstBook,AUTHOR Name,0100,0001,Data/Books/FirstBook.txt
-B222222,SecondBook,AUTHOR Name,0120,0026,Data/Books/SecondBook.txt
-B333333,ThirdBook,AUTHOR Name,0120,0014,Data/Books/ThirdBook.txt
-B444444,FoursBook,AUTHOR Name,9999,0010,Data/Books/FoursBook.txt
-B555555,FifthBook,AUTHOR Name,0025,0010,Data/Books/FifthBook.txt
-B666666,SixthBook,AUTHOR Name,0025,0010,Data/Books/SixthBook.txt

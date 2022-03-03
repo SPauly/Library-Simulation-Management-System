@@ -4,7 +4,7 @@
 #include <string>
 #include <fstream>
 
-namespace LSMS
+namespace lsms
 {
     class Book
     {

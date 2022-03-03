@@ -8,6 +8,9 @@ CppProperties.json
 Userfile.csv
 Userinfo.txt
 
+#ignore file with personal information
+c_cpp_properties.json
+
 # User-specific files
 *.rsuser
 *.suo
