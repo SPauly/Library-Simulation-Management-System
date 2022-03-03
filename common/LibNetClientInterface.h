@@ -12,8 +12,7 @@ namespace lsms {
         {
         public:
 
-            Client_Interface() : m_socket(m_context)
-            {}
+            Client_Interface(){}
 
             virtual ~Client_Interface()
             {
@@ -25,16 +24,26 @@ namespace lsms {
             {
                 try 
                 {
-                    m_connection = std::make_unique<libmsg::Owned_Message<T>>();
-
                     asio::ip::tcp::resolver resolver(m_context);
                     auto endpoints = resolver.resolve(host, std::to_string(port));
 
+
+                    m_connection = std::make_unique<Connection<T>>(
+                        Connection<T>::owner::client,
+                        m_context,
+                        asio::ip::tcp::socket(m_context), m_qMessagesIn 
+                    );
                     m_connection->connect_to_server(endpoints);
                     
-                    m_thrContext = std::thread([this] () {m_context.run(); });
+                    m_thrContext = std::thread([this] () { m_context.run(); });
                 
                 }
+                catch (std::exception& e)
+                {
+                    //inform that client couldn't connect to ip adress
+                    return false;
+                }
+                return true;
             }
 
             void disconnect()
@@ -59,16 +68,16 @@ namespace lsms {
 
             TSQueue<libmsg::Owned_Message<T>>& getIncomming()
             {
-                return m_qIncommingMessages;
+                return m_qMessagesIn;
             }
         protected:
             asio::io_context m_context;
             std::thread m_thrContext
-            asio::ip::tcp::socket m_socket;
+
             std::unique_ptr<Connection<T>> m_connection;
 
         private:
-            TSQueue<libmsg::Owned_Message<T>> m_qIncommingMessages;
+            TSQueue<libmsg::Owned_Message<T>> m_qMessagesIn;
         };
 
 
